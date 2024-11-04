@@ -1,374 +1,118 @@
 'use client';
-import { useState } from 'react';
-import { Grid, Stack, InputLabel, TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
-import Notification from './Notification';
+
+// MATERIAL - UI
+import { useTheme } from '@mui/material/styles';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Divider from '@mui/material/Divider';
+import FormHelperText from '@mui/material/FormHelperText';
+import InputLabel from '@mui/material/InputLabel';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import MainCard from 'components/MainCard';
+
+// ASSETS
+import { Personalcard } from 'iconsax-react';
+
+// ==============================|| LAYOUTS - PREMIUM FORM ||============================== //
 
 const CreateWebServerForm = ({ handleNext, formData, setFormData }: any) => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [showAdvanced, setShowAdvanced] = useState(false); // State to handle "Advanced Options" visibility
+  const theme = useTheme();
 
   const handleSubmit = () => {
-    setSnackbarMessage('Form submitted successfully!');
-    setSnackbarSeverity('success');
-    setOpenSnackbar(true);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
-  const handleToggleAdvanced = () => {
-    setShowAdvanced(!showAdvanced); // Toggle advanced options
+    // Handle form submission logic here
   };
 
   return (
-    <Grid container spacing={3}>
-      {/* Default FTP Username and Password Fields */}
-      <Grid item xs={12} sm={6}>
-        <Stack spacing={1}>
-          <InputLabel>FTP Username</InputLabel>
-          <TextField
-            value={formData.ws_ftpUsername || ''}
-            onChange={(e) => setFormData({ ...formData, ws_ftpUsername: e.target.value })}
-            id="ws_ftpUsername"
-            placeholder="FTP Username"
-            fullWidth
-            required
-          />
-        </Stack>
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <Stack spacing={1}>
-          <InputLabel>FTP Password</InputLabel>
-          <TextField
-            type="password"
-            value={formData.ws_ftpPwd || ''}
-            onChange={(e) => setFormData({ ...formData, ws_ftpPwd: e.target.value })}
-            id="ws_ftpPwd"
-            placeholder="FTP Password"
-            fullWidth
-            required
-          />
-        </Stack>
-      </Grid>
-
-      {/* Advanced Options Checkbox */}
+    <Grid container spacing={3} sx={{ padding: 4, backgroundColor: theme.palette.background.default }}>
       <Grid item xs={12}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={showAdvanced}
-              onChange={handleToggleAdvanced}
-              color="primary"
-            />
-          }
-          label="Show Advanced Options"
-        />
+        <MainCard content={false} sx={{ borderRadius: 2, boxShadow: 12, backgroundColor: '#fdfdfd' }}>
+          <CardContent sx={{ padding: 4, borderRadius: 2 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>
+                Verification of Identity:
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 'medium', color: theme.palette.secondary.main }}>
+                Personal Information
+              </Typography>
+            </Stack>
+            <Grid container spacing={3} alignItems="center" sx={{ mt: 3 }}>
+              <Grid item xs={12}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={3} lg={4}>
+                    <Avatar variant="rounded" sx={{ bgcolor: theme.palette.secondary.main, ml: 'auto', width: 64, height: 64 }}>
+                      <Personalcard />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs={12} sm={9} lg={6}>
+                    <Typography variant="body1" sx={{ mb: 2, color: theme.palette.text.secondary }}>
+                      This information is required to verify you as our legitimate client.
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ borderColor: theme.palette.divider, mb: 2 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  {[
+                    { label: "Name", placeholder: "Enter full name" },
+                    { label: "Email", placeholder: "Enter email" },
+                    { label: "Phone Number", placeholder: "Enter Phone Number" },
+                    { label: "Address", placeholder: "Enter Address" },
+                    { label: "Postal Code", placeholder: "Enter Postal Code" },
+                    { label: "Password", placeholder: "Enter Password", type: "password" }
+                  ].map((field, index) => (
+                    <Grid item xs={12} sm={6} lg={4} key={index}>
+                      <InputLabel sx={{ fontWeight: 'medium', color: theme.palette.text.primary }}>{field.label}:</InputLabel>
+                      <TextField
+                        fullWidth
+                        type={field.type || 'text'}
+                        placeholder={field.placeholder}
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': { 
+                            borderRadius: 8, 
+                            '&:hover fieldset': { borderColor: theme.palette.primary.main },
+                            '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main }
+                          },
+                          '& .MuiInputLabel-root': { color: theme.palette.text.secondary }
+                        }}
+                      />
+                      <FormHelperText sx={{ color: theme.palette.text.secondary }}>
+                        Please enter your {field.label.toLowerCase()}
+                      </FormHelperText>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ borderColor: theme.palette.divider, mt: 2 }} />
+              </Grid>
+            </Grid>
+          </CardContent>
+          {/* Submit and Next Buttons */}
+          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, padding: 2 }}>
+            <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
+              <Button variant="contained" color="secondary" onClick={handleSubmit} sx={{ borderRadius: 20 }}>
+                Submit
+              </Button>
+            </Stack>
+            <Stack direction="row" spacing={2}>
+              <Button onClick={handleNext} variant="contained" color="primary" sx={{ borderRadius: 20 }}>
+                Next
+              </Button>
+            </Stack>
+          </Grid>
+        </MainCard>
       </Grid>
-
-      {/* Advanced Options: Hidden unless checkbox is checked */}
-      {showAdvanced && (
-        <>
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>FTP Host</InputLabel>
-              <TextField
-                value={formData.ws_ftpHost || ''}
-                onChange={(e) => setFormData({ ...formData, ws_ftpHost: e.target.value })}
-                id="ws_ftpHost"
-                placeholder="FTP host"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>FTP Port</InputLabel>
-              <TextField
-                value={formData.ws_ftpPort || ''}
-                onChange={(e) => setFormData({ ...formData, ws_ftpPort: e.target.value })}
-                id="ws_ftpPort"
-                placeholder="Default is 21"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>FTP Folder</InputLabel>
-              <TextField
-                value={formData.ws_webFolderName || ''}
-                onChange={(e) => setFormData({ ...formData, ws_webFolderName: e.target.value })}
-                id="ws_webFolderName"
-                placeholder="Folder that keeps the docker image"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>SSH Host</InputLabel>
-              <TextField
-                value={formData.ws_sshHost || ''}
-                onChange={(e) => setFormData({ ...formData, ws_sshHost: e.target.value })}
-                id="ws_sshHost"
-                placeholder="Web Server SSH Host"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>SSH Username</InputLabel>
-              <TextField
-                value={formData.ws_sshUsername || ''}
-                onChange={(e) => setFormData({ ...formData, ws_sshUsername: e.target.value })}
-                id="ws_sshUsername"
-                placeholder="Web Server SSH username"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>SSH Password</InputLabel>
-              <TextField
-                type="password"
-                value={formData.ws_sshPwd || ''}
-                onChange={(e) => setFormData({ ...formData, ws_sshPwd: e.target.value })}
-                id="ws_sshPwd"
-                placeholder="Web Server SSH password"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1}>
-              <InputLabel>SSH Port</InputLabel>
-              <TextField
-                value={formData.ws_sshPort || ''}
-                onChange={(e) => setFormData({ ...formData, ws_sshPort: e.target.value })}
-                id="ws_sshPort"
-                placeholder="Default is 22"
-                fullWidth
-              />
-            </Stack>
-          </Grid>
-        </>
-      )}
-
-      {/* Submit and Next Buttons */}
-      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
-          <Button variant="contained" color="secondary" onClick={handleSubmit}>Submit</Button>
-        </Stack>
-        <Stack direction="row" spacing={2}>
-          <Button onClick={handleNext} variant="contained" color="primary">Next</Button>
-        </Stack>
-      </Grid>
-
-      {/* Notification Component */}
-      <Notification
-        open={openSnackbar}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        handleClose={handleCloseSnackbar}
-      />
     </Grid>
   );
 };
 
 export default CreateWebServerForm;
-
-/*
-'use client';
-import { useState } from 'react';
-import { Grid, Stack, InputLabel, TextField, Button } from '@mui/material';
-import Notification from './Notification';
-
-const CreateWebServerForm = ({ handleNext, formData, setFormData }: any) => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
-  const handleSubmit = () => {
-    setSnackbarMessage('Form submitted successfully!');
-    setSnackbarSeverity('success');
-    setOpenSnackbar(true);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
-  return (
-    <Grid container spacing={3}>
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>Web Server Name</InputLabel>
-        <TextField
-          value={formData.ws_name || ''}
-          onChange={(e) => setFormData({ ...formData, ws_name: e.target.value })}
-          id="ws_name"
-          placeholder="Web server name"
-          fullWidth
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>FTP Host</InputLabel>
-        <TextField
-          value={formData.ws_ftpHost || ''}
-          onChange={(e) => setFormData({ ...formData, ws_ftpHost: e.target.value })}
-          id="ws_ftpHost"
-          placeholder="FTP host"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>FTP Username</InputLabel>
-        <TextField
-          value={formData.ws_ftpUsername || ''}
-          onChange={(e) => setFormData({ ...formData, ws_ftpUsername: e.target.value })}
-          id="ws_ftpUsername"
-          placeholder="FTP Username"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>FTP Password</InputLabel>
-        <TextField
-          value={formData.ws_ftpPwd || ''}
-          onChange={(e) => setFormData({ ...formData, ws_ftpPwd: e.target.value })}
-          id="ws_ftpPwd"
-          placeholder="FTP Password"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>FTP Port</InputLabel>
-        <TextField
-          value={formData.ws_ftpPort || ''}
-          onChange={(e) => setFormData({ ...formData, ws_ftpPort: e.target.value })}
-          id="ws_ftpPort"
-          placeholder="Default is 21"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>FTP Folder</InputLabel>
-        <TextField
-          value={formData.ws_webFolderName || ''}
-          onChange={(e) => setFormData({ ...formData, ws_webFolderName: e.target.value })}
-          id="ws_webFolderName"
-          placeholder="Folder that keep the docker image"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>SSH Host</InputLabel>
-        <TextField
-          value={formData.ws_sshHost || ''}
-          onChange={(e) => setFormData({ ...formData, ws_sshHost: e.target.value })}
-          id="ws_sshHost"
-          placeholder="Web Server SSH Host"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>SSH Username</InputLabel>
-        <TextField
-          value={formData.ws_sshUsername || ''}
-          onChange={(e) => setFormData({ ...formData, ws_sshUsername: e.target.value })}
-          id="ws_sshUsername"
-          placeholder="Web Server SSH username"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>SSH Password</InputLabel>
-        <TextField
-          value={formData.ws_sshPwd || ''}
-          onChange={(e) => setFormData({ ...formData, ws_sshPwd: e.target.value })}
-          id="ws_sshPwd"
-          placeholder="Web Server SSH password"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sm={6}>
-      <Stack spacing={1}>
-        <InputLabel>SSH Port</InputLabel>
-        <TextField
-          value={formData.ws_sshPort || ''}
-          onChange={(e) => setFormData({ ...formData, ws_sshPort: e.target.value })}
-          id="ws_sshPort"
-          placeholder="Default is 22"
-          fullWidth
-          required
-        />
-      </Stack>
-    </Grid>
-
-    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-      <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
-        <Button variant="contained" color="secondary" onClick={handleSubmit}>Submit</Button>
-      </Stack>
-      <Stack direction="row" spacing={2}>
-        <Button onClick={handleNext} variant="contained" color="primary">Next</Button>
-      </Stack>
-
-    </Grid>
-    <Notification 
-      open={openSnackbar} 
-      message={snackbarMessage} 
-      severity={snackbarSeverity} 
-      handleClose={handleCloseSnackbar} 
-    />
-  </Grid>
-);
-};
-
-export default CreateWebServerForm;
-*/

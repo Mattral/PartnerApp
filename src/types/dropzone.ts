@@ -15,6 +15,8 @@ export interface CustomFile extends File {
   path?: string;
   preview?: string;
   lastModifiedDate?: Date;
+  selectedDocument?: string; // Add this line
+  points?: number; // Add this line
 }
 
 export interface UploadProps extends DropzoneOptions {
@@ -30,10 +32,11 @@ export interface UploadMultiFileProps extends DropzoneOptions {
   showList?: boolean;
   type?: DropzopType;
   sx?: SxProps<Theme>;
-  onUpload?: VoidFunction;
+  onUpload?: (data: any) => void; // Adjust based on your requirements
   onRemove?: (file: File | string) => void;
   onRemoveAll?: VoidFunction;
   setFieldValue: (field: string, value: any) => void;
+  
 }
 
 export interface FilePreviewProps {
