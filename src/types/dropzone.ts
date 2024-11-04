@@ -11,12 +11,20 @@ export enum DropzopType {
   standard = 'STANDARD'
 }
 
+// types/dropzone.ts
+export enum DocumentCategory {
+  Primary = 'Primary',
+  Secondary = 'Secondary',
+}
+
 export interface CustomFile extends File {
   path?: string;
   preview?: string;
   lastModifiedDate?: Date;
   selectedDocument?: string; // Add this line
   points?: number; // Add this line
+  category?: DocumentCategory; // Add the category type
+
 }
 
 export interface UploadProps extends DropzoneOptions {

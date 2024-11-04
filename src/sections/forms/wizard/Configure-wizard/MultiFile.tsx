@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
+import { DocumentCategory } from 'types/dropzone';
 
 // THIRD - PARTY
 import { useDropzone } from 'react-dropzone';
@@ -29,11 +30,11 @@ const DropzoneWrapper = styled('div')(({ theme }) => ({
 }));
 
 const documentOptions = [
-  { label: 'National ID', points: 50 },
-  { label: 'Passport', points: 50 },
-  { label: 'Driving License', points: 25 },
-  { label: 'Employment Certificate', points: 25 },
-  { label: 'Bachelor', points: 25 },
+  { label: 'National ID', points: 50, category: DocumentCategory.Primary },
+  { label: 'Passport', points: 50, category: DocumentCategory.Primary },
+  { label: 'Driving License', points: 25, category: DocumentCategory.Secondary },
+  { label: 'Employment Certificate', points: 25, category: DocumentCategory.Secondary },
+  { label: 'Bachelor', points: 25, category: DocumentCategory.Secondary },
 ];
 
 // ==============================|| UPLOAD - MULTIPLE FILE ||============================== //
@@ -131,7 +132,8 @@ const MultiFileUpload = ({ error, showList = false, files = [], type, setFieldVa
                           updatedFiles[index] = {
                             ...file,
                             selectedDocument: selectedOption.label,
-                            points: selectedOption.points
+                            points: selectedOption.points,
+                            category: selectedOption.category // Set category from documentOptions
                           };
                           if (setFieldValue) {
                             setFieldValue('files', updatedFiles);
@@ -151,8 +153,9 @@ const MultiFileUpload = ({ error, showList = false, files = [], type, setFieldVa
                 <Stack direction="row" alignItems="center">
                   {file.selectedDocument && (
                     <Typography variant="body2" sx={{ mr: 1 }}>
-                      {file.selectedDocument} ({file.points} points)
+                      {file.selectedDocument} ({file.points} points{file.category ? `, ${file.category}` : ""})
                     </Typography>
+
                   )}
                   <Button onClick={() => onRemove(file)} color="error">
                     Remove

@@ -139,19 +139,7 @@ function StickyActionBarPage() {
               
             </Grid>
           </CardContent>
-          <Divider />
-          <DropzonePage />
-          <Divider />
-          <CardActions>
-            <Stack direction="row" spacing={1} justifyContent="center" sx={{ width: 1, px: 1.5, py: 0.75 }}>
-              <Button color="error" size="small">
-                Cancel
-              </Button>
-              <Button variant="contained" size="small">
-                Submit
-              </Button>
-            </Stack>
-          </CardActions>
+
         </MainCard>
       </Grid>
     </Grid>
