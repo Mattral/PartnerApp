@@ -1,0 +1,120 @@
+/* Navigation Bar */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+  padding: 0 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  .nav__home {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b82f6; /* Vibrant blue */
+    text-decoration: none;
+
+    span {
+      margin-left: 1rem;
+      padding-left: 1.5rem;
+      border-left: 3px solid #2563eb; /* Solid left border */
+    }
+
+    &:hover {
+      color: #2563eb;
+    }
+  }
+}
+
+/* Home Page */
+.home__content {
+  padding: 5vh 2rem;
+  background-color: #f9fafb;
+  text-align: center;
+
+  h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 3rem;
+  }
+
+  .feature__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+
+    .feature__card {
+      width: 100%;
+      max-width: 300px;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .ant-card-cover {
+        padding-top: 20px;
+      }
+
+      .ant-card-meta-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .ant-card-meta-description {
+        font-size: 1rem;
+        color: #6b7280;
+      }
+    }
+  }
+
+  /* Centered Join/Leave Button */
+  .session-action {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+
+    .session-action__btn {
+      padding: 0.75rem 3rem;
+      font-size: 1.2rem;
+      background-color: #2563eb;
+      color: white;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #1d4ed8;
+      }
+    }
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .feature__grid {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .feature__card {
+    margin-bottom: 20px;
+  }
+
+  .session-action {
+    margin-top: 1.5rem;
+  }
+}

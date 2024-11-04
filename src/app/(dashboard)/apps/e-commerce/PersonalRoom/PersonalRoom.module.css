@@ -1,0 +1,63 @@
+/* PersonalRoom.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #2c2c2c; /* Grey matte background */
+  color: white; /* White text */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.heading {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.headingLg {
+  font-size: 2.5rem;
+}
+
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.tableItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #3c3c3c; /* Slightly darker grey for table items */
+  margin-bottom: 0.5rem;
+  border-radius: 5px; /* Rounded corners */
+}
+
+.tableTitle {
+  font-weight: bold;
+}
+
+.tableDescription {
+  font-weight: normal;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttonStart,
+.buttonCopy {
+  padding: 0.75rem 1.5rem;
+  background-color: #4c4c4c; /* Button background */
+  color: white; /* Button text */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer;
+}
+
+.buttonStart:hover,
+.buttonCopy:hover {
+  background-color: #5c5c5c; /* Hover effect */
+}

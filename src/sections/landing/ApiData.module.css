@@ -1,0 +1,21 @@
+/* sections/landing/ApiData.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align content horizontally */
+    padding: 20px;
+    text-align: center; /* Center-align text */
+  }
+  
+  .response {
+    white-space: pre-wrap; /* Preserve line breaks and wrap text */
+    word-wrap: break-word; /* Ensure long words or URLs break and wrap */
+    max-width: 800px; /* Limit the maximum width */
+    overflow-wrap: break-word; /* Break long words if necessary */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
