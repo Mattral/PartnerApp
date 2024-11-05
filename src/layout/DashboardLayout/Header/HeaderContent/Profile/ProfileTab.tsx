@@ -24,6 +24,10 @@ const ProfileTab = ({ handleLogout }: Props) => {
   const handleListItemClick = (event: MouseEvent<HTMLDivElement>, index: number) => {
     setSelectedIndex(index);  // Update the selected index for styling purposes
 
+    if (index === 0) {
+      // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
+      router.push('/apps/profiles/account/basic');
+    }
     if (index === 1) {
       // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
       router.push('/apps/Dossier');

@@ -106,6 +106,9 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
         <GlowingText>
           Current Points: {selectedDocuments.reduce((total, item) => total + (item.points || 0), 0)}
         </GlowingText>
+        <GlowingText>
+          Required Points: 100
+        </GlowingText>
       </Grid>
 
       {/* Table for Documents */}
