@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from 'react';
+import { useRouter } from 'next/navigation';
 
 // MATERIAL - UI
 import List from '@mui/material/List';
@@ -17,8 +18,16 @@ interface Props {
 
 const ProfileTab = ({ handleLogout }: Props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const router = useRouter();  // Initialize the router to handle navigation
+
+
   const handleListItemClick = (event: MouseEvent<HTMLDivElement>, index: number) => {
-    setSelectedIndex(index);
+    setSelectedIndex(index);  // Update the selected index for styling purposes
+
+    if (index === 1) {
+      // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
+      router.push('/apps/Dossier');
+    }
   };
 
   return (
@@ -27,13 +36,13 @@ const ProfileTab = ({ handleLogout }: Props) => {
         <ListItemIcon>
           <Edit2 variant="Bulk" size={18} />
         </ListItemIcon>
-        <ListItemText primary="Edit Profile" />
+        <ListItemText primary="View Profile" />
       </ListItemButton>
-      <ListItemButton selected={selectedIndex === 1} onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 1)}>
+        <ListItemButton selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
         <ListItemIcon>
           <Profile variant="Bulk" size={18} />
         </ListItemIcon>
-        <ListItemText primary="View Profile" />
+        <ListItemText primary="VoI Dossier" />
       </ListItemButton>
 
       <ListItemButton selected={selectedIndex === 3} onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 3)}>
