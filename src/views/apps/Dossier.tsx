@@ -134,16 +134,29 @@ const DossierPage: React.FC = () => {
         
         {/* Left-aligned Subtitle */}
         <p style={styles.subtitleText}>
-          Verify this in order to be allowed to provide consulting services to people
+        Verify this in order to be allowed to be granted call with advisors and many other benefits
         </p>
       </div>
       
       {/* Right-aligned Button */}
       <div style={styles.buttonContainer}>
         <Tooltip title="Opening a dossier helps you submit ID files that will help us confirm your identity" arrow>
-          <button style={styles.button} onClick={addTopCard}>
+        <Button 
+            onClick={addTopCard} 
+            variant="contained" 
+            color="primary" 
+            sx={{ 
+              borderRadius: 20, 
+              fontSize: '1.2rem', // Increase font size
+              padding: '16px 32px', // Increase padding to make the button larger
+              height: '45px', // Optionally increase height
+              width: '200px' // Optionally increase width
+            }}
+          >
             Open a Dossier
-          </button>
+          </Button>
+
+          
         </Tooltip>
       </div>
     </div>
@@ -184,9 +197,22 @@ const DossierPage: React.FC = () => {
           {/* Right-aligned Button */}
           <div style={styles.buttonContainer}>
           <Tooltip title="Opening a dossier helps you submit professional credentials that will help us confirm your expertise" arrow>
-          <button style={styles.button} onClick={addBottomCard}>
+
+
+          <Button 
+            onClick={addBottomCard} 
+            variant="contained" 
+            color="primary" 
+            sx={{ 
+              borderRadius: 20, 
+              fontSize: '1.2rem', // Increase font size
+              padding: '16px 32px', // Increase padding to make the button larger
+              height: '45px', // Optionally increase height
+              width: '200px' // Optionally increase width
+            }}
+          >
                 Open a Dossier
-              </button>
+              </Button>
             </Tooltip>
           </div>
         </div>
