@@ -261,7 +261,7 @@ const DossierCard = ({
         {/* Majestic Buttons */}
         <div className="button-group">
           <button className="majestic-button edit-btn" onClick={onDelete}>
-            Delete
+            Status!
           </button>
           <button className="majestic-button configure-btn" onClick={onConfigure}>
             Configure
@@ -410,7 +410,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#fff",
     borderRadius: "20px",
     margin: "30px",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)", 
     position: "relative",
     transition: "all 0.3s ease",
   },
@@ -430,7 +430,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     WebkitBackgroundClip: "text",
     letterSpacing: "2px",
     animation: "glow 4s ease-in-out infinite",
-    textShadow: "0px 0px 5px rgba(255, 255, 255, 0.7), 0px 0px 15px rgba(255, 204, 0, 0.9), 0px 0px 25px rgba(255, 204, 0, 1)",
+    //reomve textShadow: "0px 0px 5px rgba(255, 255, 255, 0.7), 0px 0px 15px rgba(255, 204, 0, 0.9), 0px 0px 25px rgba(255, 204, 0, 1)",
   },
   
   subtitleText: {
@@ -451,16 +451,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   
   button: {
     padding: "12px 25px",
-    backgroundColor: "#f39c12",
-    color: "#fff",
+    backgroundColor: "#2B3BFF",
+    color: "#FFFFFF",
     border: "none",
-    borderRadius: "50px",
+    borderRadius: "15px",
     fontSize: "1.2rem",
     fontWeight: "600",
     cursor: "pointer",
     transition: "background-color 0.3s ease, transform 0.3s ease",
-    boxShadow: "0 6px 15px rgba(0, 0, 0, 0.15)",
-    marginTop: "20px",
+    marginTop: "10px",
   },
   
   // Hover effect on the button

@@ -64,58 +64,57 @@ const CreateEmailServerForm = ({ handleNext, handleBack, formData, setFormData }
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard
-          title="Upload Multiple Files"
-          sx={{ boxShadow: 3, borderRadius: '12px', bgcolor: 'background.paper' }}
-        >
-          <Formik
-            initialValues={{ files: null }}
-            onSubmit={handleSubmit}
-            validationSchema={yup.object().shape({
-              files: yup.mixed().required('Files are required.')
-            })}
-          >
-            {({ values, handleSubmit, setFieldValue, touched, errors }) => (
-              <form onSubmit={handleSubmit}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Stack spacing={1.5} alignItems="center">
-                      <UploadMultiFile
-                        showList={false} // Show only the icon view
-                        setFieldValue={setFieldValue}
-                        files={values.files}
-                        error={touched.files && !!errors.files}
-                      />
-                      {touched.files && errors.files && (
-                        <FormHelperText error id="file-upload-error">
-                          {errors.files.toString()}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  </Grid>
-                </Grid>
+  <MainCard
+    sx={{
+      boxShadow: 3,
+      borderRadius: '12px',
+      bgcolor: 'background.paper',
+      textAlign: 'center',
+      p: 2 // Reduced padding around the content of the MainCard
+    }}
+  >
+    <Formik
+      initialValues={{ files: null }}
+      onSubmit={handleSubmit}
+      validationSchema={yup.object().shape({
+        files: yup.mixed().required('Files are required.')
+      })}
+    >
+      {({ values, handleSubmit, setFieldValue, touched, errors }) => (
+        <form onSubmit={handleSubmit}>
+          {/* Buttons Layout */}
+          <Grid container direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 2 }}>
+            {/* Left side text (Empty or any other message) */}
+            <Grid item xs={6} sx={{ textAlign: 'left', paddingLeft: 2 }}>
+              <Typography variant="body1">
+                Ready to upload your files? Please click Next when you're ready.
+              </Typography>
+            </Grid>
 
-                {/* Submit and Navigation Buttons */}
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                  <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
-                    <Button variant="contained" color="secondary" type="submit" sx={{ padding: '10px 20px', borderRadius: '8px' }}>
-                      Submit
-                    </Button>
-                  </Stack>
-                  <Stack direction="row" spacing={2}>
-                    <Button onClick={handleBack} variant="outlined" color="secondary" sx={{ padding: '10px 20px', borderRadius: '8px' }}>
-                      Back
-                    </Button>
-                    <Button onClick={handleNext} variant="contained" color="primary" sx={{ padding: '10px 20px', borderRadius: '8px' }}>
-                      Next
-                    </Button>
-                  </Stack>
-                </Grid>
-              </form>
-            )}
-          </Formik>
-        </MainCard>
-      </Grid>
+            {/* Right side buttons */}
+            <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
+              <Stack direction="row" spacing={2}>
+
+                <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
+                  <Button variant="contained" color="secondary" onClick={handleBack} sx={{ borderRadius: 20 }}>
+                    Back
+                  </Button>
+                </Stack>
+
+                <Stack direction="row" spacing={2}>
+                  <Button onClick={handleNext} variant="contained" color="primary" sx={{ borderRadius: 20 }}>
+                    Next
+                  </Button>
+                </Stack>
+              </Stack>
+            </Grid>
+          </Grid>
+        </form>
+      )}
+    </Formik>
+  </MainCard>
+</Grid>
+
 
       {/* Snackbar for Notification */}
       <Notification

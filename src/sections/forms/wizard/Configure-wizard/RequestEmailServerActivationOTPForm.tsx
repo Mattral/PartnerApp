@@ -106,7 +106,7 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
         <GlowingText>
           Current Points: {selectedDocuments.reduce((total, item) => total + (item.points || 0), 0)}
         </GlowingText>
-        <GlowingText>
+        <GlowingText sx={{ fontSize: '1.2rem' }}> {/* Smaller font size */}
           Required Points: 100
         </GlowingText>
       </Grid>
@@ -145,7 +145,7 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
             color="secondary"
             onClick={handleSubmit}
             sx={{
-              borderRadius: 20,
+              borderRadius: 15,
               fontWeight: 'bold',
               color: '#FFF',
               backgroundColor: '#4CAF50',
@@ -164,14 +164,14 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
             variant="contained"
             color="primary"
             sx={{
-              borderRadius: 20,
+              borderRadius: 15,
               fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: '#1976D2',
               },
             }}
           >
-            Next
+            Back
           </Button>
         </Stack>
       </Grid>

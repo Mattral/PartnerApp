@@ -66,7 +66,7 @@ const CreateWebServerForm = ({ handleNext, formData, setFormData }: any) => {
                     { label: "Phone Number", placeholder: "Enter Phone Number" },
                     { label: "Address", placeholder: "Enter Address" },
                     { label: "Postal Code", placeholder: "Enter Postal Code" },
-                    { label: "Password", placeholder: "Enter Password", type: "password" }
+                    { label: "OTP", placeholder: "Enter OTP", type: "password" }
                   ].map((field, index) => (
                     <Grid item xs={12} sm={6} lg={4} key={index}>
                       <InputLabel sx={{ fontWeight: 'medium', color: theme.palette.text.primary }}>{field.label}:</InputLabel>
