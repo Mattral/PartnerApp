@@ -46,7 +46,7 @@ const ProfileTab = ({ handleLogout }: Props) => {
         <ListItemIcon>
           <Profile variant="Bulk" size={18} />
         </ListItemIcon>
-        <ListItemText primary="VoI Dossier" />
+        <ListItemText primary="Verification of Identity" />
       </ListItemButton>
 
       <ListItemButton selected={selectedIndex === 3} onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 3)}>
