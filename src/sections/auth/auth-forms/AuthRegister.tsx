@@ -256,9 +256,12 @@ const AuthRegister = () => {
           data.append('pers_lName', values.pers_lName);
           data.append('redirectUrl', 'https://temporary-umber.vercel.app/login');
 
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // Provide a fallback if needed
+
+
           const config = {
             method: 'post',
-            url: 'https://lawonearth.co.uk/api/auth/core/register',
+            url: `${baseUrl}/api/auth/core/register`,
             headers: {
               'COMPANY-CODE': 'def-mc-admin',
               'FRONTEND-KEY': 'XXX',
