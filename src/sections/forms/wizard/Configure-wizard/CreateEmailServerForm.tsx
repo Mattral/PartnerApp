@@ -64,6 +64,27 @@ const CreateEmailServerForm = ({ handleNext, handleBack, formData, setFormData }
       </Grid>
 
       <Grid item xs={12}>
+
+    
+  
+</Grid>
+
+
+      {/* Snackbar for Notification */}
+      <Notification
+        open={openSnackbar}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleCloseSnackbar}
+      />
+    </Grid>
+  );
+};
+
+export default CreateEmailServerForm;
+
+
+/* 76 pasted
   <MainCard
     sx={{
       boxShadow: 3,
@@ -73,7 +94,7 @@ const CreateEmailServerForm = ({ handleNext, handleBack, formData, setFormData }
       p: 2 // Reduced padding around the content of the MainCard
     }}
   >
-    <Formik
+<Formik
       initialValues={{ files: null }}
       onSubmit={handleSubmit}
       validationSchema={yup.object().shape({
@@ -82,16 +103,16 @@ const CreateEmailServerForm = ({ handleNext, handleBack, formData, setFormData }
     >
       {({ values, handleSubmit, setFieldValue, touched, errors }) => (
         <form onSubmit={handleSubmit}>
-          {/* Buttons Layout */}
+        
           <Grid container direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 2 }}>
-            {/* Left side text (Empty or any other message) */}
+          
             <Grid item xs={6} sx={{ textAlign: 'left', paddingLeft: 2 }}>
               <Typography variant="body1">
                 Ready to upload your files? Please click Next when you're ready.
               </Typography>
             </Grid>
 
-            {/* Right side buttons */}
+            
             <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
               <Stack direction="row" spacing={2}>
 
@@ -112,19 +133,6 @@ const CreateEmailServerForm = ({ handleNext, handleBack, formData, setFormData }
         </form>
       )}
     </Formik>
-  </MainCard>
-</Grid>
+    </MainCard>
 
-
-      {/* Snackbar for Notification */}
-      <Notification
-        open={openSnackbar}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        handleClose={handleCloseSnackbar}
-      />
-    </Grid>
-  );
-};
-
-export default CreateEmailServerForm;
+*/

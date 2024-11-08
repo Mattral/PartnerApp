@@ -5,6 +5,9 @@ import Notification from './Notification';
 import MultiFileUpload from './MultiFile';
 import { styled } from '@mui/material/styles';
 import { CustomFile, DocumentCategory } from 'types/dropzone';
+import CreateEmailServerForm from './CreateEmailServerForm';
+
+
 
 // Define types
 interface DocumentType extends CustomFile {
@@ -72,6 +75,7 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openDialog, setOpenDialog] = useState(false); // Pop-up dialog state
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentType[]>([]);
+  const currentPoints = selectedDocuments.reduce((total, item) => total + (item.points || 0), 0);
 
   const handleUpload = (data: DocumentType[]) => {
     setSelectedDocuments(data);
@@ -92,6 +96,8 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
 
   return (
     <Grid container spacing={3} sx={{ marginTop: '30px' }}>
+
+      <CreateEmailServerForm/>
       {/* File Upload Section */}
       <Grid item xs={12}>
         <MultiFileUpload
@@ -101,14 +107,34 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
         />
       </Grid>
 
-      {/* Current Points Display */}
+      {/* Sticky Texts */}
       <Grid item xs={12}>
-        <GlowingText>
-          Current Points: {selectedDocuments.reduce((total, item) => total + (item.points || 0), 0)}
-        </GlowingText>
-        <GlowingText sx={{ fontSize: '1.2rem' }}> {/* Smaller font size */}
-          Required Points: 100
-        </GlowingText>
+        {/* This will be positioned at the top-right corner */}
+        <div style={{
+          position: 'fixed',
+          top: '200px',  // Position the component a bit further down
+          right: '20px',
+          zIndex: 1000,  // Ensure it stays on top of other content
+          background: 'rgba(255, 255, 255, 0.1)',  // Transparent white background (light frosted effect)
+          backdropFilter: 'blur(10px)',  // Adds the frosted glass effect behind the element
+          borderRadius: '12px',  // Rounded corners
+          padding: '20px 30px',  // Padding for inner space
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',  // Subtle shadow for a floating effect
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}>
+          {/* Glowing Text - Current Points */}
+          <GlowingText style={{ marginBottom: '10px' }}>
+            Current Points: {currentPoints}
+          </GlowingText>
+          
+          {/* Glowing Text - Required Points */}
+          <GlowingText sx={{ fontSize: '1.2rem' }}>
+            Required Points: 100
+          </GlowingText>
+
+        </div>
       </Grid>
 
       {/* Table for Documents */}

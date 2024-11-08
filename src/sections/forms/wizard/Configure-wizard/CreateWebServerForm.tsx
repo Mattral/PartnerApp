@@ -96,19 +96,7 @@ const CreateWebServerForm = ({ handleNext, formData, setFormData }: any) => {
               </Grid>
             </Grid>
           </CardContent>
-          {/* Submit and Next Buttons */}
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, padding: 2 }}>
-            <Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
-              <Button variant="contained" color="secondary" onClick={handleSubmit} sx={{ borderRadius: 20 }}>
-                Submit
-              </Button>
-            </Stack>
-            <Stack direction="row" spacing={2}>
-              <Button onClick={handleNext} variant="contained" color="primary" sx={{ borderRadius: 20 }}>
-                Next
-              </Button>
-            </Stack>
-          </Grid>
+          
         </MainCard>
       </Grid>
     </Grid>
@@ -116,3 +104,21 @@ const CreateWebServerForm = ({ handleNext, formData, setFormData }: any) => {
 };
 
 export default CreateWebServerForm;
+
+
+/*
+line 99
+
+<Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, padding: 2 }}>
+<Stack spacing={2} sx={{ flexGrow: 1, alignItems: 'center' }}>
+  <Button variant="contained" color="secondary" onClick={handleSubmit} sx={{ borderRadius: 20 }}>
+    Submit
+  </Button>
+</Stack>
+<Stack direction="row" spacing={2}>
+  <Button onClick={handleNext} variant="contained" color="primary" sx={{ borderRadius: 20 }}>
+    Next
+  </Button>
+</Stack>
+</Grid>
+*/
