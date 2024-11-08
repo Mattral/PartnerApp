@@ -26,7 +26,7 @@ const ProfileTab = ({ handleLogout }: Props) => {
 
     if (index === 0) {
       // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
-      router.push('/apps/profiles/account/basic');
+      router.push('/apps/profiles/account/personal');
     }
     if (index === 1) {
       // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
