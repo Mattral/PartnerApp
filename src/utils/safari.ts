@@ -1,24 +1,4 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
 import { type VideoClient } from "@zoom/videosdk";
-import { useCallback, useRef, type CSSProperties } from "react"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
-//Addition
-
-export const videoCallStyle = {
-  height: "75vh",
-  marginTop: "1.5rem",
-  marginLeft: "3rem",
-  marginRight: "3rem",
-  alignContent: "center",
-  borderRadius: "10px",
-  overflow: "hidden",
-} as CSSProperties
-
 
 // For safari desktop browsers, you need to start audio after the media-sdk-change event is triggered
 export const WorkAroundForSafari = async (client: typeof VideoClient) => {

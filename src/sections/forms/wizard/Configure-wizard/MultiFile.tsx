@@ -8,7 +8,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
-import { DocumentCategory } from 'types/dropzone';
+// import { DocumentCategory } from 'types/dropzone';
+
+enum DocumentCategory {
+  Primary = 'Primary',
+  Secondary = 'Secondary',
+}
+
 
 // THIRD - PARTY
 import { useDropzone } from 'react-dropzone';
