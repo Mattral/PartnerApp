@@ -123,7 +123,7 @@ const applications: NavItemType = {
           id: 'MeetingRoom',
           title: <FormattedMessage id="Meeting Room" />,
           type: 'item',
-          url: '/apps/e-commerce/MeetingRoom',
+          url: '/session',///apps/e-commerce/MeetingRoom
           breadcrumbs: false
         },
         {

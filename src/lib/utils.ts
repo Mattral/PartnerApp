@@ -10,13 +10,20 @@ export function cn(...inputs: ClassValue[]) {
 //Addition
 
 export const videoCallStyle = {
-  height: "75vh",
-  marginTop: "1.5rem",
-  marginLeft: "3rem",
-  marginRight: "3rem",
-  alignContent: "center",
-  borderRadius: "10px",
-  overflow: "hidden",
+  height: "70vh", // Slightly reduced for better proportion
+  width: "100%", // Full width to ensure responsive layout
+  marginTop: "2rem", // Increase the top margin to balance with other UI elements
+  marginLeft: "auto", // Automatically adjust the left margin to center it
+  marginRight: "auto", // Automatically adjust the right margin to center it
+  padding: "1rem", // Add padding for some inner spacing
+  borderRadius: "20px", // Increase border radius for a softer, more elegant look
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Soft shadow to lift the container
+  backgroundColor: "rgba(0, 0, 0, 0.4)", // Slight darkening effect to contrast against background
+  display: "flex", // Flexbox layout to center the video player if needed
+  justifyContent: "center", // Center the video content horizontally
+  alignItems: "center", // Center the video content vertically
+  overflow: "hidden", // Ensures the video player doesn't spill outside the container
+  transition: "all 0.3s ease", // Smooth transition when resizing or adjusting
 } as CSSProperties
 
 

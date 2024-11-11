@@ -5,7 +5,7 @@ import ZoomVideo, { VideoClient, VideoQuality, VideoPlayer } from "@zoom/videosd
 import { CameraButton, MicButton } from "./MuteButtons";
 import { WorkAroundForSafari } from "lib/utils";
 import { PhoneOff } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogTitle,
@@ -305,7 +305,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
           {/* Screen Share Button */}
           {/* Toggle Screen Share Button */}
           <Button
-            variant="contained"
+            variant="default"
             color={isScreenSharing ? "secondary" : "primary"}
             onClick={toggleScreenShare}
             startIcon={isScreenSharing ? <StopScreenShareIcon /> : <ScreenShareIcon />}

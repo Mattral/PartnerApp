@@ -7,8 +7,6 @@ import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 import { LinkIcon } from "lucide-react";
 import { useState, useRef } from "react";
-import ConfidentialDialog from "components/ui/ConfidentialDialog";
-import RightBar from "components/videocall/RightBar";
 import ZoomVideo from "@zoom/videosdk";
 import Videocall from "components/videocall/Videocall";
 import { type ChatRecord } from "components/chat/Chat";
@@ -53,6 +51,7 @@ const Home = () => {
   const client = useRef(ZoomVideo.createClient());
 
   // Replacing the actual API call with mocked data
+
   const isLoading = false;
   const isError = false;
   const error = null;
@@ -89,23 +88,19 @@ const Home = () => {
                 <p className="ml-4 text-left text-lg text-gray-700">| {new Date(data.room.time).toTimeString().split(" ")[0]}</p>
               </span>
             </div>
-            <div className="h-full justify-center self-center rounded-r-md p-4">
-              {/* @ts-expect-error*/}
-              <RightBar data={data} transcriptionSubtitle={transcriptionSubtitle} client={client} records={records} inCall={inCall} />
-            </div>
+
           </div>
           <Videocall
             jwt={data.jwt}
             session={data.room.id}
             client={client}
             setRecords={setRecords}
-            isCreator={data.room.User_CreatedBy.id === 1}
+            isCreator={data.room.User_CreatedBy.id === 2}
             setTranscriptionSubtitle={setTranscriptionSubtitle}
             inCall={inCall}
             setInCall={setInCall}
           />
         </div>
-        <ConfidentialDialog />
       </>
     );
   }

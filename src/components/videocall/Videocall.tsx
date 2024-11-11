@@ -1,33 +1,23 @@
 import { useSession } from "next-auth/react";
-import { type MutableRefObject, useRef, useState } from "react";
-import { type VideoClient, VideoQuality, type VideoPlayer, type ChatMessage } from "@zoom/videosdk";
+import { useRef, useState, MutableRefObject } from "react";
+import { VideoClient, VideoQuality, type VideoPlayer, type ChatMessage } from "@zoom/videosdk";
 import { PhoneOff } from "lucide-react";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
-import { type ChatRecord } from "components/chat/Chat";
-import { api } from "utils/api";
-import { WorkAroundForSafari } from "utils/safari";
-import { videoCallStyle } from "lib/utils";
 import SettingsModal from "./SettingsModal";
 import ActionModal from "./ActionModal";
-import { type setTranscriptionType } from "./Transcript";
-import UIToolKit from "./UIToolKit";
 import TranscriptionButton from "./TranscriptionButton";
 import RecordingButton from "./RecordingButton";
 import { CameraButton, MicButton } from "./MuteButtons";
 import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
-
+import { WorkAroundForSafari } from "utils/safari";
+import { videoCallStyle } from "lib/utils";
+import UIToolKit from "./UIToolKit";
+import { type setTranscriptionType } from "./Transcript";
+import { type ChatRecord } from "components/chat/Chat";
 // Mock the writeZoomSessionID mutation with a dummy implementation
 const writeZoomSessionID = {
   mutate: () => Promise.resolve("Dummy Zoom Session ID")
-};
-
-// Mock session data using a fake user
-const mockSessionData = {
-  user: {
-    name: "Dummy User", // Replace with whatever user data you want
-    email: "dummyuser@example.com"
-  }
 };
 
 const Videocall = (props: VideoCallProps) => {
@@ -35,7 +25,6 @@ const Videocall = (props: VideoCallProps) => {
   const [isVideoMuted, setIsVideoMuted] = useState(!client.current.getCurrentUserInfo()?.bVideoOn);
   const [isAudioMuted, setIsAudioMuted] = useState(client.current.getCurrentUserInfo()?.muted ?? true);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  //const writeZoomSessionID = api.room.addZoomSessionId.useMutation();
   const { data } = useSession();
   const { toast } = useToast();
 
@@ -43,26 +32,23 @@ const Videocall = (props: VideoCallProps) => {
     await client.current.init("en-US", "Global", { patchJsMedia: true });
     client.current.on("peer-video-state-change", (payload) => void renderVideo(payload));
     client.current.on("chat-on-message", onChatMessage);
-    // Simulate the join call, no actual API
     await client.current.join(session, jwt, "User").catch((e) => {
       console.log("Error joining call:", e);
     });
 
     if (isCreator) {
-      // Mock the mutation call for session ID
       await writeZoomSessionID.mutate().then((zoomSessionId) => {
         console.log("Mock Zoom Session ID:", zoomSessionId);
       });
     }
   };
 
-
   const startCall = async () => {
     toast({ title: "Joining", description: "Please wait..." });
     await init();
     setInCall(true);
     const mediaStream = client.current.getMediaStream();
-    // @ts-expect-error https://stackoverflow.com/questions/7944460/detect-safari-browser/42189492#42189492
+    // @ts-expect-error
     window.safari ? await WorkAroundForSafari(client.current) : await mediaStream.startAudio();
     setIsAudioMuted(client.current.getCurrentUserInfo().muted ?? true);
     await mediaStream.startVideo();
@@ -97,30 +83,36 @@ const Videocall = (props: VideoCallProps) => {
   };
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col rounded-md px-4">
-      <div className="flex w-full flex-1" style={inCall ? {} : { display: "none" }}>
+    <div className="flex h-full w-full flex-1 flex-col rounded-md px-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700">
+      {/* Video Display - Only show during call */}
+      <div className={`flex w-full flex-1 ${inCall ? "block" : "hidden"}`}>
+        {/* Video Player Container */}
         {/* @ts-expect-error html component */}
-        <video-player-container ref={videoContainerRef} style={videoCallStyle} />
+        <video-player-container ref={videoContainerRef} className="rounded-lg shadow-xl" style={videoCallStyle} />
       </div>
+
+      {/* Call initiation UI */}
       {!inCall ? (
-        <div className="mx-auto flex w-64 flex-col self-center">
+        <div className="mx-auto flex w-72 flex-col items-center">
           <UIToolKit />
-          <div className="w-4" />
-          <Button className="flex flex-1" onClick={startCall}>
-            Join
-          </Button>
+          <div className="space-y-6 mt-4">
+            <Button variant="default" className="w-full py-3 rounded-lg text-xl font-semibold bg-indigo-600 hover:bg-indigo-700 text-white" onClick={startCall}>
+              Join Call
+            </Button>
+          </div>
         </div>
       ) : (
-        <div className="flex w-full flex-col justify-around self-center">
-          <div className="mt-4 flex w-[30rem] flex-1 justify-around self-center rounded-md bg-white p-4">
+        <div className="flex w-full flex-col justify-center items-center space-y-4 mt-6">
+          <div className="flex justify-center w-full space-x-4 bg-gray-800 p-6 rounded-lg shadow-2xl">
             <CameraButton client={client} isVideoMuted={isVideoMuted} setIsVideoMuted={setIsVideoMuted} renderVideo={renderVideo} />
             <MicButton isAudioMuted={isAudioMuted} client={client} setIsAudioMuted={setIsAudioMuted} />
             <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
             <RecordingButton client={client} />
             <SettingsModal client={client} />
             <ActionModal />
-            <Button variant={"destructive"} onClick={leaveCall} title="leave call">
-              <PhoneOff />
+            <Button variant="secondary" className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 rounded-lg px-4 py-2 text-white" onClick={leaveCall} title="Leave Call">
+              <PhoneOff className="w-5 h-5" />
+              <span>Leave</span>
             </Button>
           </div>
         </div>
