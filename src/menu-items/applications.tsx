@@ -127,6 +127,13 @@ const applications: NavItemType = {
           breadcrumbs: false
         },
         {
+          id: 'Preview',
+          title: <FormattedMessage id="Preview Room" />,
+          type: 'item',
+          url: '/pages/room',///apps/e-commerce/MeetingRoom
+          breadcrumbs: false
+        },
+        {
           id: 'Schedule',
           title: <FormattedMessage id="Schedule" />,
           type: 'item',

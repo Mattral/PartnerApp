@@ -16,25 +16,26 @@ const ActionModal = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="outline" title="action menu">
-          <Wand />
+        <Button variant="outline" title="Action menu" className="flex items-center space-x-2">
+          <Wand className="w-5 h-5" />
+          <span>Actions</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Customize As You See Fit</DropdownMenuLabel>
+      <DropdownMenuContent className="w-56 bg-white shadow-lg rounded-md">
+        <DropdownMenuLabel className="text-sm font-medium text-gray-700 p-2">Customize As You See Fit</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Button
-            variant={"outline"}
-            className="flex flex-1"
+            variant="outline"
+            className="w-full flex items-center space-x-2 py-2 px-4"
             onClick={async () => {
               const link = `${window.location.toString()}`;
               await navigator.clipboard.writeText(link);
-              toast({ title: "Copied link to clipoard", description: link });
+              toast({ title: "Copied link to clipboard", description: link });
             }}
           >
-            Invite Others
-            <LinkIcon height={16} />
+            <LinkIcon className="w-5 h-5" />
+            <span>Invite Others</span>
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>

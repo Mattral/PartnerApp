@@ -1,3 +1,4 @@
+"use client"
 import { getData } from "data/getToken";
 import dynamic from "next/dynamic";
 import Script from "next/script";

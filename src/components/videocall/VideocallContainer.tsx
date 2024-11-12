@@ -9,7 +9,7 @@ import { LinkIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import ZoomVideo from "@zoom/videosdk";
 import Videocall from "components/videocall/Videocall";
-import { type ChatRecord } from "components/chat/Chat";
+import { type ChatRecord } from "components/chat/Chat"; // I want to remove this parts
 
 // Define types to match the expected structure of room data
 type User = {
@@ -34,7 +34,7 @@ const mockRoomData: MockRoomData = {
   room: {
     id: "1",
     title: "Test Room",
-    content: "This is a test room for mock API.",
+    content: "This is a test room ",
     time: new Date().toISOString(),
     User_CreatedBy: { id: 1 },  // Assume creator has ID 1
   },

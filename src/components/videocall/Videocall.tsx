@@ -16,14 +16,18 @@ import UIToolKit from "./UIToolKit";
 import { type setTranscriptionType } from "./Transcript";
 import { type ChatRecord } from "components/chat/Chat";
 // Mock the writeZoomSessionID mutation with a dummy implementation
+import { useRouter } from "next/navigation";
+
 const writeZoomSessionID = {
   mutate: () => Promise.resolve("Dummy Zoom Session ID")
 };
 
 const Videocall = (props: VideoCallProps) => {
   const { setTranscriptionSubtitle, isCreator, jwt, session, client, inCall, setInCall } = props;
-  const [isVideoMuted, setIsVideoMuted] = useState(!client.current.getCurrentUserInfo()?.bVideoOn);
-  const [isAudioMuted, setIsAudioMuted] = useState(client.current.getCurrentUserInfo()?.muted ?? true);
+  const [isAudioMuted, setIsAudioMuted] = useState(false);  // Default to false: audio unmuted
+  const [isVideoMuted, setIsVideoMuted] = useState(false);  // Default to false: video unmuted
+  const router = useRouter();
+
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const { data } = useSession();
   const { toast } = useToast();
@@ -45,27 +49,53 @@ const Videocall = (props: VideoCallProps) => {
 
   const startCall = async () => {
     toast({ title: "Joining", description: "Please wait..." });
-    await init();
-    setInCall(true);
-    const mediaStream = client.current.getMediaStream();
-    // @ts-expect-error
-    window.safari ? await WorkAroundForSafari(client.current) : await mediaStream.startAudio();
-    setIsAudioMuted(client.current.getCurrentUserInfo().muted ?? true);
-    await mediaStream.startVideo();
-    setIsVideoMuted(!client.current.getCurrentUserInfo().bVideoOn);
-    await renderVideo({ action: "Start", userId: client.current.getCurrentUserInfo().userId });
+    try {
+      await init();
+      setInCall(true);
+  
+      const mediaStream = client.current.getMediaStream();
+      
+      // Safari workaround
+      // @ts-expect-error
+      if (window.safari) {
+        await WorkAroundForSafari(client.current);
+      } else {
+        await mediaStream.startAudio();
+      }
+      
+      setIsAudioMuted(client.current.getCurrentUserInfo().muted ?? true);
+  
+      // Start video only if it's allowed
+      await mediaStream.startVideo();
+      setIsVideoMuted(!client.current.getCurrentUserInfo().bVideoOn);
+      await renderVideo({ action: "Start", userId: client.current.getCurrentUserInfo().userId });
+    } catch (error) {
+      console.error("Error during call start: ", error);
+      toast({ title: "Error", description: "Failed to start the video call." });
+    }
   };
-
+  
   const renderVideo = async (event: { action: "Start" | "Stop"; userId: number }) => {
     const mediaStream = client.current.getMediaStream();
     if (event.action === "Stop") {
       const element = await mediaStream.detachVideo(event.userId);
-      Array.isArray(element) ? element.forEach((el) => el.remove()) : element.remove();
+      if (Array.isArray(element)) {
+        element.forEach((el) => el.remove());
+      } else {
+        element.remove();
+      }
     } else {
-      const userVideo = await mediaStream.attachVideo(event.userId, VideoQuality.Video_360P);
-      videoContainerRef.current!.appendChild(userVideo as VideoPlayer);
+      try {
+        const userVideo = await mediaStream.attachVideo(event.userId, VideoQuality.Video_360P);
+        if (videoContainerRef.current) {
+          videoContainerRef.current.appendChild(userVideo as VideoPlayer);
+        }
+      } catch (error) {
+        console.error("Error attaching video: ", error);
+      }
     }
   };
+  
 
   const onChatMessage = (payload: ChatMessage) => {
     props.setRecords((previous) => [...previous, payload]);
@@ -83,7 +113,7 @@ const Videocall = (props: VideoCallProps) => {
   };
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col rounded-md px-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700">
+    <div className="flex h-full w-full flex-1 flex-col rounded-md px-6 bg-gradient-to-r from-white via-gray-100 to-gray-200">
       {/* Video Display - Only show during call */}
       <div className={`flex w-full flex-1 ${inCall ? "block" : "hidden"}`}>
         {/* Video Player Container */}
@@ -96,16 +126,16 @@ const Videocall = (props: VideoCallProps) => {
         <div className="mx-auto flex w-72 flex-col items-center">
           <UIToolKit />
           <div className="space-y-6 mt-4">
-            <Button variant="default" className="w-full py-3 rounded-lg text-xl font-semibold bg-indigo-600 hover:bg-indigo-700 text-white" onClick={startCall}>
-              Join Call
+          <Button variant="default" className="w-full py-3 rounded-lg text-xl font-semibold bg-blue-600 hover:bg-blue-700 text-white" onClick={() => router.push(`/call/test`)}>
+          Join Call
             </Button>
           </div>
         </div>
       ) : (
         <div className="flex w-full flex-col justify-center items-center space-y-4 mt-6">
-          <div className="flex justify-center w-full space-x-4 bg-gray-800 p-6 rounded-lg shadow-2xl">
-            <CameraButton client={client} isVideoMuted={isVideoMuted} setIsVideoMuted={setIsVideoMuted} renderVideo={renderVideo} />
-            <MicButton isAudioMuted={isAudioMuted} client={client} setIsAudioMuted={setIsAudioMuted} />
+          <div className="flex justify-center w-full space-x-4 bg-white p-6 rounded-lg shadow-2xl border border-gray-300">
+          <MicButton client={client} isAudioMuted={isAudioMuted} setIsAudioMuted={setIsAudioMuted} />
+          <CameraButton client={client} isVideoMuted={isVideoMuted} setIsVideoMuted={setIsVideoMuted} renderVideo={renderVideo} />
             <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
             <RecordingButton client={client} />
             <SettingsModal client={client} />

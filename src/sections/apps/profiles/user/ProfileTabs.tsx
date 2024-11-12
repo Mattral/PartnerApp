@@ -151,8 +151,8 @@ const ProfileTabs = ({ focusInput }: Props) => {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files?.[0])}
             />
             <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">Obi Wan</Typography>
-              <Typography color="secondary">Lawyer & Consultant</Typography>
+              <Typography variant="h5">Obi Wan</Typography> 
+              <Typography color="secondary">Lawyer & Consultant</Typography> 
             </Stack>
             <Stack direction="row" spacing={3} sx={{ '& svg': { fontSize: '1.15rem', cursor: 'pointer' } }}>
               <Google variant="Bold" color={theme.palette.error.main} />

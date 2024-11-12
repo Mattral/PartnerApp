@@ -16,26 +16,14 @@ const SettingsModal = (props: { client: MutableRefObject<typeof VideoClient> }) 
   const getDevices = async () => {
     const allDevices = await ZoomVideo.getDevices();
 
-    const cameraDevices = allDevices.filter((el) => {
-      return el.kind === "videoinput";
-    });
-    const micDevices = allDevices.filter((el) => {
-      return el.kind === "audioinput";
-    });
-    const speakerDevices = allDevices.filter((el) => {
-      return el.kind === "audiooutput";
-    });
+    const cameraDevices = allDevices.filter((el) => el.kind === "videoinput");
+    const micDevices = allDevices.filter((el) => el.kind === "audioinput");
+    const speakerDevices = allDevices.filter((el) => el.kind === "audiooutput");
 
     return {
-      cameras: cameraDevices.map((el) => {
-        return { label: el.label, deviceId: el.deviceId };
-      }),
-      mics: micDevices.map((el) => {
-        return { label: el.label, deviceId: el.deviceId };
-      }),
-      speakers: speakerDevices.map((el) => {
-        return { label: el.label, deviceId: el.deviceId };
-      }),
+      cameras: cameraDevices.map((el) => ({ label: el.label, deviceId: el.deviceId })),
+      mics: micDevices.map((el) => ({ label: el.label, deviceId: el.deviceId })),
+      speakers: speakerDevices.map((el) => ({ label: el.label, deviceId: el.deviceId })),
     };
   };
 
@@ -71,54 +59,77 @@ const SettingsModal = (props: { client: MutableRefObject<typeof VideoClient> }) 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" title="settings">
+        <Button variant="outline" title="Settings">
           <Settings />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white p-6 rounded-lg shadow-lg w-[600px] h-[450px] overflow-hidden">
         <DialogHeader>
-          <DialogTitle>Select Your Preferred Device</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold text-gray-900">Select Your Preferred Device</DialogTitle>
         </DialogHeader>
-        <Tabs defaultValue="t1" className="mt-2 flex w-[28rem] flex-col self-center ">
-          <TabsList>
-            <TabsTrigger value="t1">Cameras</TabsTrigger>
-            <TabsTrigger value="t2">Microphones</TabsTrigger>
-            <TabsTrigger value="t3">Speakers</TabsTrigger>
+        <Tabs defaultValue="t1" className="mt-4">
+          <TabsList className="flex border-b border-gray-300">
+            <TabsTrigger value="t1" className="px-4 py-2 text-lg font-medium text-gray-700 hover:bg-gray-100">
+              Cameras
+            </TabsTrigger>
+            <TabsTrigger value="t2" className="px-4 py-2 text-lg font-medium text-gray-700 hover:bg-gray-100">
+              Microphones
+            </TabsTrigger>
+            <TabsTrigger value="t3" className="px-4 py-2 text-lg font-medium text-gray-700 hover:bg-gray-100">
+              Speakers
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="t1">
-            <RadioGroup className="my-4 flex h-24 flex-row overflow-y-hidden overflow-x-scroll">
+          <TabsContent value="t1" className="mt-4">
+            <RadioGroup className="flex space-x-4 overflow-x-auto max-w-full">
               {cameraList?.map((device) => (
                 <div className="flex items-center space-x-2" key={device.deviceId}>
-                  <RadioGroupItem value={device.label} id={device.deviceId} onClick={() => setCameraDevice(device)} />
-                  <Label htmlFor={device.deviceId}>{device.label}</Label>
+                  <RadioGroupItem
+                    value={device.label}
+                    id={device.deviceId}
+                    onClick={() => setCameraDevice(device)}
+                    className="h-5 w-5 text-blue-600"
+                  />
+                  <Label htmlFor={device.deviceId} className="text-lg text-gray-800">{device.label}</Label>
                 </div>
               ))}
             </RadioGroup>
           </TabsContent>
-          <TabsContent value="t2">
-            <RadioGroup className="my-4 flex h-24 flex-row overflow-y-hidden overflow-x-scroll">
+          <TabsContent value="t2" className="mt-4">
+            <RadioGroup className="flex space-x-4 overflow-x-auto max-w-full">
               {micList?.map((device) => (
                 <div className="flex items-center space-x-2" key={device.deviceId}>
-                  <RadioGroupItem value={device.label} id={device.deviceId} onClick={() => setMicDevice(device)} />
-                  <Label htmlFor={device.deviceId}>{device.label}</Label>
+                  <RadioGroupItem
+                    value={device.label}
+                    id={device.deviceId}
+                    onClick={() => setMicDevice(device)}
+                    className="h-5 w-5 text-blue-600"
+                  />
+                  <Label htmlFor={device.deviceId} className="text-lg text-gray-800">{device.label}</Label>
                 </div>
               ))}
             </RadioGroup>
           </TabsContent>
-          <TabsContent value="t3">
-            <RadioGroup className="my-4 flex h-24 flex-row overflow-y-hidden overflow-x-scroll">
+          <TabsContent value="t3" className="mt-4">
+            <RadioGroup className="flex space-x-4 overflow-x-auto max-w-full">
               {speakerList?.map((device) => (
                 <div className="flex items-center space-x-2" key={device.deviceId}>
-                  <RadioGroupItem value={device.label} id={device.deviceId} onClick={() => setSpeakerDevice(device)} />
-                  <Label htmlFor={device.deviceId}>{device.label}</Label>
+                  <RadioGroupItem
+                    value={device.label}
+                    id={device.deviceId}
+                    onClick={() => setSpeakerDevice(device)}
+                    className="h-5 w-5 text-blue-600"
+                  />
+                  <Label htmlFor={device.deviceId} className="text-lg text-gray-800">{device.label}</Label>
                 </div>
               ))}
             </RadioGroup>
           </TabsContent>
         </Tabs>
-        <DialogFooter>
+        <DialogFooter className="mt-6">
           <DialogClose asChild>
-            <Button type="button">Close</Button>
+            <Button type="button" className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              Close
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
