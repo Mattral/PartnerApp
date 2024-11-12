@@ -1,4 +1,4 @@
-import "server-only";
+//src/data/getToken.ts
 import { KJUR } from "jsrsasign";
 
 export async function getData(slug: string) {
