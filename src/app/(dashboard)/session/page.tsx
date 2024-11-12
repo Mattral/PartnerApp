@@ -3,8 +3,6 @@ import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import UIToolKit from "components/videocall/UIToolKit"; 
-
 
 export default function Home() {
   const [sessionName, setSessionName] = useState("");
@@ -28,7 +26,6 @@ export default function Home() {
       >
         Create Session
       </Button>
-      <UIToolKit/>
     </main>
   );
 }
