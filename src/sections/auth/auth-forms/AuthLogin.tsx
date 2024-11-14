@@ -235,9 +235,9 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
       
           const config = {
             method: 'post',
-            url: `${baseUrl}/api/auth/core/login`,
+            url: `${baseUrl}/api/auth/partner/login`,
             headers: {
-              'COMPANY-CODE': 'def-mc-admin',
+              'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
               'FRONTEND-KEY': 'XXX', 
               //'User-Agent': 'Apidog/1.0.0 (https://apidog.com)',
             },

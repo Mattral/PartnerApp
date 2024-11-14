@@ -4,6 +4,7 @@ import { Input } from "components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+
 export default function Home() {
   const [sessionName, setSessionName] = useState("");
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function Home() {
       >
         Create Session
       </Button>
+    
     </main>
   );
 }

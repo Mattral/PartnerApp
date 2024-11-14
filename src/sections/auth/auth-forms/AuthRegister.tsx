@@ -261,9 +261,9 @@ const AuthRegister = () => {
 
           const config = {
             method: 'post',
-            url: `${baseUrl}/api/auth/core/register`,
+            url: `${baseUrl}/api/auth/partner/register`,
             headers: {
-              'COMPANY-CODE': 'def-mc-admin',
+              'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
               'FRONTEND-KEY': 'XXX',
               //'User-Agent': 'Apidog/1.0.0 (https://apidog.com)',
             },

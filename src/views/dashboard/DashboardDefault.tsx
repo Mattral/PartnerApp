@@ -13,6 +13,7 @@ import Pricing1Page from 'views/price/Pricing1';
 import About from 'sections/landing/About';
 import FooterBlock from 'sections/landing/FB';
 import Header from 'layout/SimpleLayout/Header';// Adjust the import path as needed
+import Welcome from 'views/apps/Welcome'
 
 const Landing = () => {
   const aboutRef = useRef(null);
@@ -24,7 +25,7 @@ const Landing = () => {
 
       <Header refs={{ aboutRef, servicesRef, pricingRef }} />
       <Hero />
-      
+      <Welcome/>
       <Apps />
       <div ref={servicesRef}>
         <Technologies />
