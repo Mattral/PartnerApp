@@ -77,16 +77,16 @@ const TabSettings = () => {
                 <Typography variant="subtitle1">Email you with?</Typography>
                 <List sx={{ p: 0, '& .MuiListItem-root': { p: 0, py: 0.25 } }}>
                   <ListItem>
-                    <ListItemText primary={<Typography color="secondary">News about PCT-themes products and feature updates</Typography>} />
+                    <ListItemText primary={<Typography color="secondary">News about our lates updates</Typography>} />
                     <Checkbox defaultChecked />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary={<Typography color="secondary">Tips on getting more out of PCT-themes</Typography>} />
+                    <ListItemText primary={<Typography color="secondary">Tips on getting more out of promotions</Typography>} />
                     <Checkbox defaultChecked />
                   </ListItem>
                   <ListItem>
                     <ListItemText
-                      primary={<Typography color="secondary">Things you missed since you last logged into PCT-themes</Typography>}
+                      primary={<Typography color="secondary">Things you missed since you last logged into our service</Typography>}
                     />
                     <Checkbox />
                   </ListItem>
@@ -137,7 +137,7 @@ const TabSettings = () => {
               <ListItem>
                 <ListItemText
                   id="switch-list-label-email-3"
-                  primary={<Typography color="secondary">Someone adds you as a connection</Typography>}
+                  primary={<Typography color="secondary">Someone adds you as a partner manager in new app</Typography>}
                 />
                 <Switch
                   edge="end"
@@ -153,7 +153,7 @@ const TabSettings = () => {
             <Typography variant="subtitle1">When to escalate emails?</Typography>
             <List sx={{ p: 0, '& .MuiListItem-root': { p: 0, py: 0.25 } }}>
               <ListItem>
-                <ListItemText id="switch-list-label-order-1" primary={<Typography color="secondary.400">Upon new order</Typography>} />
+                <ListItemText id="switch-list-label-order-1" primary={<Typography color="secondary.400">Upon new changes</Typography>} />
                 <Switch
                   edge="end"
                   onChange={handleToggle('order-1')}
@@ -167,7 +167,7 @@ const TabSettings = () => {
               <ListItem>
                 <ListItemText
                   id="switch-list-label-order-2"
-                  primary={<Typography color="secondary.400">New membership approval</Typography>}
+                  primary={<Typography color="secondary.400">Issue on Deployment update</Typography>}
                 />
                 <Switch
                   edge="end"

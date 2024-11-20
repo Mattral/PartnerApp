@@ -1,4 +1,6 @@
 // MATERIAL - UI
+import { useEffect, useState } from 'react';
+
 import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Chip from '@mui/material/Chip';
@@ -30,6 +32,68 @@ const avatarImage = '/assets/images/users';
 const TabProfile = () => {
   const matchDownMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
+  // add api start
+
+  // State to hold user profile data
+  const [userData, setUserData] = useState<any | null>(null);
+
+  // Fetching authorization data from localStorage
+  const [authData, setAuthData] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authData && authData.data) {
+      const { primaryData } = authData.data;
+      const authorizationToken = primaryData?.authorization; // Authorization token from primaryData
+
+      // If authorization token is available, fetch user data
+      if (authorizationToken) {
+        const fetchUserData = async () => {
+          try {
+            const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/profile', {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${authorizationToken}`, 
+                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', 
+                'FRONTEND-KEY': 'XXX', 
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+            }
+
+            const data = await response.json();
+            setUserData(data.data.primaryData.userInfos.person._person); // Update user data from API
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+
+        fetchUserData();
+      }
+    }
+  }, [authData]); // Re-run when authData is available
+
+
+  // end api load
+
+  if (!userData) return <Typography>Loading...</Typography>;
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={5} md={4} xl={3}>
@@ -44,8 +108,8 @@ const TabProfile = () => {
                   <Stack spacing={2.5} alignItems="center">
                     <Avatar alt="Avatar 1" size="xl" src={`${avatarImage}/default.png`} />
                     <Stack spacing={0.5} alignItems="center">
-                      <Typography variant="h5">Anshan H.</Typography>
-                      <Typography color="secondary">Project Manager</Typography>
+                      <Typography variant="h5">{ userData.pers_fName} { userData.pers_lName}</Typography>
+                      <Typography color="secondary">{userData.persType}</Typography>
                     </Stack>
                   </Stack>
                 </Grid>
@@ -55,8 +119,8 @@ const TabProfile = () => {
                 <Grid item xs={12}>
                   <Stack direction="row" justifyContent="space-around" alignItems="center">
                     <Stack spacing={0.5} alignItems="center">
-                      <Typography variant="h5">86</Typography>
-                      <Typography color="secondary">Post</Typography>
+                      <Typography variant="h5">{userData.pers_preferredTimezone}</Typography>
+                      <Typography color="secondary">TimeZone</Typography>
                     </Stack>
                     <Divider orientation="vertical" flexItem />
                     <Stack spacing={0.5} alignItems="center">
@@ -65,8 +129,8 @@ const TabProfile = () => {
                     </Stack>
                     <Divider orientation="vertical" flexItem />
                     <Stack spacing={0.5} alignItems="center">
-                      <Typography variant="h5">4.5K</Typography>
-                      <Typography color="secondary">Members</Typography>
+                      <Typography variant="h5">10+</Typography>
+                      <Typography color="secondary">Yrs. of Exp</Typography>
                     </Stack>
                   </Stack>
                 </Grid>
@@ -80,7 +144,7 @@ const TabProfile = () => {
                         <Sms size={18} />
                       </ListItemIcon>
                       <ListItemSecondaryAction>
-                        <Typography align="right">anshan.dh81@gmail.com</Typography>
+                        <Typography align="right">{userData.email}</Typography>
                       </ListItemSecondaryAction>
                     </ListItem>
                     <ListItem>
@@ -88,7 +152,7 @@ const TabProfile = () => {
                         <CallCalling size={18} />
                       </ListItemIcon>
                       <ListItemSecondaryAction>
-                        <Typography align="right">(+1-876) 8654 239 581</Typography>
+                        <Typography align="right">{userData.pers_phone1 || 'Number not provided'}</Typography>
                       </ListItemSecondaryAction>
                     </ListItem>
                     <ListItem>
@@ -105,7 +169,7 @@ const TabProfile = () => {
                       </ListItemIcon>
                       <ListItemSecondaryAction>
                         <Link align="right" href="https://google.com" target="_blank">
-                          https://anshan.dh.url
+                          some link here
                         </Link>
                       </ListItemSecondaryAction>
                     </ListItem>
@@ -115,46 +179,22 @@ const TabProfile = () => {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Skills">
-              <Grid container spacing={1.25}>
-                <Grid item xs={6}>
-                  <Typography color="secondary">Junior</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={30} />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography color="secondary">UX Reseacher</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={80} />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography color="secondary">Wordpress</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={90} />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography color="secondary">HTML</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={30} />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography color="secondary">Graphic Design</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={95} />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography color="secondary">Code Style</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <LinearWithLabel value={75} />
-                </Grid>
+          <MainCard title="Biography">
+            <Grid container spacing={1.25}>
+              <Grid item xs={12}>
+                <Typography variant="h6" color="secondary">John Doe</Typography>
+                <Typography variant="body1">
+                  I am an experienced blah blah with over 5 years of experience in creating intuitive, user-centric designs for both small startups and large enterprises....., I had been instrumental in helping organizations optimize their digital presence.... creating websites and applications that are not only visually appealing but also highly functional.
+                </Typography>
               </Grid>
-            </MainCard>
+              <Grid item xs={12}>
+                <Typography variant="body1" paragraph>
+                  I began my career as a newbie, learning..... while working alongside seasoned professionals. Over time, i honed my skills in areas such as .............. Throughout career, I had contributed to numerous applications, always maintaining a strong focus user experience.
+                </Typography>
+              </Grid>
+            </Grid>
+          </MainCard>
+
           </Grid>
         </Grid>
       </Grid>
@@ -163,8 +203,7 @@ const TabProfile = () => {
           <Grid item xs={12}>
             <MainCard title="About me">
               <Typography color="secondary">
-                Hello, I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a
-                more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.
+              I am an experienced blah blah with over 5 years of experience in creating intuitive, user-centric designs for both small startups and large enterprises....., I had been instrumental in helping organizations optimize their digital presence.... creating websites and applications that are not only visually appealing but also highly functional.
               </Typography>
             </MainCard>
           </Grid>
@@ -176,13 +215,13 @@ const TabProfile = () => {
                     <Grid item xs={12} md={6}>
                       <Stack spacing={0.5}>
                         <Typography color="secondary">Full Name</Typography>
-                        <Typography>Anshan Handgun</Typography>
+                        <Typography>{ userData.pers_fName} { userData.pers_lName}</Typography>
                       </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Father Name</Typography>
-                        <Typography>Mr. Deepen Handgun</Typography>
+                        <Typography color="secondary">Mid Name</Typography>
+                        <Typography>{ userData.pers_lName || "not provided"}</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -210,13 +249,13 @@ const TabProfile = () => {
                     <Grid item xs={12} md={6}>
                       <Stack spacing={0.5}>
                         <Typography color="secondary">Email</Typography>
-                        <Typography>anshan.dh81@gmail.com</Typography>
+                        <Typography>{ userData.email}</Typography>
                       </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <Stack spacing={0.5}>
                         <Typography color="secondary">Zip Code</Typography>
-                        <Typography>956 754</Typography>
+                        <Typography>{ userData.pers_code}</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -224,7 +263,7 @@ const TabProfile = () => {
                 <ListItem>
                   <Stack spacing={0.5}>
                     <Typography color="secondary">Address</Typography>
-                    <Typography>Street 110-B Kalians Bag, Dewan, M.P. New York</Typography>
+                    <Typography>{userData.email_verified_at}</Typography>
                   </Stack>
                 </ListItem>
               </List>

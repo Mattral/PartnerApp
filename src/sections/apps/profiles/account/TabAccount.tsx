@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // MATERIAL - UI
 import List from '@mui/material/List';
@@ -53,6 +53,70 @@ const TabAccount = () => {
     setChecked(newChecked);
   };
 
+  // add api start __________________/////////////????????///////////////////////////////////////
+
+  // State to hold user profile data
+  const [userData, setUserData] = useState<any | null>(null);
+
+  // Fetching authorization data from localStorage
+  const [authData, setAuthData] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authData && authData.data) {
+      const { primaryData } = authData.data;
+      const authorizationToken = primaryData?.authorization; // Authorization token from primaryData
+
+      // If authorization token is available, fetch user data
+      if (authorizationToken) {
+        const fetchUserData = async () => {
+          try {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // Provide a fallback if needed
+            const response = await fetch(`${baseUrl}/api/back-office/partner/profile`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
+                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with actual company code if needed
+                'FRONTEND-KEY': 'XXX', // Replace with actual key if needed
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+            }
+
+            const data = await response.json();
+            setUserData(data.data.primaryData.userInfos.person._person); // Update user data from API
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+
+        fetchUserData();
+      }
+    }
+  }, [authData]); // Re-run when authData is available
+
+
+  // end api load
+
+  if (!userData) return <Typography>Loading...</Typography>;
+
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -61,19 +125,19 @@ const TabAccount = () => {
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="my-account-username">Username</InputLabel>
-                <TextField fullWidth defaultValue="Asoka_Tana_16" id="my-account-username" placeholder="Username" autoFocus />
+                <TextField fullWidth defaultValue=" userData.pers_fName" id="my-account-username" placeholder="Username" autoFocus />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="my-account-email">Account Email</InputLabel>
-                <TextField fullWidth defaultValue="user@tana.com" id="my-account-email" placeholder="Account Email" />
+                <TextField fullWidth defaultValue="userData.email" id="my-account-email" placeholder="Account Email" />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="my-account-lang">Language</InputLabel>
-                <TextField fullWidth defaultValue="New York" id="my-account-lang" placeholder="Language" />
+                <TextField fullWidth defaultValue="English" id="my-account-lang" placeholder="Language" />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>

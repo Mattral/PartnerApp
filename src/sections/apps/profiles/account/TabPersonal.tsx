@@ -59,6 +59,72 @@ const TabPersonal = () => {
     setExperience(event.target.value);
   };
 
+  // add api start ------------------???????????///////////---------------//////////////////////////////
+
+  // State to hold user profile data
+  const [userData, setUserData] = useState<any | null>(null);
+
+  // Fetching authorization data from localStorage
+  const [authData, setAuthData] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authData && authData.data) {
+      const { primaryData } = authData.data;
+      const authorizationToken = primaryData?.authorization; // Authorization token from primaryData
+
+      // If authorization token is available, fetch user data
+      if (authorizationToken) {
+        const fetchUserData = async () => {
+          try {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // Provide a fallback if needed
+
+            const response = await fetch(`${baseUrl}/api/back-office/partner/profile`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
+                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with actual company code if needed
+                'FRONTEND-KEY': 'XXX', // Replace with actual key if needed
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+            }
+
+            const data = await response.json();
+            setUserData(data.data.primaryData.userInfos.person._person); // Update user data from API
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+
+        fetchUserData();
+      }
+    }
+  }, [authData]); // Re-run when authData is available
+
+
+  // end api load
+
+  if (!userData) return <Typography>Loading...</Typography>;
+
+  
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6}>
@@ -112,25 +178,25 @@ const TabPersonal = () => {
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="personal-first-name">First Name</InputLabel>
-                <TextField fullWidth defaultValue="Anshan" id="personal-first-name" placeholder="First Name" autoFocus />
+                <TextField fullWidth defaultValue="your first name" id="personal-first-name" placeholder="First Name" autoFocus />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="personal-first-name">Last Name</InputLabel>
-                <TextField fullWidth defaultValue="Handgun" id="personal-first-name" placeholder="Last Name" />
+                <TextField fullWidth defaultValue="your last name" id="personal-first-name" placeholder="Last Name" />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="personal-location">Country</InputLabel>
-                <TextField fullWidth defaultValue="New York" id="personal-location" placeholder="Location" />
+                <TextField fullWidth defaultValue="your country" id="personal-location" placeholder="Location" />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="personal-zipcode">Zipcode</InputLabel>
-                <TextField fullWidth defaultValue="956754" id="personal-zipcode" placeholder="Zipcode" />
+                <TextField fullWidth defaultValue="your zip code" id="personal-zipcode" placeholder="Zipcode" />
               </Stack>
             </Grid>
             <Grid item xs={12}>
@@ -140,7 +206,7 @@ const TabPersonal = () => {
                   fullWidth
                   multiline
                   rows={3}
-                  defaultValue="Hello, I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at."
+                  defaultValue="I am an experienced blah blah with over 5 years of experience in creating intuitive, user-centric designs for both small startups and large enterprises....., I had been instrumental in helping organizations optimize their digital presence.... creating websites and applications that are not only visually appealing but also highly functional."
                   id="personal-location"
                   placeholder="Location"
                 />
@@ -189,7 +255,7 @@ const TabPersonal = () => {
                     Facebook
                   </Button>
                   <Typography variant="subtitle1" sx={{ color: facebookColor }}>
-                    Anshan Handgun
+                    { userData.pers_fName} { userData.pers_lName}
                   </Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -232,7 +298,7 @@ const TabPersonal = () => {
                         fullWidth
                         customInput={TextField}
                         placeholder="Phone Number"
-                        defaultValue="8654239581"
+                        defaultValue="000000"
                         onBlur={() => {}}
                         onChange={() => {}}
                       />
@@ -242,13 +308,13 @@ const TabPersonal = () => {
                 <Grid item xs={12} md={6}>
                   <Stack spacing={1.25}>
                     <InputLabel htmlFor="personal-email">Email Address</InputLabel>
-                    <TextField type="email" fullWidth defaultValue="stebin.ben@gmail.com" id="personal-email" placeholder="Email Address" />
+                    <TextField type="email" fullWidth defaultValue="{ userData.email}" id="personal-email" placeholder="Email Address" />
                   </Stack>
                 </Grid>
                 <Grid item xs={12}>
                   <Stack spacing={1.25}>
                     <InputLabel htmlFor="personal-email">Portfolio URL</InputLabel>
-                    <TextField fullWidth defaultValue="https://anshan.dh.url" id="personal-url" placeholder="Portfolio URL" />
+                    <TextField fullWidth defaultValue="yourWebsite.com" id="personal-url" placeholder="Portfolio URL" />
                   </Stack>
                 </Grid>
                 <Grid item xs={12}>
@@ -256,7 +322,7 @@ const TabPersonal = () => {
                     <InputLabel htmlFor="personal-address">Address</InputLabel>
                     <TextField
                       fullWidth
-                      defaultValue="Street 110-B Kalians Bag, Dewan, M.P. New York"
+                      defaultValue="your address is not provided yet"
                       id="personal-address"
                       placeholder="Address"
                     />
