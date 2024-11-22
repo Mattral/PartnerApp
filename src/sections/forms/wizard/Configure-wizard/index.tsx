@@ -5,9 +5,7 @@ import Notification from './Notification';
 import MultiFileUpload from './MultiFile';
 import { styled } from '@mui/material/styles';
 import { CustomFile, DocumentCategory } from 'types/dropzone';
-import CreateEmailServerForm from './CreateEmailServerForm';
-
-
+import PointSystemConfig from "./clientVOI";
 
 // Define types
 interface DocumentType extends CustomFile {
@@ -97,7 +95,12 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
   return (
     <Grid container spacing={3} sx={{ marginTop: '30px' }}>
 
-      <CreateEmailServerForm/>
+      
+      {/* Showing Table */}
+      <PointSystemConfig/>
+
+
+
       {/* File Upload Section */}
       <Grid item xs={12}>
         <MultiFileUpload

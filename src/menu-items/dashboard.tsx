@@ -92,6 +92,12 @@ const MenuFromAPI : NavItemType = {
           title: <FormattedMessage id="empty" />,
           type: 'item',
           url: '/tables/react-table/empty'
+        },
+        {
+          id: 'rt-empty',
+          title: <FormattedMessage id="list the docs" />,
+          type: 'item',
+          url: '/forms/VOI/list-client-doc'
         }
       ]
     }

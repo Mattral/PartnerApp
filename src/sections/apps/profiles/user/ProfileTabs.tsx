@@ -33,6 +33,8 @@ const avatarImage = '/assets/images/users';
 
 // ==============================|| USER PROFILE - TABS ||============================== //
 
+//Todo: fetch from API 
+
 interface Props {
   focusInput: () => void;
 }
@@ -40,7 +42,61 @@ interface Props {
 const ProfileTabs = ({ focusInput }: Props) => {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined);
-  const [avatar, setAvatar] = useState<string | undefined>(`${avatarImage}/default.png`);
+  const [avatar, setAvatar] = useState<string | undefined>(`${avatarImage}/1.png`); // Todo:fetch image
+  // State to hold user profile data
+  const [userData, setUserData] = useState<any | null>(null);
+
+  // Fetching authorization data from localStorage
+  const [authData, setAuthData] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authData && authData.data) {
+      const { primaryData } = authData.data;
+      const authorizationToken = primaryData?.authorization; // Authorization token from primaryData
+
+      // If authorization token is available, fetch user data
+      if (authorizationToken) {
+        const fetchUserData = async () => {
+          try {
+            const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/profile', {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
+                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with actual company code if needed
+                'FRONTEND-KEY': 'XXX', // Replace with actual key if needed
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+            }
+
+            const data = await response.json();
+            setUserData(data.data.primaryData.userInfos.person._person); // Update user data from API
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+
+        fetchUserData();
+      }
+    }
+  }, [authData]); // Re-run when authData is available
 
   useEffect(() => {
     if (selectedImage) {
@@ -58,6 +114,9 @@ const ProfileTabs = ({ focusInput }: Props) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  if (!userData) return <Typography>Loading...</Typography>;
+
 
   return (
     <MainCard>
@@ -151,8 +210,8 @@ const ProfileTabs = ({ focusInput }: Props) => {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files?.[0])}
             />
             <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">Obi Wan</Typography> 
-              <Typography color="secondary">Lawyer & Consultant</Typography> 
+              <Typography variant="h5">{userData.pers_fName} {userData.pers_lName}</Typography> 
+              <Typography color="secondary">{userData.pers_type}</Typography>
             </Stack>
             <Stack direction="row" spacing={3} sx={{ '& svg': { fontSize: '1.15rem', cursor: 'pointer' } }}>
               <Google variant="Bold" color={theme.palette.error.main} />
@@ -165,8 +224,8 @@ const ProfileTabs = ({ focusInput }: Props) => {
         <Grid item xs={12} sm={6} md={12}>
           <Stack direction="row" justifyContent="space-around" alignItems="center">
             <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">86</Typography>
-              <Typography color="secondary">Cases</Typography>
+              <Typography variant="h5">{userData.pers_preferredTimezone}</Typography>
+              <Typography color="secondary">TimeZone</Typography> 
             </Stack>
             <Divider orientation="vertical" flexItem />
             <Stack spacing={0.5} alignItems="center">

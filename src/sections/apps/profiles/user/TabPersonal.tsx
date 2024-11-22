@@ -1,4 +1,4 @@
-import { Fragment, useRef } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
 
 // NEXT
 import Image from 'next/image';
@@ -17,6 +17,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -104,19 +105,80 @@ const TabPersonal = () => {
   maxDate.setFullYear(maxDate.getFullYear() - 18);
   const inputRef = useRef();
 
+// api data start
+
+  // State to hold user profile data
+  const [userData, setUserData] = useState<any | null>(null);
+
+  // Fetching authorization data from localStorage
+  const [authData, setAuthData] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authData && authData.data) {
+      const { primaryData } = authData.data;
+      const authorizationToken = primaryData?.authorization; // Authorization token from primaryData
+
+      // If authorization token is available, fetch user data
+      if (authorizationToken) {
+        const fetchUserData = async () => {
+          try {
+            const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/profile', {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
+                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with actual company code if needed
+                'FRONTEND-KEY': 'XXX', // Replace with actual key if needed
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+            }
+
+            const data = await response.json();
+            setUserData(data.data.primaryData.userInfos.person._person); // Update user data from API
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+
+        fetchUserData();
+      }
+    }
+  }, [authData]); // Re-run when authData is available
+
+  // api data end
+
+  if (!userData) return <Typography>Loading...</Typography>;
+
   return (
     <MainCard content={false} title="Personal Information" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
       <Formik
         initialValues={{
-          firstname: 'Stebin',
-          lastname: 'Ben',
-          email: 'stebin.ben@gmail.com',
+          firstname: userData.pers_fName || 'loading', // Replace with userData
+          lastname: userData.pers_lName || '...', // Replace with userData
+          email: userData.email || 'loading', // Replace with userData
           dob: new Date('03-10-1993'),
           countryCode: '+91',
-          contact: 9652364852,
-          designation: 'Legal Advisor & Consultant',
+          contact: userData.pers_phone1 || 'please fill in', //pers_phone1
+          designation: userData.persType, //persType
           address: '3801 Chalk Butte Rd, Cut Bank, MT 59427, United States',
-          address1: '301 Chalk Butte Rd, Cut Bank, NY 96572, New York',
+          address1: 'Can be blank',
           country: 'US',
           state: 'California',
           skill: [
@@ -192,7 +254,7 @@ const TabPersonal = () => {
                     />
                     {touched.firstname && errors.firstname && (
                       <FormHelperText error id="personal-first-name-helper">
-                        {errors.firstname}
+                        {userData.pers_fName}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -211,7 +273,7 @@ const TabPersonal = () => {
                     />
                     {touched.lastname && errors.lastname && (
                       <FormHelperText error id="personal-last-name-helper">
-                        {errors.lastname}
+                        {userData.pers_lName}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -231,7 +293,7 @@ const TabPersonal = () => {
                     />
                     {touched.email && errors.email && (
                       <FormHelperText error id="personal-email-helper">
-                        {errors.email}
+                        {userData.email}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -332,7 +394,7 @@ const TabPersonal = () => {
                     </Stack>
                     {touched.contact && errors.contact && (
                       <FormHelperText error id="personal-contact-helper">
-                        {errors.contact}
+                        {userData.pers_phone1}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -351,7 +413,7 @@ const TabPersonal = () => {
                     />
                     {touched.designation && errors.designation && (
                       <FormHelperText error id="personal-designation-helper">
-                        {errors.designation}
+                        {userData.pers_persType}
                       </FormHelperText>
                     )}
                   </Stack>

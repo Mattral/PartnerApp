@@ -43,8 +43,8 @@ const TabSettings = () => {
           </ListItemIcon>
           <ListItemText
             id="switch-list-label-oc"
-            primary={<Typography variant="h5">Order Confirmation</Typography>}
-            secondary="You will be notified when customer order any product"
+            primary={<Typography variant="h5">Changes Confirmation</Typography>}
+            secondary="You will be notified when another manager modify your app setting"
           />
           <Switch
             edge="end"
@@ -80,7 +80,7 @@ const TabSettings = () => {
           <ListItemText
             id="switch-list-label-usn"
             primary={<Typography variant="h5">Update System Notification</Typography>}
-            secondary="You will be notified when customer order any product"
+            secondary="You will be notified when your app changes are live"
           />
           <Switch
             edge="end"
@@ -97,8 +97,8 @@ const TabSettings = () => {
           </ListItemIcon>
           <ListItemText
             id="switch-list-label-lc"
-            primary={<Typography variant="h5">Language Change</Typography>}
-            secondary="You will be notified when customer order any product"
+            primary={<Typography variant="h5">Look and Feel Change</Typography>}
+            secondary="You will be notified when manager changes your UI theme"
           />
           <Switch
             edge="end"
