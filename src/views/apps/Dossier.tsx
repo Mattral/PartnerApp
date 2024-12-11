@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, Box, IconButton, Tooltip } from '@mui/material';
-import { ContentCopy } from '@mui/icons-material';
 import { styled, keyframes } from '@mui/system';
 import { useRouter } from "next/navigation";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Make sure to import styles
+import { toast } from 'react-toastify'; // Import the toast library
+import DossierCount from 'views/apps/DossierCount';
+type Dossier = {
+  vd_code: string;
+  vd_status: string;
+};
 
 // Keyframes for shimmer and gentle glow animations
 const shimmer = keyframes`
@@ -80,6 +87,8 @@ const AnimatedButton = styled(Button)({
 });
 
 const DossierPage: React.FC = () => {
+  const [dossierData, setDossierData] = useState<{ count: number; dossiers: Dossier[] } | null>(null);
+
   const [topCards, setTopCards] = useState<number[]>([]);
   const [bottomCards, setBottomCards] = useState<number[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -89,8 +98,55 @@ const DossierPage: React.FC = () => {
 
   const router = useRouter();
 
-  const addTopCard = () => {
-    setTopCards(prevTopCards => [...prevTopCards, prevTopCards.length + 1]);
+  const addTopCard = async () => {
+    try {
+      const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630', // Replace with actual token
+          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with the actual company code
+          'FRONTEND-KEY': 'XXX', // Replace with the actual frontend key
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({}), // Add payload if necessary
+      });
+
+      // Parse the response JSON
+      const data = await response.json();
+
+      // Check the status in the response data
+      if (data.status === 'treatmentSuccess') {
+        // Success: Show a success toast with the vd_code
+        toast.success(`Dossier created with code: ${data.data.primaryData._dossier.vd_code}`, {
+          autoClose: 5000, // Duration in ms (5 seconds)
+        });
+      } else if (data.status === 'treatmentFailure') {
+        // Failure: Show an error toast with the error message from the response
+        const errorMessage = data.data.primaryData.msg || 'An error occurred';
+        toast.error(`Error: ${errorMessage}`, {
+          autoClose: 5000, // Duration in ms (5 seconds)
+        });
+      } else {
+        // If the response status is unknown, show a generic error
+        toast.error('Unexpected response from the server', {
+          autoClose: 5000, // Duration in ms (5 seconds)
+        });
+      }
+
+    } catch (error: unknown) {
+      // TypeScript requires us to assert the error as an instance of Error
+      if (error instanceof Error) {
+        // Now TypeScript knows `error` is an instance of `Error` and we can access `message`
+        toast.error(`An error occurred while creating the dossier: ${error.message}`, {
+          autoClose: 5000, // Duration in ms (5 seconds)
+        });
+      } else {
+        // If error is not an instance of Error, handle as a generic unknown error
+        toast.error('An unknown error occurred', {
+          autoClose: 5000, // Duration in ms (5 seconds)
+        });
+      }
+    }
   };
 
   const addBottomCard = () => {
@@ -103,77 +159,73 @@ const DossierPage: React.FC = () => {
     setDeleteFromTop(isTop); // Track whether we're deleting from the top or bottom
   };
 
-  const handleDelete = () => {
-    if (cardToDelete !== null && deleteFromTop !== null) {
-      if (deleteFromTop) {
-        setTopCards(prevTopCards => prevTopCards.filter((_, i) => i !== cardToDelete));
-      } else {
-        setBottomCards(prevBottomCards => prevBottomCards.filter((_, i) => i !== cardToDelete));
-      }
-      setOpenDialog(false);
-      setCardToDelete(null);
-      setDeleteFromTop(null);
-    }
-  };
-
-
   const handleConfigure = () => {
     router.push("/forms/VOI/Client");
   };
 
   return (
     <div style={styles.container}>
+      <ToastContainer />
       {/* Top Section */}
-<div style={styles.container}>
-  {/* Top Section */}
-  <div style={styles.section}>
-    <div style={styles.header}>
-      {/* Left-aligned Title */}
-      <div style={styles.textContainer}>
-        <span style={styles.titleText}>Verify your Civil Identity</span>
-        
-        {/* Left-aligned Subtitle */}
-        <p style={styles.subtitleText}>
-        Verify this in order to be allowed to be granted call with advisors and many other benefits
-        </p>
-      </div>
-      
-      {/* Right-aligned Button */}
-      <div style={styles.buttonContainer}>
-        <Tooltip title="Opening a dossier helps you submit ID files that will help us confirm your identity" arrow>
-        <Button 
-            onClick={addTopCard} 
-            variant="contained" 
-            color="primary" 
-            sx={{ 
-              borderRadius: 20, 
-              fontSize: '1.2rem', // Increase font size
-              padding: '16px 32px', // Increase padding to make the button larger
-              height: '45px', // Optionally increase height
-              width: '200px' // Optionally increase width
-            }}
-          >
-            Open a Dossier
-          </Button>
+      <div style={styles.container}>
+        {/* Top Section */}
+        <div style={styles.section}>
+          <div style={styles.header}>
+            {/* Left-aligned Title */}
+            <div style={styles.textContainer}>
+              <span style={styles.titleText}>Verify your Civil Identity</span>
 
-          
-        </Tooltip>
+              {/* Left-aligned Subtitle */}
+              <p style={styles.subtitleText}>
+                Verify this in order to be allowed to be granted call with advisors and many other benefits
+              </p>
+            </div>
+
+            {/* Right-aligned Button */}
+            <div style={styles.buttonContainer}>
+              <Tooltip title="Opening a dossier helps you submit ID files that will help us confirm your identity" arrow>
+                <Button
+                  onClick={addTopCard}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: 20,
+                    fontSize: '1.2rem', // Increase font size
+                    padding: '16px 32px', // Increase padding to make the button larger
+                    height: '45px', // Optionally increase height
+                    width: '200px' // Optionally increase width
+                  }}
+                >
+                  Open a Dossier
+                </Button>
+
+
+              </Tooltip>
+            </div>
+          </div>
+          <DossierCount setDossierData={setDossierData} />
+
+          {/* Card Container (still centered and scrollable) */}
+
+          <div style={styles.cardContainer}>
+            <DossierCount setDossierData={setDossierData} />
+            {dossierData ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+                {dossierData.dossiers.map((dossier, index) => (
+                  <DossierCard
+                    key={dossier.vd_code} // Ensure the key is unique for each card
+                    title={`Dossier ${dossier.vd_code}`} // Display vd_code or a more readable name
+                    onDelete={() => confirmDeleteCard(index, false)}// Pass the index to the delete handler
+                    onConfigure={handleConfigure} // You can customize this handler
+                  />
+                ))}
+              </div>
+            ) : (
+              <div>Loading Dossier Data...</div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-    
-    {/* Card Container (still centered and scrollable) */}
-    <div style={styles.cardContainer}>
-      {topCards.map((_, index) => (
-        <DossierCard
-          key={index}
-          title={`Dossier${index + 1}`}
-          onDelete={() => confirmDeleteCard(index, true)}
-          onConfigure={handleConfigure}
-        />
-      ))}
-    </div>
-  </div>
-</div>
 
       {/* Divider */}
       <div style={styles.divider} />
@@ -182,42 +234,42 @@ const DossierPage: React.FC = () => {
       <div style={styles.section}>
         <div style={styles.header}>
 
-          
-      {/* Left-aligned Title */}
-      <div style={styles.textContainer}>
-      <span style={styles.titleText}>Verify your Professional Identity</span>
-        
-        {/* Left-aligned Subtitle */}
-        <p style={styles.subtitleText}>
-        Verify this in order to be allowed to provide consulting services to people
-        </p>
-      </div>
+
+          {/* Left-aligned Title */}
+          <div style={styles.textContainer}>
+            <span style={styles.titleText}>Verify your Professional Identity</span>
+
+            {/* Left-aligned Subtitle */}
+            <p style={styles.subtitleText}>
+              Verify this in order to be allowed to provide consulting services to people
+            </p>
+          </div>
 
           {/* Tooltip on the Open Dossier Button */}
           {/* Right-aligned Button */}
           <div style={styles.buttonContainer}>
-          <Tooltip title="Opening a dossier helps you submit professional credentials that will help us confirm your expertise" arrow>
+            <Tooltip title="Opening a dossier helps you submit professional credentials that will help us confirm your expertise" arrow>
 
 
-          <Button 
-            onClick={addBottomCard} 
-            variant="contained" 
-            color="primary" 
-            sx={{ 
-              borderRadius: 20, 
-              fontSize: '1.2rem', // Increase font size
-              padding: '16px 32px', // Increase padding to make the button larger
-              height: '45px', // Optionally increase height
-              width: '200px' // Optionally increase width
-            }}
-          >
+              <Button
+                onClick={addBottomCard}
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: 20,
+                  fontSize: '1.2rem', // Increase font size
+                  padding: '16px 32px', // Increase padding to make the button larger
+                  height: '45px', // Optionally increase height
+                  width: '200px' // Optionally increase width
+                }}
+              >
                 Open a Dossier
               </Button>
             </Tooltip>
           </div>
         </div>
-            
-        
+
+
         <div style={styles.cardContainer}>
           {bottomCards.map((_, index) => (
             <DossierCard
@@ -230,30 +282,6 @@ const DossierPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Confirmation Delete Dialog */}
-      <StyledDialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <TitleBox>
-          <RadiantWarning />
-          <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
-            Are you sure you want to delete?
-          </Typography>
-        </TitleBox>
-
-        <DialogContent sx={{ padding: '35px', textAlign: 'center' }}>
-          <Typography variant="body1" sx={{ fontSize: '1.15rem', color: '#555', lineHeight: 1.7 }}>
-            This action cannot be undone. Do you really want to delete this dossier?
-          </Typography>
-        </DialogContent>
-
-        <DialogActions sx={{ justifyContent: 'center', paddingBottom: 3 }}>
-          <AnimatedButton onClick={handleDelete} variant="contained">
-            Yes, Delete
-          </AnimatedButton>
-          <AnimatedButton onClick={() => setOpenDialog(false)} variant="contained">
-            Cancel
-          </AnimatedButton>
-        </DialogActions>
-      </StyledDialog>
     </div>
   );
 };
@@ -269,6 +297,7 @@ const DossierCard = ({
 }) => {
   return (
     <div className="dossier-card">
+
       {/* Nebula Background with floating particles */}
       <div className="card-background">
         <div className="particle-field">
@@ -436,7 +465,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#fff",
     borderRadius: "20px",
     margin: "30px",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)", 
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
     position: "relative",
     transition: "all 0.3s ease",
   },
@@ -458,7 +487,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     animation: "glow 4s ease-in-out infinite",
     //reomve textShadow: "0px 0px 5px rgba(255, 255, 255, 0.7), 0px 0px 15px rgba(255, 204, 0, 0.9), 0px 0px 25px rgba(255, 204, 0, 1)",
   },
-  
+
   subtitleText: {
     fontSize: "1.1rem",
     fontWeight: "500",
@@ -474,7 +503,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center", // Align the button vertically with the text
     marginLeft: "auto", // Push the button to the right
   },
-  
+
   button: {
     padding: "12px 25px",
     backgroundColor: "#2B3BFF",
@@ -487,7 +516,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "background-color 0.3s ease, transform 0.3s ease",
     marginTop: "10px",
   },
-  
+
   // Hover effect on the button
   buttonHover: {
     backgroundColor: "#e67e22",
@@ -514,12 +543,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxShadow: "0 12px 24px rgba(0, 0, 0, 0.1)",
     transition: "all 0.3s ease",
   },
-  
+
   cardHover: {
     transform: "scale(1.05)",
     boxShadow: "0 18px 36px rgba(0, 0, 0, 0.2)",
   },
-  
+
   divider: {
     width: "90%",
     margin: "auto",
@@ -528,20 +557,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-// Glow Animation for Title Text
-const stylesAnimation = `
-  @keyframes glow {
-    0% {
-      text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.7), 0px 0px 15px rgba(255, 204, 0, 0.9), 0px 0px 25px rgba(255, 204, 0, 1);
-    }
-    50% {
-      text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.9), 0px 0px 30px rgba(255, 204, 0, 1), 0px 0px 45px rgba(255, 204, 0, 1.5);
-    }
-    100% {
-      text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.7), 0px 0px 15px rgba(255, 204, 0, 0.9), 0px 0px 25px rgba(255, 204, 0, 1);
-    }
-  }
-  `;
 
 export default DossierPage;
 
