@@ -101,41 +101,10 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
       {/* File Upload Section */}
       <Grid item xs={12}>
         <MultiFileUpload
-          files={selectedDocuments}
-          setFieldValue={(name: string, value: DocumentType[]) => setSelectedDocuments(value)}
-          onUpload={handleUpload}
+
         />
       </Grid>
 
-      {/* Sticky Texts */}
-      <Grid item xs={12}>
-        {/* This will be positioned at the top-right corner */}
-        <div style={{
-          position: 'fixed',
-          top: '200px',  // Position the component a bit further down
-          right: '20px',
-          zIndex: 1000,  // Ensure it stays on top of other content
-          background: 'rgba(255, 255, 255, 0.1)',  // Transparent white background (light frosted effect)
-          backdropFilter: 'blur(10px)',  // Adds the frosted glass effect behind the element
-          borderRadius: '12px',  // Rounded corners
-          padding: '20px 30px',  // Padding for inner space
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',  // Subtle shadow for a floating effect
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-        }}>
-          {/* Glowing Text - Current Points */}
-          <GlowingText style={{ marginBottom: '10px' }}>
-            Current Points: {currentPoints}
-          </GlowingText>
-          
-          {/* Glowing Text - Required Points */}
-          <GlowingText sx={{ fontSize: '1.2rem' }}>
-            Required Points: 100
-          </GlowingText>
-
-        </div>
-      </Grid>
 
       {/* Table for Documents */}
       <Grid item xs={12}>

@@ -1,190 +1,161 @@
-// MATERIAL - UI 
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Typography from '@mui/material/Typography';
-// import { DocumentCategory } from 'types/dropzone';
-
-enum DocumentCategory {
-  Primary = 'Primary',
-  Secondary = 'Secondary',
-}
-
-
-// THIRD - PARTY
-import { useDropzone } from 'react-dropzone';
-
-// PROJECT IMPORTS
-import RejectionFiles from 'components/third-party/dropzone/RejectionFiles';
-import PlaceholderContent from 'components/third-party/dropzone/PlaceholderContent';
-
-// TYPES
-import { CustomFile, DropzopType, UploadMultiFileProps } from 'types/dropzone';
-
-const DropzoneWrapper = styled('div')(({ theme }) => ({
-  outline: 'none',
-  padding: theme.spacing(5, 1),
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.background.paper,
-  border: `1px dashed ${theme.palette.secondary.main}`,
-  '&:hover': { opacity: 0.72, cursor: 'pointer' }
-}));
+import { useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import { CloudUpload as CloudUploadIcon, FileUpload as FileUploadIcon, Description as DescriptionIcon } from '@mui/icons-material';
+import { Button, CircularProgress, Typography } from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDropzone } from 'react-dropzone'; // Importing dropzone for drag-and-drop upload
 
 const documentOptions = [
-  { label: 'National ID', points: 50, category: DocumentCategory.Primary },
-  { label: 'Passport', points: 50, category: DocumentCategory.Primary },
-  { label: 'Driving License', points: 25, category: DocumentCategory.Secondary },
-  { label: 'Employment Certificate', points: 25, category: DocumentCategory.Secondary },
-  { label: 'Bachelor', points: 25, category: DocumentCategory.Secondary },
+  'vidoc-9d8a21b6-72d4-4427-b9f2-510357a333b6',
+  'vidoc-9d84ce3d-a0e7-44ae-8ec9-16fa15c52b04',
+  'vidoc-9d84ce3d-a44c-46d9-870e-490401b16354',
+  'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889',
 ];
 
-// ==============================|| UPLOAD - MULTIPLE FILE ||============================== //
+interface UploadResponse {
+  status: string;
+  data: {
+    primaryData: {
+      msg: string;
+    };
+  };
+}
 
-const MultiFileUpload = ({ error, showList = false, files = [], type, setFieldValue, sx, onUpload, ...other }: UploadMultiFileProps) => {
-  const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
-    multiple: true,
-    onDrop: (acceptedFiles: CustomFile[]) => {
-      const newFiles = acceptedFiles.map((file: CustomFile) => Object.assign(file, {
-        preview: URL.createObjectURL(file)
-      }));
-      if (setFieldValue) {
-        setFieldValue('files', [...(files || []), ...newFiles]);
-      }
-    }
+const UploadFiles = () => {
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileDocumentCodes, setFileDocumentCodes] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Handle file selection (drag-and-drop or manual file picker)
+  const onDrop = (acceptedFiles: File[]) => {
+    setFiles(acceptedFiles);
+    setFileDocumentCodes(Array(acceptedFiles.length).fill(''));
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: '.pdf,.doc,.docx,.jpg,.png,.jpeg' as any, // Cast accept to any type
   });
 
-  const onRemoveAll = () => {
-    if (setFieldValue) {
-      setFieldValue('files', []);
-    }
+  const handleDocumentCodeChange = (index: number, code: string) => {
+    const newFileDocumentCodes = [...fileDocumentCodes];
+    newFileDocumentCodes[index] = code;
+    setFileDocumentCodes(newFileDocumentCodes);
   };
 
-  const onRemove = (file: CustomFile) => {
-    const filteredItems = (files || []).filter((_file) => _file !== file);
-    if (setFieldValue) {
-      setFieldValue('files', filteredItems);
-    }
-  };
+  const handleUpload = async () => {
+    setIsUploading(true);
 
-  const handleUpload = () => {
-    const uploadData = (files || []).map(file => ({
-      name: file.name,
-      selectedDocument: file.selectedDocument,
-      points: file.points,
-    }));
+    const vd_code = 'vd-9db3069a-2c90-43f2-b62a-e01ec8d0065b';
+    const formData = new FormData();
+    formData.append('vd_code', vd_code);
 
-    // Call the onUpload function passed from the parent
-    if (onUpload) {
-      onUpload(uploadData);
+    files.forEach((file, index) => {
+      formData.append('files[' + index + ']', file);
+      formData.append('vidoc_codes[' + index + ']', fileDocumentCodes[index]);
+    });
+
+    try {
+      const response = await axios.post<UploadResponse>(
+        'https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/upload',
+        formData,
+        {
+          headers: {
+            'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630',
+            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+            'FRONTEND-KEY': 'XXX',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log('Upload Successful:', response.data);
+      toast.success('Upload Successful!');
+
+      // Clear the files and document codes after a successful upload to avoid duplicate submission
+      setFiles([]);
+      setFileDocumentCodes([]);
+    } catch (error) {
+      const axiosError = error as AxiosError<UploadResponse>;
+
+      const errorMessage =
+        axiosError?.response?.data?.data?.primaryData?.msg ||
+        'Error uploading files. Please try again.';
+
+      toast.error(`Upload Failed: ${errorMessage}`);
+      console.error('Error uploading files:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    <>
-      <Box
-        sx={{
-          width: '100%',
-          ...(type === DropzopType.standard && { width: 'auto', display: 'flex' }),
-          ...sx
-        }}
-      >
-        <Stack {...(type === DropzopType.standard && { alignItems: 'center' })}>
-          <DropzoneWrapper
-            {...getRootProps()}
-            sx={{
-              ...(type === DropzopType.standard && {
-                p: 0,
-                m: 1,
-                width: 64,
-                height: 64
-              }),
-              ...(isDragActive && { opacity: 0.72 }),
-              ...((isDragReject || error) && {
-                color: 'error.main',
-                borderColor: 'error.light',
-                bgcolor: 'error.lighter'
-              })
-            }}
-          >
-            <input {...getInputProps()} />
-            <PlaceholderContent type={type} />
-          </DropzoneWrapper>
-          {type === DropzopType.standard && (files || []).length > 0 && (
-            <Button variant="contained" color="error" size="small" onClick={onRemoveAll}>
-              Remove all
-            </Button>
-          )}
-        </Stack>
-        {fileRejections.length > 0 && <RejectionFiles fileRejections={fileRejections} />}
-        {(files || []).length > 0 && (
-          <Stack spacing={2} sx={{ mt: 2 }}>
-            {(files || []).map((file, index) => (
-              <Stack key={index} direction="row" alignItems="center" spacing={2} justifyContent="space-between">
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-                    <InputLabel>Document</InputLabel>
-                    <Select
-                      label="Document"
-                      value={file.selectedDocument || ""}
-                      onChange={(event) => {
-                        const selectedOption = documentOptions.find(option => option.label === event.target.value);
-                        if (selectedOption) {
-                          const updatedFiles = [...(files || [])];
-                          updatedFiles[index] = {
-                            ...file,
-                            selectedDocument: selectedOption.label,
-                            points: selectedOption.points,
-                            category: selectedOption.category // Set category from documentOptions
-                          };
-                          if (setFieldValue) {
-                            setFieldValue('files', updatedFiles);
-                          }
-                        }
-                      }}
-                    >
-                      {documentOptions.map((option, idx) => (
-                        <MenuItem key={idx} value={option.label}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <Typography variant="body1">{file.name}</Typography>
-                </Stack>
-                <Stack direction="row" alignItems="center">
-                  {file.selectedDocument && (
-                    <Typography variant="body2" sx={{ mr: 1 }}>
-                      {file.selectedDocument} ({file.points} points{file.category ? `, ${file.category}` : ""})
-                    </Typography>
+    <div className="flex justify-center items-center bg-gray-50 py-12">
+      <div className="max-w-2xl mx-auto p-8 bg-white border border-gray-200 rounded-xl shadow-lg">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          Upload Your Files
+        </h1>
 
-                  )}
-                  <Button onClick={() => onRemove(file)} color="error">
-                    Remove
-                  </Button>
-                </Stack>
-              </Stack>
+        {/* Drag-and-Drop Upload Area */}
+        <div
+          {...getRootProps()}
+          className="w-full p-6 border-2 border-dashed border-gray-300 rounded-lg mb-6 cursor-pointer hover:border-blue-500 transition-all"
+        >
+          <input {...getInputProps()} />
+          <div className="text-center">
+            <CloudUploadIcon className="text-blue-600 mb-4" style={{ fontSize: 50 }} />
+            <Typography variant="h6" className="text-gray-700">
+              Drag & Drop Files Here or Click to Select
+            </Typography>
+          </div>
+        </div>
+
+        {/* Display selected files and document codes */}
+        <div className="space-y-5">
+          {files.length > 0 &&
+            files.map((file, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-lg transition-all"
+              >
+                <p className="text-lg text-gray-800 font-medium">{file.name}</p>
+                <div className="flex items-center space-x-2">
+                  <DescriptionIcon className="text-gray-600" />
+                  <select
+                    className="p-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 transition-all"
+                    value={fileDocumentCodes[index]}
+                    onChange={(e) => handleDocumentCodeChange(index, e.target.value)}
+                  >
+                    <option value="">Select Document Code</option>
+                    {documentOptions.map((option, i) => (
+                      <option key={i} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             ))}
-          </Stack>
-        )}
-      </Box>
+        </div>
 
-      {type !== DropzopType.standard && (files || []).length > 0 && (
-        <Stack direction="row" justifyContent="flex-end" spacing={1.5} sx={{ mt: 1.5 }}>
-          <Button color="inherit" size="small" onClick={onRemoveAll}>
-            Remove all
-          </Button>
-          <Button size="small" variant="contained" onClick={handleUpload}>
-            Upload files
-          </Button>
-        </Stack>
-      )}
-    </>
+        {/* Upload Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleUpload}
+          disabled={isUploading || files.length === 0 || fileDocumentCodes.includes('')}
+          className="mt-8 py-4"
+          startIcon={isUploading ? <CircularProgress size={24} color="inherit" /> : <FileUploadIcon />}
+        >
+          {isUploading ? 'Uploading...' : 'Upload Files'}
+        </Button>
+
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      </div>
+    </div>
   );
 };
 
-export default MultiFileUpload;
+export default UploadFiles;
