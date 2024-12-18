@@ -311,12 +311,12 @@ const DossierCard = ({
       {/* Card Content */}
       <div className="card-content">
         {/* Majestic Title */}
-        <h3 className="title majestic-text">{title}</h3>
+        <h3 className="title majestic-text">Dossier</h3>
 
         {/* Majestic Buttons */}
         <div className="button-group">
           <button className="majestic-button edit-btn" onClick={onDelete}>
-            Status!
+            Pending
           </button>
           <button className="majestic-button configure-btn" onClick={onConfigure}>
             Configure
