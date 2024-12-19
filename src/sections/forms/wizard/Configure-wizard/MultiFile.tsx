@@ -6,12 +6,24 @@ import { Button, CircularProgress, Typography } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDropzone } from 'react-dropzone'; // Importing dropzone for drag-and-drop upload
 
+
+const documentOptions = [
+  { name: 'Business Visa', value: 'vidoc-9d8a21b6-72d4-4427-b9f2-510357a333b6' },
+  { name: 'Green Card', value: 'vidoc-9d84ce3d-a0e7-44ae-8ec9-16fa15c52b04' },
+  { name: 'National ID', value: 'vidoc-9d84ce3d-a44c-46d9-870e-490401b16354' },
+  { name: 'Passport', value: 'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889' },
+  { name: 'Schengen Visa', value: 'vidoc-9d8a21b6-7516-4533-80fe-5e23643346a2' },
+  { name: 'Student Identity', value: 'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889' },
+];
+
+/*
 const documentOptions = [
   'vidoc-9d8a21b6-72d4-4427-b9f2-510357a333b6',
   'vidoc-9d84ce3d-a0e7-44ae-8ec9-16fa15c52b04',
   'vidoc-9d84ce3d-a44c-46d9-870e-490401b16354',
   'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889',
 ];
+*/
 
 interface UploadResponse {
   status: string;
@@ -55,6 +67,7 @@ const UploadFiles = () => {
       formData.append('files[' + index + ']', file);
       formData.append('vidoc_codes[' + index + ']', fileDocumentCodes[index]);
     });
+    
 
     try {
       const response = await axios.post<UploadResponse>(
@@ -129,11 +142,14 @@ const UploadFiles = () => {
                   >
                     <option value="">Select Document Code</option>
                     {documentOptions.map((option, i) => (
-                      <option key={i} value={option}>
-                        {option}
+                      <option key={i} value={option.value}>  {/* Use option.value for the value */}
+                        {option.name}  {/* Display option.name in the dropdown */}
                       </option>
                     ))}
                   </select>
+
+
+                  
                 </div>
               </div>
             ))}
@@ -159,3 +175,18 @@ const UploadFiles = () => {
 };
 
 export default UploadFiles;
+
+/*
+                  <select
+                    className="p-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 transition-all"
+                    value={fileDocumentCodes[index]}
+                    onChange={(e) => handleDocumentCodeChange(index, e.target.value)}
+                  >
+                    <option value="">Select Document Code</option>
+                    {documentOptions.map((option, i) => (
+                      <option key={i} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  */

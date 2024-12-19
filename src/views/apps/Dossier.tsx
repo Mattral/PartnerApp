@@ -305,7 +305,7 @@ const DossierCard = ({
             <div key={index} className="particle" />
           ))}
         </div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/nebula-background.png')] bg-cover opacity-70" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/dossierC.png')] bg-cover opacity-70" />
       </div>
 
       {/* Card Content */}
@@ -387,10 +387,11 @@ const DossierCard = ({
         .title {
           font-size: 1.75rem;
           font-weight: bold;
-          text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 204, 0, 0.8), 0 0 20px rgba(255, 204, 0, 1);
-          background: linear-gradient(90deg, #ff7e5f, #feb47b);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          text-shadow: 
+            0 0 5px rgba(255, 255, 255, 0.7),    /* White Glow (soft halo) */
+            0 0 10px rgba(192, 192, 192, 0.8),   /* Silver Glow (medium intensity) */
+            0 0 20px rgba(192, 192, 192, 1);     /* Silver Glow (strong intensity) */
+          color: #333;
         }
 
         /* Majestic Buttons */
