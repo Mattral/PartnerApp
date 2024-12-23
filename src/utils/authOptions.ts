@@ -13,7 +13,7 @@ let users = [
     id: 2,
     name: 'Min Htet Myet',
     email: 'mattralminn@gmail.com',
-    password: '123456'
+    password: '1234ABB!123a'
   }
 ];
 

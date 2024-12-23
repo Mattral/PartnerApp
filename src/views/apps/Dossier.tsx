@@ -120,7 +120,7 @@ const DossierPage: React.FC = () => {
           <div style={styles.cardContainer}>
             <DossierCount setDossierData={setDossierData} />
             {dossierData ? (
-              <div style={{ display: 'flex', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+              <div style={{ display: 'flex', overflowX: 'auto', gap: '20px' }}>
               {dossierData.dossiers.map((dossier) => (
                 <DossierCard
                   key={dossier.vd_code} // Ensure the key is unique for each card
@@ -176,7 +176,7 @@ const DossierPage: React.FC = () => {
         </div>
 
         <div style={styles.cardContainer}>
-
+          
         </div>
       </div>
     </div>
@@ -311,6 +311,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     backgroundColor: "#f8f9fa",
   },
+
+  
+  cardContainer: {
+    display: "flex",
+    flexDirection: "row",
+    overflowX: "auto", // allows horizontal scrolling
+    whiteSpace: "nowrap", // keeps the cards in a single row
+    gap: "24px", // space between cards
+    paddingTop: "20px",
+    paddingBottom: "20px",
+    scrollBehavior: "smooth",
+    transition: "all 0.3s ease",
+  },
+
   section: {
     display: "flex",
     flexDirection: "column",
@@ -322,6 +336,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
     position: "relative",
     transition: "all 0.3s ease",
+    
   },
   header: {
     display: "flex",
@@ -375,18 +390,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   buttonHover: {
     backgroundColor: "#e67e22",
     transform: "scale(1.05)",
-  },
-
-  cardContainer: {
-    display: "flex",
-    flexDirection: "row",
-    overflowX: "auto", // allows horizontal scrolling
-    whiteSpace: "nowrap", // keeps the cards in a single row
-    gap: "24px", // space between cards
-    paddingTop: "20px",
-    paddingBottom: "20px",
-    scrollBehavior: "smooth",
-    transition: "all 0.3s ease",
   },
 
   card: {
