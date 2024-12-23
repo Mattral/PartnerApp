@@ -124,10 +124,10 @@ const DossierPage: React.FC = () => {
               {dossierData.dossiers.map((dossier) => (
                 <DossierCard
                   key={dossier.vd_code} // Ensure the key is unique for each card
-                  title={`Dossier ${dossier.vd_code}`} // Use vd_code in the title
+                  title={`${dossier.vd_status}`} // Use vd_code in the title
                   status={dossier.vd_status} // Pass the vd_status to the DossierCard
-                  onConfigure={handleConfigure(dossier.vd_code)}
-                />
+                  onConfigure={() => handleConfigure(dossier.vd_code)} // Wrap the function call inside an arrow function
+                  />
               ))}
               </div>
             ) : (
@@ -190,7 +190,7 @@ const DossierCard = ({
 }: {
   title: string;
   status: string;  // Accept the status of the dossier
-  onConfigure;
+  onConfigure:any;
 }) => {
   return (
     <div className="dossier-card">
@@ -204,11 +204,13 @@ const DossierCard = ({
       </div>
 
       <div className="card-content">
-        <h3 className="title majestic-text">{title}</h3>
-        <p>Status: {status}</p> {/* Display vd_status here */}
+        <h3 className="title majestic-text">
+          VOI :
+          <span className="hover-text">{title}</span>
+        </h3>
         <div className="button-group">
           <button className="majestic-button edit-btn">
-            Pending
+            {status}
           </button>
           <button className="majestic-button configure-btn" onClick={onConfigure}>
             Configure
