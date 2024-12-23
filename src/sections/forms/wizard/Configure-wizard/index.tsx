@@ -17,6 +17,8 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openDialog, setOpenDialog] = useState(false); // Pop-up dialog state
   const [isUploading, setIsUploading] = useState(false); // State for tracking the loading state
+  const [authorizationToken, setAuthorizationToken] = useState<string | null>(null); // State for authorization token
+
   const router = useRouter();
   const searchParams = useSearchParams(); // Access search params
   const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
@@ -28,23 +30,51 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
     }
   }, [vd_code]);
 
+  useEffect(() => {
+    // Retrieve the authorization token from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        const token = parsedData?.data?.primaryData?.authorization;
+        if (token) {
+          setAuthorizationToken(`Bearer ${token}`); // Store the token with 'Bearer' prefix
+        } else {
+          console.error('Authorization token not found');
+        }
+      } catch (error) {
+        console.error('Failed to parse auth data:', error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []); // Only runs once when the component mounts
+
+
   const handleSubmit = async () => {
     if (!vd_code) {
       toast.error("Dossier code (vd_code) is missing.");
       return;
     }
+
+    // If authorizationToken is missing, show an error
+    if (!authorizationToken) {
+      toast.error("Authorization token is missing.");
+      return;
+    }
+
     // Show loading spinner while submitting
     setIsUploading(true);
-  
+
     const formData = new FormData();
     formData.append('vd_code', vd_code);
-  
+
     // Set up the axios config
     const config = {
       method: 'post',
       url: 'https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/submit',
       headers: {
-        'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630', // Replace with actual token
+        'Authorization': authorizationToken, // Use the token from state
         'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
         'FRONTEND-KEY': 'XXX',
         'X-Requested-With': 'XMLHttpRequest',
@@ -69,9 +99,9 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
         toast.error(errorMessage);
       } else {
         // Handle any other response errors
-        setSnackbarMessage('Submission failed! Unknown error.');
+        setSnackbarMessage('Waiting for API response, will be submitted soon.');
         setSnackbarSeverity('error');
-        toast.error('Submission failed! Unknown error.');
+        toast.error('Waiting for API response, will be submitted soon.');
       }
     } catch (error: any) {
       // Handle network or other unexpected errors that are not part of the response body

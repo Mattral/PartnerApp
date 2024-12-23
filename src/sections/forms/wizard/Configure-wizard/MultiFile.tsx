@@ -31,6 +31,8 @@ const UploadFiles = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [fileDocumentCodes, setFileDocumentCodes] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
   const router = useRouter();
   const searchParams = useSearchParams(); // Access search params
 
@@ -43,6 +45,27 @@ const UploadFiles = () => {
     }
   }, [vd_code]);
   
+  // Retrieve the authorization token from localStorage
+  useEffect(() => {
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        const token = parsedData?.data?.primaryData?.authorization;
+        if (token) {
+          setAuthToken(token); // Store the token in the state
+        } else {
+          console.error('Authorization token not found');
+        }
+      } catch (error) {
+        console.error('Failed to parse auth data:', error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+
   // Handle file selection (drag-and-drop or manual file picker)
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -61,6 +84,10 @@ const UploadFiles = () => {
   };
 
   const handleUpload = async () => {
+    if (!authToken) {
+      toast.error('Error: Authorization token is missing.');
+      return;
+    }    
     setIsUploading(true);
 
   // Get vd_code from searchParams
@@ -90,7 +117,7 @@ const UploadFiles = () => {
         formData,
         {
           headers: {
-            'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630',
+            'Authorization': `Bearer ${authToken}`,
             'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
             'FRONTEND-KEY': 'XXX',
             'X-Requested-With': 'XMLHttpRequest',

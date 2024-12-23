@@ -56,40 +56,51 @@ const UploadedFiles = () => {
     const searchParams = useSearchParams(); // Access search params
     const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
 
-    const authorizationToken = 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630'; // Replace with your actual token
+    const [authorizationToken, setAuthorizationToken] = useState<string | null>(null);
     const companyCode = 'MC-H3HBRZU6ZK5744S'; // Replace with actual company code
     const frontendKey = 'XXX'; // Replace with your frontend key
 
-    // Fetch files from the API
-    const fetchFiles = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get<ApiResponse>(
-                `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vd_code}`,
-                {
-                    headers: {
-                        Authorization: authorizationToken,
-                        'COMPANY-CODE': companyCode,
-                        'FRONTEND-KEY': frontendKey,
-                        PaginateResults: '1',
-                        MaxResultsPerPage: '12',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                }
-            );
 
-            if (response.data.status === 'treatmentSuccess') {
-                setFiles(response.data.data.primaryData._files.data);
-                setError(null);  // Clear previous errors on successful fetch
-            } else if (response.data.status === 'authenticationError') {
-                setError(response.data.data.primaryData.msg || 'Authentication failed');
-            }
-        } catch (err) {
-            setError('An error occurred while fetching the files');
-        } finally {
-            setLoading(false);
+  // Fetch files from the API
+  const fetchFiles = async () => {
+    if (!authorizationToken) {
+      setError('Authorization token is missing.');
+      return;
+    }
+
+    if (!vd_code) {
+      setError('Dossier code (vd_code) is missing.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.get<ApiResponse>(
+        `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vd_code}`,
+        {
+          headers: {
+            Authorization: authorizationToken, // Use the token from state
+            'COMPANY-CODE': companyCode,
+            'FRONTEND-KEY': frontendKey,
+            PaginateResults: '1',
+            MaxResultsPerPage: '12',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
         }
-    };
+      );
+
+      if (response.data.status === 'treatmentSuccess') {
+        setFiles(response.data.data.primaryData._files.data);
+        setError(null);  // Clear previous errors on successful fetch
+      } else if (response.data.status === 'authenticationError') {
+        setError(response.data.data.primaryData.msg || 'Authentication failed');
+      }
+    } catch (err) {
+      setError('An error occurred while fetching the files');
+    } finally {
+      setLoading(false);
+    }
+  };
 
     // Retry fetching data when refresh button is clicked
     const handleRefresh = () => {
@@ -145,9 +156,43 @@ const UploadedFiles = () => {
         setFileToDelete(null);
     };
 
-    useEffect(() => {
-        fetchFiles();
-    }, []);
+
+  // useEffect to retrieve the token and fetch files
+  useEffect(() => {
+    // Retrieve the authorization token from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        const token = parsedData?.data?.primaryData?.authorization;
+        if (token) {
+          setAuthorizationToken(`Bearer ${token}`); // Store the token with 'Bearer' prefix
+        } else {
+          console.error('Authorization token not found');
+        }
+      } catch (error) {
+        console.error('Failed to parse auth data:', error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  // useEffect to fetch files once authorization token is set
+  useEffect(() => {
+    if (authorizationToken && vd_code) {
+      fetchFiles();
+    }
+  }, [authorizationToken, vd_code]); // Ensure it triggers when either authorizationToken or vd_code changes
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div style={{ color: 'red' }}>{error}</div>;
+  }
+
 
     return (
         <div className="min-h-[50vh] bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">

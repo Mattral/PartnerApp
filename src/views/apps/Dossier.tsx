@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Tooltip } from '@mui/material';
 import { useRouter } from "next/navigation";
 import { ToastContainer } from 'react-toastify';
@@ -15,18 +15,54 @@ const DossierPage: React.FC = () => {
   const [bottomCards, setBottomCards] = useState<number[]>([]);
   const router = useRouter();
 
-  const addTopCard = async () => {
-    try {
-      const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630', // Replace with actual token
-          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with the actual company code
-          'FRONTEND-KEY': 'XXX', // Replace with the actual frontend key
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({}), // Add payload if necessary
-      });
+// auth key from local ho
+const [authData, setAuthData] = useState<any | null>(null);
+
+
+  useEffect(() => {
+    // Retrieve auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  
+// auth key from local host
+
+const addTopCard = async () => {
+  let authorizationToken: string | undefined; // Declare it outside the block
+
+  // Check if authData and authData.data exist
+  if (authData && authData.data) {
+    const { primaryData } = authData.data;
+    authorizationToken = primaryData?.authorization; // Assign token if available
+  }
+
+  if (!authorizationToken) {
+    // Handle the case where there is no authorization token
+    console.error("Authorization token not found.");
+    return; // You can return here to prevent further execution if the token is missing
+  }
+
+  try {
+    const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authorizationToken}`,
+        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+        'FRONTEND-KEY': 'XXX',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({}),
+    });
 
       // Parse the response JSON
       const data = await response.json();
@@ -106,7 +142,7 @@ const DossierPage: React.FC = () => {
                     fontSize: '1.2rem', // Increase font size
                     padding: '16px 32px', // Increase padding to make the button larger
                     height: '45px', // Optionally increase height
-                    width: '200px' // Optionally increase width
+                    width: '240px' // Optionally increase width
                   }}
                 >
                   Start Application
@@ -166,7 +202,7 @@ const DossierPage: React.FC = () => {
                   fontSize: '1.2rem', // Increase font size
                   padding: '16px 32px', // Increase padding to make the button larger
                   height: '45px', // Optionally increase height
-                  width: '200px' // Optionally increase width
+                  width: '240px' // Optionally increase width
                 }}
               >
                 Start Application

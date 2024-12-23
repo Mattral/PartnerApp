@@ -16,48 +16,73 @@ type DossierData = {
 const DossierCount = ({ setDossierData }: { setDossierData: (data: DossierData) => void }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
+  // Fetch authorization token from localStorage
   useEffect(() => {
-    const fetchDossiers = async () => {
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
       try {
-        const response = await axios.get('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/', {
-          headers: {
-            'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630',
-            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
-            'FRONTEND-KEY': 'XXX', // Replace with actual frontend key
-            'PaginateResults': '1',
-            'MaxResultsPerPage': '12',
-            'X-Requested-With': 'XMLHttpRequest',
-          }
-        });
-
-        if (response.data.status === 'treatmentSuccess') {
-          const retrievedDossiers = response.data.data.primaryData._dossiers.data;
-          const dossierData = {
-            count: retrievedDossiers.length,
-            dossiers: retrievedDossiers.map((dossier: any) => ({
-              vd_code: dossier.vd_code,
-              vd_status: dossier.vd_status,
-            })),
-            dossierList: retrievedDossiers.map((dossier: any) => ({
-              vd_code: dossier.vd_code,
-              vd_status: dossier.vd_status,
-            })),
-          };
-          setDossierData(dossierData);
+        const parsedData = JSON.parse(storedAuthData);
+        const token = parsedData?.data?.primaryData?.authorization;
+        if (token) {
+          setAuthToken(token); // Store the token in the state
         } else {
-          setError('Failed to retrieve dossiers');
+          setError('Authorization token not found');
         }
       } catch (error) {
-        setError('Error fetching dossiers');
-      } finally {
-        setLoading(false);
+        console.error('Failed to parse auth data:', error);
+        setError('Failed to retrieve authorization token');
       }
-    };
+    } else {
+      setError('No authentication data found in localStorage');
+    }
+  }, []);
 
-    fetchDossiers();
-  }, [setDossierData]);
+  // Fetch the dossiers data
+  useEffect(() => {
+    if (authToken) {
+      const fetchDossiers = async () => {
+        try {
+          const response = await axios.get('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/', {
+            headers: {
+              'Authorization': `Bearer ${authToken}`, // Use the token retrieved from localStorage
+              'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+              'FRONTEND-KEY': 'XXX', // Replace with actual frontend key
+              'PaginateResults': '1',
+              'MaxResultsPerPage': '12',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+          });
 
+          if (response.data.status === 'treatmentSuccess') {
+            const retrievedDossiers = response.data.data.primaryData._dossiers.data;
+            const dossierData = {
+              count: retrievedDossiers.length,
+              dossiers: retrievedDossiers.map((dossier: any) => ({
+                vd_code: dossier.vd_code,
+                vd_status: dossier.vd_status,
+              })),
+              dossierList: retrievedDossiers.map((dossier: any) => ({
+                vd_code: dossier.vd_code,
+                vd_status: dossier.vd_status,
+              })),
+            };
+            setDossierData(dossierData);
+          } else {
+            setError('Failed to retrieve dossiers');
+          }
+        } catch (error) {
+          setError('Error fetching dossiers');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchDossiers();
+    }
+  }, [authToken, setDossierData]);
+  
   if (loading) {
     return <div>Loading...</div>;
   }
