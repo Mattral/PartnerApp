@@ -1,4 +1,82 @@
+import axios from 'axios';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { NextAuthOptions } from 'next-auth';
 
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      id: 'login',
+      name: 'Login',
+      credentials: {
+        email: { name: 'email', label: 'Email', type: 'email' },
+        password: { name: 'password', label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('Email and password are required');
+          }
+
+          const data = new FormData();
+          data.append('email', credentials.email);
+          data.append('password', credentials.password);
+
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';
+          const response = await axios.post(`${baseUrl}/api/auth/core/login`, data, {
+            headers: {
+              'COMPANY-CODE': process.env.COMPANY_CODE || 'def-mc-admin',
+              'FRONTEND-KEY': process.env.FRONTEND_KEY || 'XXX',
+            },
+          });
+
+          if (response.status === 200 && response.data.status === 'treatmentSuccess') {
+            const user = response.data.data.primaryData;
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              accessToken: user.authorization,
+            };
+          } else {
+            throw new Error('Invalid credentials');
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            throw new Error('Axios error: ' + error.response?.data?.message || error.message);
+          }
+          // @ts-ignore
+          throw new Error('Authentication failed: ' + error.message);
+        }
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        // @ts-ignore
+        token.accessToken = user.accessToken;
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.id = token.id;
+      // @ts-ignore
+      session.accessToken = token.accessToken; // Store accessToken in session if needed
+      return session;
+    },
+  },
+  session: {
+    strategy: 'jwt' as const, // Fix for type mismatch by asserting the type
+  },
+  pages: {
+    signIn: '/login',
+    newUser: '/register',
+  },
+};
+
+
+/* last version
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -107,7 +185,7 @@ export const authOptions: NextAuthOptions = {
     newUser: '/register'
   }
 };
-
+*/
 
 
 /*
