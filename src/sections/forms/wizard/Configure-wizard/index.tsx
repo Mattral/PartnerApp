@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, Stack, Typography, Button, Dialog, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import Notification from './Notification';
 import MultiFileUpload from './MultiFile';
@@ -8,6 +8,7 @@ import UploadedFiles from './UploadedFiles';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import FormData from 'form-data'; // If you are using Node.js
+import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
 
 // Main Component
 const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData, setFormData }: any) => {
@@ -15,20 +16,23 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openDialog, setOpenDialog] = useState(false); // Pop-up dialog state
-  const [selectedDocuments, setSelectedDocuments] = useState<any[]>([]);
   const [isUploading, setIsUploading] = useState(false); // State for tracking the loading state
+  const router = useRouter();
+  const searchParams = useSearchParams(); // Access search params
+  const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
 
-  const handleUpload = (data: any[]) => {
-    setSelectedDocuments(data);
-    setSnackbarMessage('Files uploaded successfully!');
-    setSnackbarSeverity('success');
-    setOpenSnackbar(true);
-  };
+  useEffect(() => {
+    // If vd_code is not available, handle it or show a loading message
+    if (!vd_code) {
+      console.error("vd_code is missing");
+    }
+  }, [vd_code]);
 
   const handleSubmit = async () => {
-    // Prepare form data (assuming 'vd_code' is available in the selected documents or formData)
-    const vd_code = 'vd-9db3069a-2c90-43f2-b62a-e01ec8d0065b'; // Example, replace with actual vd_code from your state or data
-  
+    if (!vd_code) {
+      toast.error("Dossier code (vd_code) is missing.");
+      return;
+    }
     // Show loading spinner while submitting
     setIsUploading(true);
   

@@ -1,4 +1,3 @@
-// views/apps/DossierCount.tsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -11,6 +10,7 @@ type Dossier = {
 type DossierData = {
   count: number;
   dossiers: Dossier[];
+  dossierList: Array<{ vd_code: string, vd_status: string }>; // Add the new array structure
 };
 
 const DossierCount = ({ setDossierData }: { setDossierData: (data: DossierData) => void }) => {
@@ -36,6 +36,10 @@ const DossierCount = ({ setDossierData }: { setDossierData: (data: DossierData) 
           const dossierData = {
             count: retrievedDossiers.length,
             dossiers: retrievedDossiers.map((dossier: any) => ({
+              vd_code: dossier.vd_code,
+              vd_status: dossier.vd_status,
+            })),
+            dossierList: retrievedDossiers.map((dossier: any) => ({
               vd_code: dossier.vd_code,
               vd_status: dossier.vd_status,
             })),

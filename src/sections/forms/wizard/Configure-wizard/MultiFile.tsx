@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { CloudUpload as CloudUploadIcon, FileUpload as FileUploadIcon, Description as DescriptionIcon } from '@mui/icons-material';
 import { Button, CircularProgress, Typography } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDropzone } from 'react-dropzone'; // Importing dropzone for drag-and-drop upload
+import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
 
 
 const documentOptions = [
@@ -16,14 +17,6 @@ const documentOptions = [
   { name: 'Student Identity', value: 'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889' },
 ];
 
-/*
-const documentOptions = [
-  'vidoc-9d8a21b6-72d4-4427-b9f2-510357a333b6',
-  'vidoc-9d84ce3d-a0e7-44ae-8ec9-16fa15c52b04',
-  'vidoc-9d84ce3d-a44c-46d9-870e-490401b16354',
-  'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889',
-];
-*/
 
 interface UploadResponse {
   status: string;
@@ -38,7 +31,18 @@ const UploadFiles = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [fileDocumentCodes, setFileDocumentCodes] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams(); // Access search params
 
+  const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
+
+  useEffect(() => {
+    // If vd_code is not available, handle it or show a loading message
+    if (!vd_code) {
+      console.error("vd_code is missing");
+    }
+  }, [vd_code]);
+  
   // Handle file selection (drag-and-drop or manual file picker)
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -59,9 +63,20 @@ const UploadFiles = () => {
   const handleUpload = async () => {
     setIsUploading(true);
 
-    const vd_code = 'vd-9db3069a-2c90-43f2-b62a-e01ec8d0065b';
-    const formData = new FormData();
-    formData.append('vd_code', vd_code);
+  // Get vd_code from searchParams
+  const vd_code = searchParams.get('vd_code'); 
+
+  // Check if vd_code is null and handle it
+  if (!vd_code) {
+    toast.error('Error: Dossier code (vd_code) is missing.');
+    setIsUploading(false);
+    return;
+  }
+
+  // Proceed with FormData if vd_code is available
+  const formData = new FormData();
+  formData.append('vd_code', vd_code); // Append vd_code to formData
+
 
     files.forEach((file, index) => {
       formData.append('files[' + index + ']', file);

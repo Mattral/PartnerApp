@@ -22,6 +22,7 @@ import {
     Warning as WarningIcon,
 } from '@mui/icons-material';
 import FormData from 'form-data'; // If you are using Node.js
+import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
 
 // Type definitions for the API response
 interface File {
@@ -51,7 +52,10 @@ const UploadedFiles = () => {
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [fileToDelete, setFileToDelete] = useState<File | null>(null);
 
-    const vdCode = 'vd-9db3069a-2c90-43f2-b62a-e01ec8d0065b'; // Replace with actual vd_code
+    const router = useRouter();
+    const searchParams = useSearchParams(); // Access search params
+    const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
+
     const authorizationToken = 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630'; // Replace with your actual token
     const companyCode = 'MC-H3HBRZU6ZK5744S'; // Replace with actual company code
     const frontendKey = 'XXX'; // Replace with your frontend key
@@ -61,7 +65,7 @@ const UploadedFiles = () => {
         try {
             setLoading(true);
             const response = await axios.get<ApiResponse>(
-                `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vdCode}`,
+                `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vd_code}`,
                 {
                     headers: {
                         Authorization: authorizationToken,
@@ -104,7 +108,7 @@ const UploadedFiles = () => {
         if (fileToDelete) {
             try {
                 const formData = new FormData();
-                formData.append('vd_code', vdCode);
+                formData.append('vd_code', vd_code);
                 formData.append('vf_codes[0]', fileToDelete.vf_code); // Delete only this file
     
                 // Send the delete request to the API
@@ -146,7 +150,7 @@ const UploadedFiles = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">
+        <div className="min-h-[50vh] bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">
             <div className="max-w-7xl mx-auto mb-auto">
                 <h1 className="text-5xl font-extrabold text-center text-gray-900 mb-12 animate__animated animate__fadeIn">
                     Uploaded Files

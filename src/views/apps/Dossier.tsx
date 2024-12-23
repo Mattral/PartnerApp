@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, Box, IconButton, Tooltip } from '@mui/material';
-import { styled, keyframes } from '@mui/system';
+import { Button, Tooltip } from '@mui/material';
 import { useRouter } from "next/navigation";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Make sure to import styles
@@ -11,91 +10,9 @@ type Dossier = {
   vd_status: string;
 };
 
-// Keyframes for shimmer and gentle glow animations
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-`;
-
-// Majestic dialog styling with ethereal glow
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiPaper-root': {
-    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7))',
-    backdropFilter: 'blur(15px)',
-    borderRadius: '30px',
-    border: '2px solid rgba(255, 215, 0, 0.3)',
-    boxShadow: '0 8px 32px rgba(255, 215, 0, 0.4)',
-    animation: `${pulse} 4s ease-in-out infinite`,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-}));
-
-// Title box with shimmering gradient and gold accent
-const TitleBox = styled(DialogTitle)(({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-  background: 'linear-gradient(90deg, #ffdd6b, #ffcf00, #ffe899)',
-  WebkitBackgroundClip: 'text',
-  color: 'transparent',
-  animation: `${shimmer} 3s linear infinite`,
-  backgroundSize: '400% 100%',
-}));
-
-// Golden ring for success indication
-const GoldenRing = styled('div')({
-  width: '50px',
-  height: '50px',
-  borderRadius: '50%',
-  border: '4px solid #ffd700',
-  boxShadow: '0 0 20px rgba(255, 215, 0, 0.6)',
-  animation: `${pulse} 2s ease-in-out infinite`,
-});
-
-// Radiant warning icon for error
-const RadiantWarning = styled('div')({
-  width: '50px',
-  height: '50px',
-  borderRadius: '50%',
-  background: 'radial-gradient(circle, rgba(255, 85, 85, 0.8) 0%, rgba(255, 140, 0, 0.7) 70%)',
-  boxShadow: '0 0 30px rgba(255, 85, 85, 0.5)',
-  animation: `${pulse} 2s ease-in-out infinite`,
-});
-
-// Majestic animated button styling
-const AnimatedButton = styled(Button)({
-  transition: 'transform 0.4s ease, background 0.3s',
-  backgroundColor: '#ffd700',
-  borderRadius: '25px',
-  color: '#fff',
-  fontWeight: 'bold',
-  padding: '12px 40px',
-  fontSize: '1rem',
-  animation: `${pulse} 2.5s ease-in-out infinite`,
-  '&:hover': {
-    transform: 'scale(1.1)',
-    backgroundColor: '#ffcf33',
-    boxShadow: '0px 6px 30px rgba(255, 215, 0, 0.5)',
-  },
-});
-
 const DossierPage: React.FC = () => {
   const [dossierData, setDossierData] = useState<{ count: number; dossiers: Dossier[] } | null>(null);
-
-  const [topCards, setTopCards] = useState<number[]>([]);
   const [bottomCards, setBottomCards] = useState<number[]>([]);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [cardToDelete, setCardToDelete] = useState<number | null>(null);
-  const [deleteFromTop, setDeleteFromTop] = useState<boolean | null>(null);
-  const [openDialog, setOpenDialog] = useState(false);
-
   const router = useRouter();
 
   const addTopCard = async () => {
@@ -153,15 +70,11 @@ const DossierPage: React.FC = () => {
     setBottomCards(prevBottomCards => [...prevBottomCards, prevBottomCards.length + 1]);
   };
 
-  const confirmDeleteCard = (index: number, isTop: boolean) => {
-    setOpenDialog(true);
-    setCardToDelete(index);
-    setDeleteFromTop(isTop); // Track whether we're deleting from the top or bottom
+  const handleConfigure = (vd_code: string) => {
+    router.push(`/forms/VOI/Client?vd_code=${vd_code}`);
   };
-
-  const handleConfigure = () => {
-    router.push("/forms/VOI/Client");
-  };
+  
+  
 
   return (
     <div style={styles.container}>
@@ -173,11 +86,11 @@ const DossierPage: React.FC = () => {
           <div style={styles.header}>
             {/* Left-aligned Title */}
             <div style={styles.textContainer}>
-              <span style={styles.titleText}>Verify your Civil Identity</span>
+              <span style={styles.titleText}>Apply as a user</span>
 
               {/* Left-aligned Subtitle */}
               <p style={styles.subtitleText}>
-                Verify this in order to be allowed to be granted call with advisors and many other benefits
+                Submit your identity verification
               </p>
             </div>
 
@@ -196,14 +109,11 @@ const DossierPage: React.FC = () => {
                     width: '200px' // Optionally increase width
                   }}
                 >
-                  Open a Dossier
+                  Start Application
                 </Button>
-
-
               </Tooltip>
             </div>
           </div>
-          <DossierCount setDossierData={setDossierData} />
 
           {/* Card Container (still centered and scrollable) */}
 
@@ -211,14 +121,14 @@ const DossierPage: React.FC = () => {
             <DossierCount setDossierData={setDossierData} />
             {dossierData ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
-                {dossierData.dossiers.map((dossier, index) => (
-                  <DossierCard
-                    key={dossier.vd_code} // Ensure the key is unique for each card
-                    title={`Dossier ${dossier.vd_code}`} // Display vd_code or a more readable name
-                    onDelete={() => confirmDeleteCard(index, false)}// Pass the index to the delete handler
-                    onConfigure={handleConfigure} // You can customize this handler
-                  />
-                ))}
+              {dossierData.dossiers.map((dossier) => (
+                <DossierCard
+                  key={dossier.vd_code} // Ensure the key is unique for each card
+                  title={`Dossier ${dossier.vd_code}`} // Use vd_code in the title
+                  status={dossier.vd_status} // Pass the vd_status to the DossierCard
+                  onConfigure={handleConfigure(dossier.vd_code)}
+                />
+              ))}
               </div>
             ) : (
               <div>Loading Dossier Data...</div>
@@ -234,23 +144,19 @@ const DossierPage: React.FC = () => {
       <div style={styles.section}>
         <div style={styles.header}>
 
-
           {/* Left-aligned Title */}
           <div style={styles.textContainer}>
-            <span style={styles.titleText}>Verify your Professional Identity</span>
+            <span style={styles.titleText}>Apply as an Advisor</span>
 
             {/* Left-aligned Subtitle */}
             <p style={styles.subtitleText}>
-              Verify this in order to be allowed to provide consulting services to people
+              Submit the documents that prove your professional status
             </p>
           </div>
 
           {/* Tooltip on the Open Dossier Button */}
-          {/* Right-aligned Button */}
           <div style={styles.buttonContainer}>
             <Tooltip title="Opening a dossier helps you submit professional credentials that will help us confirm your expertise" arrow>
-
-
               <Button
                 onClick={addBottomCard}
                 variant="contained"
@@ -263,42 +169,31 @@ const DossierPage: React.FC = () => {
                   width: '200px' // Optionally increase width
                 }}
               >
-                Open a Dossier
+                Start Application
               </Button>
             </Tooltip>
           </div>
         </div>
 
-
         <div style={styles.cardContainer}>
-          {bottomCards.map((_, index) => (
-            <DossierCard
-              key={index}
-              title={`Dossier${index + 1}`}
-              onDelete={() => confirmDeleteCard(index, false)}
-              onConfigure={handleConfigure}
-            />
-          ))}
+
         </div>
       </div>
-
     </div>
   );
 };
 
 const DossierCard = ({
   title,
-  onDelete,
+  status, // Add a status prop to display the dossier's status
   onConfigure,
 }: {
   title: string;
-  onDelete: () => void;
-  onConfigure: () => void;
+  status: string;  // Accept the status of the dossier
+  onConfigure;
 }) => {
   return (
     <div className="dossier-card">
-
-      {/* Nebula Background with floating particles */}
       <div className="card-background">
         <div className="particle-field">
           {[...Array(50)].map((_, index) => (
@@ -308,14 +203,11 @@ const DossierCard = ({
         <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/dossierC.png')] bg-cover opacity-70" />
       </div>
 
-      {/* Card Content */}
       <div className="card-content">
-        {/* Majestic Title */}
-        <h3 className="title majestic-text">Dossier</h3>
-
-        {/* Majestic Buttons */}
+        <h3 className="title majestic-text">{title}</h3>
+        <p>Status: {status}</p> {/* Display vd_status here */}
         <div className="button-group">
-          <button className="majestic-button edit-btn" onClick={onDelete}>
+          <button className="majestic-button edit-btn">
             Pending
           </button>
           <button className="majestic-button configure-btn" onClick={onConfigure}>
@@ -352,28 +244,6 @@ const DossierCard = ({
           opacity: 0.9;
           overflow: hidden;
           z-index: 0;
-        }
-        .particle-field {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }
-        .particle {
-          position: absolute;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.8);
-          box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8);
-          animation: floating 5s infinite ease-in-out, twinkle 3s infinite alternate;
-          opacity: 0.7;
-          width: 6px;
-          height: 6px;
-        }
-        .particle:nth-child(odd) {
-          animation-duration: 4s;
-        }
-        .particle:nth-child(even) {
-          animation-duration: 6s;
         }
 
         .card-content {
@@ -424,31 +294,12 @@ const DossierCard = ({
           color: #a64dff;
         }
 
-        /* Animations for particles */
-        @keyframes floating {
-          0% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-          100% {
-            transform: translateY(0);
-          }
-        }
-        @keyframes twinkle {
-          0%,
-          100% {
-            opacity: 0.6;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
       `}</style>
     </div>
   );
 };
+
+export default DossierPage;
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -557,7 +408,3 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "30px",
   },
 };
-
-
-export default DossierPage;
-
