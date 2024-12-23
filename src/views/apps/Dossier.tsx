@@ -120,7 +120,7 @@ const DossierPage: React.FC = () => {
           <div style={styles.cardContainer}>
             <DossierCount setDossierData={setDossierData} />
             {dossierData ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+              <div style={{ display: 'flex', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
               {dossierData.dossiers.map((dossier) => (
                 <DossierCard
                   key={dossier.vd_code} // Ensure the key is unique for each card
