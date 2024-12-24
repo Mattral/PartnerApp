@@ -211,7 +211,7 @@ const CustomerCard = ({ customer }: { customer: CustomerList }) => {
           sx={{ mt: 'auto', mb: 0, pt: 2.25 }}
         >
           <Typography variant="caption" color="secondary">
-            Updated in {customer.time}
+            Preferred work time in {customer.time}
           </Typography>
           <Button variant="outlined" size="small" onClick={handleClickOpen}>
             Preview

@@ -115,9 +115,9 @@ const applications: NavItemType = {
       children: [
         {
           id: 'PersonalRoom',
-          title: <FormattedMessage id="Personal Room" />,
+          title: <FormattedMessage id="List of Advisor (API)" />,
           type: 'item',
-          url: '/apps/e-commerce/PersonalRoom'
+          url: '/apps/advisorCard'
         },
         {
           id: 'MeetingRoom',
@@ -139,6 +139,7 @@ const applications: NavItemType = {
           type: 'item',
           url: '/apps/e-commerce/Schedule'
         },
+        /*
         {
           id: 'Recordings',
           title: <FormattedMessage id="Session Room" />,
@@ -151,6 +152,7 @@ const applications: NavItemType = {
           type: 'item',
           url: '/apps/e-commerce/checkout'
         },
+        */
       ]
     }
 
