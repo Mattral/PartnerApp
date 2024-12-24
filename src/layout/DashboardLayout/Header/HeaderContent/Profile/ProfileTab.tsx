@@ -32,6 +32,10 @@ const ProfileTab = ({ handleLogout }: Props) => {
       // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
       router.push('/apps/Dossier');
     }
+    if (index === 3) {
+      // Navigate to "/apps/Dossier" only when "VoI Dossier" is clicked
+      router.push('/apps/profiles/Advisor');
+    }
   };
 
   return (
@@ -53,7 +57,7 @@ const ProfileTab = ({ handleLogout }: Props) => {
         <ListItemIcon>
           <Profile2User variant="Bulk" size={18} />
         </ListItemIcon>
-        <ListItemText primary="Social Profile" />
+        <ListItemText primary="Advisor Profile Config" />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 4} onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 4)}>
         <ListItemIcon>

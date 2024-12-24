@@ -3692,10 +3692,10 @@
   resolved "https://registry.npmjs.org/@zoom/videosdk-ui-toolkit/-/videosdk-ui-toolkit-1.12.1-1.tgz"
   integrity sha512-6C5EnC62cn5zSK5QoTr46BilKDaitaOq02vX3M3a5nVaJiMobSGFOUywSA1IDTwtdKMRnx5u6QY+maBgV7pMQw==
 
-"@zoom/videosdk@^1.12.5":
-  version "1.12.5"
-  resolved "https://registry.npmjs.org/@zoom/videosdk/-/videosdk-1.12.5.tgz"
-  integrity sha512-VhMJSShzLy3ZsxQqkN8rQZbQf+l3mLi30EwxpjUa+3X9IT8vf0W/hc56ERPAyzdvGFRA4TzjXxVnRJUbWOh6fA==
+"@zoom/videosdk@^1.12.14":
+  version "1.12.14"
+  resolved "https://registry.npmjs.org/@zoom/videosdk/-/videosdk-1.12.14.tgz"
+  integrity sha512-ndD+HEfOML9jMu0q78zcNEegT4xlFddIqsmXw+OZck2Iwcen+AOzKW5jeheo84Ti9mC8FvAyCdDp4XsR62kyXg==
 
 abbrev@1:
   version "1.1.1"
