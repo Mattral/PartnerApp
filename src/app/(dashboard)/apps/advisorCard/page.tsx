@@ -28,6 +28,9 @@ import Avatar from 'components/@extended/Avatar'; // Custom Avatar component
 import MoreIcon from 'components/@extended/MoreIcon'; // Custom MoreIcon component
 import MainCard from 'components/MainCard'; // Custom MainCard component
 
+// IMPORTING THE POPUP COMPONENT
+import PreviewPopup from './PreviewPopup'; // Import the PreviewPopup component
+
 // ==============================|| ADVISOR FETCHER ||============================== //
 
 const AdvisorFetcher = () => {
@@ -35,6 +38,11 @@ const AdvisorFetcher = () => {
   const [searchKey, setSearchKey] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
+  // State for handling popup visibility
+  const [openPopup, setOpenPopup] = useState(false);
+  const [selectedPersCode, setSelectedPersCode] = useState('');
+  const [selectedUiCode, setSelectedUiCode] = useState('');
 
   // Fetching advisors data with the dynamic params
   const advisors = useAdvisorData(searchKey, minPrice, maxPrice);
@@ -46,6 +54,12 @@ const AdvisorFetcher = () => {
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handlePreviewClick = (pers_code: string, ui_code: string) => {
+    setSelectedPersCode(pers_code);
+    setSelectedUiCode(ui_code);
+    setOpenPopup(true); // Open the popup with selected codes
   };
 
   const renderAdvisorCard = (advisor: any, index: number) => (
@@ -128,9 +142,7 @@ const AdvisorFetcher = () => {
                       <Link2 size={18} />
                     </ListItemIcon>
                     <ListItemText
-                      primary={<Typography color="secondary">
-                          Role: {advisor.pp_jobTitle}
-                          </Typography>}
+                      primary={<Typography color="secondary">Role: {advisor.pp_jobTitle}</Typography>}
                     />
                   </ListItem>
                 </List>
@@ -157,7 +169,7 @@ const AdvisorFetcher = () => {
           sx={{ mt: 'auto', mb: 0, pt: 2.25 }}
         >
           <Typography variant="caption" color="secondary">Preferred timezone: {advisor.pers_preferredTimezone}</Typography>
-          <Button variant="outlined" size="small" onClick={() => console.log('Preview')}>
+          <Button variant="outlined" size="small" onClick={() => handlePreviewClick(advisor.pers_code, advisor.ui_code)}>
             Preview
           </Button>
         </Stack>
@@ -178,7 +190,6 @@ const AdvisorFetcher = () => {
     setMaxPrice(event.target.value);
   };
 
-  // Render all advisor cards
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 4 }}>Schedule a call with Advisor</Typography>
@@ -214,6 +225,14 @@ const AdvisorFetcher = () => {
       <Grid container spacing={3} justifyContent="center">
         {advisors.map((advisor, index) => renderAdvisorCard(advisor, index))}
       </Grid>
+
+      {/* Preview Popup */}
+      <PreviewPopup
+        open={openPopup}
+        onClose={() => setOpenPopup(false)}
+        pers_code={selectedPersCode}
+        ui_code={selectedUiCode}
+      />
     </Box>
   );
 };
