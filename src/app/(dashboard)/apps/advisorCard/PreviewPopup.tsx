@@ -21,25 +21,27 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
   const [profileLoading, setProfileLoading] = useState(false);  // To track loading state of advisor API
 
   // Function to handle the conversion to ISO 8601 format with +00:00 timezone
-  const convertToApiDateFormat = (time: string): string => {
-    const date = new Date(time); // Convert string to Date object
-
+// Function to convert the date to the required format `YYYY-MM-DD HH:mm:ss+00:00`
+const convertToApiDateFormat = (inputDate: string): string => {
+    const date = new Date(inputDate); // Parse the input date string into a Date object
+  
     // Check if the date is valid
     if (isNaN(date.getTime())) {
       throw new Error("Invalid date");
     }
-
-    // Format the date to `Y-m-d H:i:s+00:00`
+  
+    // Format the date to the required API format
     const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-    // Return the formatted date string with +00:00 timezone
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+00:00`;
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Get month (1-12)
+    const day = String(date.getUTCDate()).padStart(2, '0'); // Get day (1-31)
+    const hours = String(date.getUTCHours()).padStart(2, '0'); // Get hours (0-23)
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0'); // Get minutes (0-59)
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0'); // Get seconds (0-59)
+  
+    // Return the formatted date string
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00:00`;
   };
+  
 
   // Fetch the advisor profile when the popup is opened
   useEffect(() => {
@@ -82,7 +84,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
       setError('Please fill in all fields.');
       return;
     }
-
+  
     // Check if the provided date is in the future
     const requestedDate = new Date(ca_requestedFor);
     const currentDate = new Date();
@@ -90,21 +92,21 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
       setError('The requested date/time must be in the future.');
       return;
     }
-
+  
     setLoading(true);
     setError(null);  // Reset any previous errors
     setSuccess(null); // Reset any previous success message
-
+  
     const apiUrl = 'https://lawonearth.co.uk/api/back-office/partner/call-appointments/create';
     const token = '604|QBA1u0JACnLnTwCstUuKd2NRE6UbKXxIMJ6CfYc2bdfcbd9f'; // Your Authorization Token
     const companyCode = 'MC-H3HBRZU6ZK5744S'; // Your Company Code
     const frontendKey = 'XXX'; // Replace with your frontend key
     const redirectUrl = 'https://lawonearth.org/'; // The redirect URL
-
+  
     try {
       // Convert to API format (ISO 8601 +00:00 timezone)
       const formattedDateTime = convertToApiDateFormat(ca_requestedFor);
-
+  
       const payload = {
         ui_code, // UI code to be booked
         ca_title, // Title from the form
@@ -112,24 +114,39 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
         ca_requestedFor: formattedDateTime, // Date-time with timezone offset
         redirectUrl, // Redirect URL after the session
       };
-
+  
       const headers = {
         Authorization: `Bearer ${token}`,
         'COMPANY-CODE': companyCode,
         'FRONTEND-KEY': frontendKey,
         'X-Requested-With': 'XMLHttpRequest',
       };
-
+  
+      // Make the API call to create the appointment
       const response = await axios.post(apiUrl, payload, { headers });
-      setSuccess('Appointment successfully booked!');
+  
+      if (response.data.status === 'treatmentFailure' && response.data.data.primaryData.msg) {
+        // If API returns an error message in `msg`, set it as the error message
+        setError(response.data.data.primaryData.msg);
+      } else {
+        setSuccess('Appointment successfully booked!');
+      }
       console.log(response.data);
     } catch (err: any) {
-      setError('Failed to book appointment. Please try again.');
+      // General error handling (network errors, etc.)
+      if (err.response && err.response.data && err.response.data.status === 'treatmentFailure') {
+        // If the error response is treatmentFailure, show the error message from the API
+        setError(err.response.data.data.primaryData.msg);
+      } else {
+        // If it's a network error or other unexpected error
+        setError('Failed to book appointment. Please try again.');
+      }
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
