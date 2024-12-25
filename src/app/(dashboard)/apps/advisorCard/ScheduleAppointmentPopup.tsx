@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, CircularProgress, Typography, Box } from '@mui/material';
-import { CheckCircleOutline, ErrorOutline } from '@mui/icons-material'; // Import MUI icons
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  TextField,
+  CircularProgress,
+  Typography,
+  Box,
+  IconButton,
+  InputAdornment,
+} from '@mui/material';
+import { CheckCircleOutline, ErrorOutline, EventNote, Description, AccessTime } from '@mui/icons-material'; // Import additional icons
 import axios from 'axios';
 
 interface ScheduleAppointmentPopupProps {
@@ -27,7 +39,7 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
         const parsedData = JSON.parse(storedAuthData);
         setAuthData(parsedData);
       } catch (error) {
-        console.error("Failed to parse auth data:", error);
+        console.error('Failed to parse auth data:', error);
       }
     }
   }, []);
@@ -86,7 +98,7 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
 
     try {
       const response = await axios.post(apiUrl, payload, { headers });
-      
+
       if (response.data.status === 'treatmentFailure') {
         setError(response.data.data.primaryData.msg);
       } else {
@@ -116,6 +128,13 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
             value={ca_title}
             onChange={(e) => setCaTitle(e.target.value)}
             margin="normal"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EventNote />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
         <Box mb={2}>
@@ -128,6 +147,13 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
             value={ca_desc}
             onChange={(e) => setCaDesc(e.target.value)}
             margin="normal"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Description />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
         <Box mb={2}>
@@ -139,6 +165,13 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
             fullWidth
             InputLabelProps={{
               shrink: true,
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccessTime />
+                </InputAdornment>
+              ),
             }}
           />
         </Box>
@@ -158,11 +191,21 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
         )}
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px' }}>
-        <Button onClick={onClose} color="primary">Cancel</Button>
+        <Button onClick={onClose} color="primary" sx={{ fontWeight: '600' }}>
+          Cancel
+        </Button>
         <Button
           onClick={bookAppointment}
           color="primary"
           disabled={loading}
+          sx={{
+            fontWeight: '600',
+            backgroundColor: '#1976d2',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#1565c0',
+            },
+          }}
         >
           {loading ? 'Booking...' : 'Book Appointment'}
         </Button>
