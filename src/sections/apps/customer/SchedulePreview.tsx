@@ -18,18 +18,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 // THIRD-PARTY
-import { PDFDownloadLink } from '@react-pdf/renderer';
 import ReactDatePicker from 'react-datepicker';
 
 
 // PROJECT IMPORTS
-import AlertCustomerDelete from './AlertCustomerDelete';
-import ListCard from './export-pdf/ListCard';
 import MainCard from 'components/MainCard';
 import Avatar from 'components/@extended/Avatar';
 import IconButton from 'components/@extended/IconButton';

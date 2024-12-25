@@ -1,63 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, CircularProgress, TextField, Box } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, CircularProgress, Box, List, ListItem, ListItemText } from '@mui/material';
 import axios from 'axios';
+import ScheduleAppointmentPopup from './ScheduleAppointmentPopup'; // Import ScheduleAppointmentPopup
 
 interface PreviewPopupProps {
   open: boolean;
   onClose: () => void;
-  pers_code: string;  // Person ID code used in the API
-  ui_code: string;    // Use this as the UI code
+  pers_code: string;
+  ui_code: string;
 }
 
 const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, ui_code }) => {
-  // State for inputs and loading
-  const [ca_title, setCaTitle] = useState('');
-  const [ca_desc, setCaDesc] = useState('');
-  const [ca_requestedFor, setCaRequestedFor] = useState<string>(''); // Store as string for datetime-local
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [advisorProfile, setAdvisorProfile] = useState<any | null>(null);  // To store the advisor profile data
-  const [profileLoading, setProfileLoading] = useState(false);  // To track loading state of advisor API
+  const [advisorProfile, setAdvisorProfile] = useState<any | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [authData, setAuthData] = useState<any | null>(null);
+  const [showSchedulePopup, setShowSchedulePopup] = useState(false); // State to control ScheduleAppointmentPopup visibility
+  const [sortedAdvisorProfile, setSortedAdvisorProfile] = useState<any | null>(null); // State for sorted-out profile
 
-  // Function to handle the conversion to ISO 8601 format with +00:00 timezone
-// Function to convert the date to the required format `YYYY-MM-DD HH:mm:ss+00:00`
-const convertToApiDateFormat = (inputDate: string): string => {
-    const date = new Date(inputDate); // Parse the input date string into a Date object
-  
-    // Check if the date is valid
-    if (isNaN(date.getTime())) {
-      throw new Error("Invalid date");
-    }
-  
-    // Format the date to the required API format
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Get month (1-12)
-    const day = String(date.getUTCDate()).padStart(2, '0'); // Get day (1-31)
-    const hours = String(date.getUTCHours()).padStart(2, '0'); // Get hours (0-23)
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0'); // Get minutes (0-59)
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0'); // Get seconds (0-59)
-  
-    // Return the formatted date string
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00:00`;
-  };
-  
-
-  // Fetch the advisor profile when the popup is opened
   useEffect(() => {
-    if (open && pers_code) {
-      fetchAdvisorProfile();
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
     }
-  }, [open, pers_code]);
+  }, []);
 
-  // Function to fetch the advisor profile data
   const fetchAdvisorProfile = async () => {
     setProfileLoading(true);
-    setAdvisorProfile(null); // Reset previous profile data
+    setAdvisorProfile(null);
+    setSortedAdvisorProfile(null); // Reset sorted data
 
     const apiUrl = `https://lawonearth.co.uk/api/partner/advisors/${pers_code}`;
-    const token = '604|QBA1u0JACnLnTwCstUuKd2NRE6UbKXxIMJ6CfYc2bdfcbd9f'; // Your Authorization Token
-    const companyCode = 'MC-H3HBRZU6ZK5744S'; // Your Company Code
+    const token = authData ? authData?.data?.primaryData?.authorization : '';
+    const companyCode = 'MC-H3HBRZU6ZK5744S';
     const frontendKey = 'XXX'; // Replace with your frontend key
 
     const headers = {
@@ -69,157 +50,188 @@ const convertToApiDateFormat = (inputDate: string): string => {
 
     try {
       const response = await axios.get(apiUrl, { headers });
-      setAdvisorProfile(response.data);  // Store advisor data
+      setAdvisorProfile(response.data);
+
+      // Process and sort out the data as needed
+      const sortedProfile = processProfileData(response.data);
+      setSortedAdvisorProfile(sortedProfile);
     } catch (err) {
-      setError('Failed to fetch advisor profile.');
-      console.error(err);
+      console.error('Failed to fetch advisor profile.', err);
     } finally {
       setProfileLoading(false);
     }
   };
 
-  // Function to handle the API call for creating the appointment
-  const bookAppointment = async () => {
-    if (!ca_title || !ca_desc || !ca_requestedFor) {
-      setError('Please fill in all fields.');
-      return;
-    }
-  
-    // Check if the provided date is in the future
-    const requestedDate = new Date(ca_requestedFor);
-    const currentDate = new Date();
-    if (requestedDate <= currentDate) {
-      setError('The requested date/time must be in the future.');
-      return;
-    }
-  
-    setLoading(true);
-    setError(null);  // Reset any previous errors
-    setSuccess(null); // Reset any previous success message
-  
-    const apiUrl = 'https://lawonearth.co.uk/api/back-office/partner/call-appointments/create';
-    const token = '604|QBA1u0JACnLnTwCstUuKd2NRE6UbKXxIMJ6CfYc2bdfcbd9f'; // Your Authorization Token
-    const companyCode = 'MC-H3HBRZU6ZK5744S'; // Your Company Code
-    const frontendKey = 'XXX'; // Replace with your frontend key
-    const redirectUrl = 'https://lawonearth.org/'; // The redirect URL
-  
-    try {
-      // Convert to API format (ISO 8601 +00:00 timezone)
-      const formattedDateTime = convertToApiDateFormat(ca_requestedFor);
-  
-      const payload = {
-        ui_code, // UI code to be booked
-        ca_title, // Title from the form
-        ca_desc,  // Description from the form
-        ca_requestedFor: formattedDateTime, // Date-time with timezone offset
-        redirectUrl, // Redirect URL after the session
-      };
-  
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        'COMPANY-CODE': companyCode,
-        'FRONTEND-KEY': frontendKey,
-        'X-Requested-With': 'XMLHttpRequest',
-      };
-  
-      // Make the API call to create the appointment
-      const response = await axios.post(apiUrl, payload, { headers });
-  
-      if (response.data.status === 'treatmentFailure' && response.data.data.primaryData.msg) {
-        // If API returns an error message in `msg`, set it as the error message
-        setError(response.data.data.primaryData.msg);
-      } else {
-        setSuccess('Appointment successfully booked!');
-      }
-      console.log(response.data);
-    } catch (err: any) {
-      // General error handling (network errors, etc.)
-      if (err.response && err.response.data && err.response.data.status === 'treatmentFailure') {
-        // If the error response is treatmentFailure, show the error message from the API
-        setError(err.response.data.data.primaryData.msg);
-      } else {
-        // If it's a network error or other unexpected error
-        setError('Failed to book appointment. Please try again.');
-      }
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const processProfileData = (data: any) => {
+    // Process and return the sorted data structure based on your needs
+    const sortedData = {
+      fullName: `${data.data.primaryData._advisor.pers_fName} ${data.data.primaryData._advisor.pers_lName}`,
+      email: data.data.primaryData._advisor.email,
+      phone: data.data.primaryData._advisor.pers_phone1International,
+      profilePic: data.data.primaryData._advisor.pers_profilePic,
+      dateOfBirth: data.data.primaryData._advisor.pers_birthdate,
+      preferredTimezone: data.data.primaryData._advisor.pers_preferredTimezone,
+      jobTitle: data.data.primaryData._advisor.expertiseDomains[0]?.pp_jobTitle,
+      jobDesc: data.data.primaryData._advisor.expertiseDomains[0]?.pp_jobDesc,
+      hourlyRate: data.data.primaryData._advisor.expertiseDomains[0]?.pp_hourlyRate,
+      type: data.data.primaryData._advisor.expertiseDomains[0]?.ed_name,
+      officeTimes: data.data.primaryData._advisor.officeTimes.map((timeSlot) => ({
+        dayOfWeek: timeSlot.ot_dayOfWeek || 'N/A',  // Ensure we have default values
+        startTime: timeSlot.ot_startTime || 'N/A',  // Ensure we have default values
+        endTime: timeSlot.ot_endTime || 'N/A',      // Ensure we have default values
+        paidMeetingBufferTime: timeSlot.pp_paidMeetingBufferTime || 'N/A', // Default value
+        probonoMeetingBufferTime: timeSlot.pp_probonoMeetingBufferTime || 'N/A', // Default value
+        allowProbonoMeeting: timeSlot.ot_allowProbonoMeeting || false, // Default value
+        allowPaidMeeting: timeSlot.ot_allowPaidMeeting || false,  // Default value
+      })),
+
+      ratings: {
+        average: data.data.primaryData._advisor.averageRating,
+        lastRatings: data.data.primaryData._advisor.lastRatings,
+      },
+      availability: data.data.primaryData._advisor.availability, // Assuming this data exists in the API response
+    };
+    return sortedData;
   };
-  
+
+  useEffect(() => {
+    if (open && pers_code) {
+      fetchAdvisorProfile();
+    }
+  }, [open, pers_code]);
+
+  const capitalizeFirstLetter = (string) => {
+    if (typeof string !== 'string' || string.trim() === '') {
+      return ''; // Return an empty string if the input is not a valid string
+    }
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Preview</DialogTitle>
       <DialogContent sx={{ overflowY: 'auto', maxHeight: '400px' }}>
-        <Typography variant="h6">HELLO {pers_code} + {ui_code}</Typography>
-
-        {/* Input fields for ca_title, ca_desc, ca_requestedFor */}
-        <Box marginBottom={2}>
-          <TextField
-            label="Session Title"
-            variant="outlined"
-            fullWidth
-            value={ca_title}
-            onChange={(e) => setCaTitle(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="Session Description"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            value={ca_desc}
-            onChange={(e) => setCaDesc(e.target.value)}
-            margin="normal"
-          />
-        </Box>
-
-        {/* Simple datetime-local input */}
-        <TextField
-          label="Session Date & Time"
-          type="datetime-local"
-          value={ca_requestedFor}
-          onChange={(e) => setCaRequestedFor(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          fullWidth
-          margin="normal"
-        />
-
-        {/* Show success or error messages */}
-        {loading && <CircularProgress />}
-        {success && <Typography color="green">{success}</Typography>}
-        {error && <Typography color="red">{error}</Typography>}
 
         {/* Advisor Profile Section */}
         {profileLoading && <CircularProgress />}
-        {advisorProfile && (
+        {sortedAdvisorProfile && (
           <Box mt={2}>
-            <Typography variant="h6">Advisor Profile</Typography>
-            <pre>{JSON.stringify(advisorProfile, null, 2)}</pre>
+            {/* Advisor Information */}
+            <Typography variant="h6">Advisor Information</Typography>
+            <List>
+              <ListItem>
+                <ListItemText primary="Name" secondary={sortedAdvisorProfile.fullName} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Email" secondary={sortedAdvisorProfile.email} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Phone" secondary={sortedAdvisorProfile.phone} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Profile Picture" secondary={sortedAdvisorProfile.profilePic || 'No profile picture available'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Date of Birth" secondary={sortedAdvisorProfile.dateOfBirth || 'N/A'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Timezone" secondary={sortedAdvisorProfile.preferredTimezone || 'N/A'} />
+              </ListItem>
+            </List>
+
+            {/* Expertise Section */}
+            <Typography variant="h6" mt={3}>Expertise</Typography>
+            <List>
+              <ListItem>
+                <ListItemText primary="Job Title" secondary={sortedAdvisorProfile.jobTitle || 'N/A'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Job Description" secondary={sortedAdvisorProfile.jobDesc || 'N/A'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Hourly Rate" secondary={`$${sortedAdvisorProfile.hourlyRate || 'N/A'} USD`} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Type" secondary={sortedAdvisorProfile.type || 'N/A'} />
+              </ListItem>
+            </List>
+
+            {/* Office Times */}
+            <Typography variant="h6" mt={3}>Office Times</Typography>
+            <List>
+              {sortedAdvisorProfile.officeTimes
+                // Sort office times by day of the week
+                .sort((a, b) => {
+                  const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                  return daysOfWeek.indexOf(a.dayOfWeek.toLowerCase()) - daysOfWeek.indexOf(b.dayOfWeek.toLowerCase());
+                })
+                .map((officeTime, index) => (
+                  <ListItem key={index}>
+                    <ListItemText
+                      primary={capitalizeFirstLetter(officeTime.dayOfWeek)}  // Corrected to 'dayOfWeek'
+                      secondary={`From: ${officeTime.startTime} to ${officeTime.endTime}`}  // Corrected to 'startTime' and 'endTime'
+                    />
+                    <ListItemText
+                      primary="Pro Bono Allowed"
+                      secondary={officeTime.allowProbonoMeeting ? 'Yes' : 'No'}  // Corrected to 'allowProbonoMeeting'
+                    />
+                    <ListItemText
+                      primary="Paid Meeting Allowed"
+                      secondary={officeTime.allowPaidMeeting ? 'Yes' : 'No'}  // Corrected to 'allowPaidMeeting'
+                    />
+                    <ListItemText
+                      primary="Pro Bono Meeting Buffer Time"
+                      secondary={`${officeTime.probonoMeetingBufferTime} minutes`}  // Corrected to 'probonoMeetingBufferTime'
+                    />
+                    <ListItemText
+                      primary="Paid Meeting Buffer Time"
+                      secondary={`${officeTime.paidMeetingBufferTime} minutes`}  // Corrected to 'paidMeetingBufferTime'
+                    />
+                  </ListItem>
+                ))}
+            </List>
+
+            {/* Availability */}
+            <Typography variant="h6" mt={3}>Availability</Typography>
+            <List>
+              <ListItem>
+                <ListItemText primary="Next 30 Days" secondary={sortedAdvisorProfile.availability || 'No availability listed.'} />
+              </ListItem>
+            </List>
+
+            {/* Ratings Section */}
+            <Typography variant="h6" mt={3}>Ratings</Typography>
+            <List>
+              <ListItem>
+                <ListItemText primary="Average Rating" secondary={sortedAdvisorProfile.ratings?.average || 'Not available'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Last 10 Ratings" secondary={sortedAdvisorProfile.ratings?.lastRatings || 'No ratings available'} />
+              </ListItem>
+            </List>
           </Box>
         )}
-        {error && <Typography color="red">{error}</Typography>}
+
+        {/* Trigger the ScheduleAppointmentPopup */}
+        <DialogActions>
+          <Button onClick={onClose} color="primary">Close</Button>
+          <Button onClick={() => setShowSchedulePopup(true)} color="primary">
+            Book Appointment
+          </Button>
+        </DialogActions>
+
+        {/* Show ScheduleAppointmentPopup */}
+        <ScheduleAppointmentPopup
+          open={showSchedulePopup}
+          onClose={() => setShowSchedulePopup(false)}
+          pers_code={pers_code}
+          ui_code={ui_code}
+        />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">Close</Button>
-        <Button
-          onClick={bookAppointment}
-          color="primary"
-          disabled={loading} // Disable button while loading
-        >
-          {loading ? 'Booking...' : 'Book Appointment'}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
 
 export default PreviewPopup;
-
-
-
-//https://www.apidog.com/apidoc/shared-5bab9a98-f313-440e-a311-d5f0983afa1d/api-9031511
