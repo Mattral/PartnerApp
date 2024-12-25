@@ -152,7 +152,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
             }
           >
             <ListItemAvatar sx={{ mr: 2 }}>
-              <Avatar alt={sortedAdvisorProfile?.fullName} size="lg" src={sortedAdvisorProfile?.profilePic || '/assets/images/default-avatar.png'} />
+              <Avatar alt={sortedAdvisorProfile?.fullName} size="xl" src={sortedAdvisorProfile?.profilePic || '/assets/images/default-avatar.png'} />
             </ListItemAvatar>
             <ListItemText
               primary={<Typography variant="h5" sx={{ fontWeight: 'bold' }}>{sortedAdvisorProfile?.fullName || 'N/A'}</Typography>}
@@ -191,24 +191,55 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
 
                   <Grid item xs={12}>
                     <MainCard title="Contact Info">
-                      <List sx={{ py: 0 }}>
-                        <ListItem>
-                          <Phone sx={{ mr: 2, color: 'primary.main' }} />
-                          <ListItemText primary="Phone" secondary={sortedAdvisorProfile.phone || 'N/A'} />
-                        </ListItem>
-                        <ListItem>
-                          <Email sx={{ mr: 2, color: 'primary.main' }} />
-                          <ListItemText primary="Email" secondary={sortedAdvisorProfile.email || 'N/A'} />
-                        </ListItem>
-                        <ListItem>
-                          <Event sx={{ mr: 2, color: 'primary.main' }} />
-                          <ListItemText primary="Date of Birth" secondary={sortedAdvisorProfile.dateOfBirth || 'N/A'} />
-                        </ListItem>
-                        <ListItem>
-                          <Accessibility sx={{ mr: 2, color: 'primary.main' }} />
-                          <ListItemText primary="Timezone" secondary={sortedAdvisorProfile.preferredTimezone || 'N/A'} />
-                        </ListItem>
-                      </List>
+                      <Grid container spacing={3}>
+                        {/* Phone and Timezone */}
+                        <Grid item xs={6} sm={3}>
+                          <Grid container alignItems="center" spacing={1}>
+                            <Grid item>
+                              <Phone sx={{ color: 'primary.main' }} />
+                            </Grid>
+                            <Grid item>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Phone</Typography>
+                              <Typography variant="body1">{sortedAdvisorProfile.phone || 'N/A'}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={6} sm={3}>
+                          <Grid container alignItems="center" spacing={1}>
+                            <Grid item>
+                              <Accessibility sx={{ color: 'primary.main' }} />
+                            </Grid>
+                            <Grid item>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Timezone</Typography>
+                              <Typography variant="body1">{sortedAdvisorProfile.preferredTimezone || 'N/A'}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+
+                        {/* Email and Date of Birth */}
+                        <Grid item xs={6} sm={3}>
+                          <Grid container alignItems="center" spacing={1}>
+                            <Grid item>
+                              <Email sx={{ color: 'primary.main' }} />
+                            </Grid>
+                            <Grid item>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Email</Typography>
+                              <Typography variant="body1">{sortedAdvisorProfile.email || 'N/A'}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={6} sm={3}>
+                          <Grid container alignItems="center" spacing={1}>
+                            <Grid item>
+                              <Event sx={{ color: 'primary.main' }} />
+                            </Grid>
+                            <Grid item>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Date of Birth</Typography>
+                              <Typography variant="body1">{sortedAdvisorProfile.dateOfBirth || 'N/A'}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
                     </MainCard>
                   </Grid>
 

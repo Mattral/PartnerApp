@@ -82,11 +82,11 @@ const AdvisorFetcher = () => {
                 }
               >
                 <ListItemAvatar>
-                  <Avatar alt={`${advisor.pers_fName} ${advisor.pers_lName}`} src={advisor.pers_profilePic} />
+                  <Avatar alt={`${advisor.pers_fName} ${advisor.pers_lName}`} size="xl" src={advisor.pers_profilePic} />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">{advisor.pers_fName} {advisor.pers_lName}</Typography>}
-                  secondary={<Typography variant="caption" color="secondary">{advisor.ed_name}</Typography>}
+                  primary={<Typography variant="subtitle1" sx={{ marginLeft: 2 }}>{advisor.pers_fName} {advisor.pers_lName}</Typography>}
+                  secondary={<Typography variant="caption" color="secondary" sx={{ marginLeft: 2 }}>{advisor.ed_name}</Typography>}
                 />
               </ListItem>
             </List>
