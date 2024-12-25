@@ -48,8 +48,8 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
   const convertToApiDateFormat = (inputDate: string): string => {
     const date = new Date(inputDate);
     const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Extract the month in UTC (add 1 because months are zero-indexed), pad it to two digits
+    const day = String(date.getUTCDate()).padStart(2, '0'); // Extract the day in UTC, pad it to two digits
     const hours = String(date.getUTCHours()).padStart(2, '0');
     const minutes = String(date.getUTCMinutes()).padStart(2, '0');
     const seconds = String(date.getUTCSeconds()).padStart(2, '0');

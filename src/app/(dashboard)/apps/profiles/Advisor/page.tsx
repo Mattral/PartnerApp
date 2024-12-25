@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import TabPersonal from 'views/apps/AdvisorProfile';  // Adjust the path to where your TabPersonal component is located
 import WorkScheduleForm from 'views/apps/AdvisorProfileTime';

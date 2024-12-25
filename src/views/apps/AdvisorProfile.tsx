@@ -213,7 +213,7 @@ const TabPersonal = () => {
 
                     {/* Submit Button */}
                     <Grid item xs={12}>
-                        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ width: '100%' }}>
+                        <Stack direction="row" spacing={2} justifyContent="center" sx={{ width: '100%' }}>
                             <Button variant="outlined" color="secondary" disabled={loading}>
                                 Cancel
                             </Button>

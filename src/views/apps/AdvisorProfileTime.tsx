@@ -1,43 +1,85 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Checkbox, FormControlLabel, Grid, InputLabel, Typography, Box, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import ListTime from 'views/apps/ListTime';
+
 import axios from 'axios';
 
+// Function to convert date to the required API time format (H:i)
+const convertToApiTimeFormat = (inputDate: Date | null): string => {
+  if (!inputDate) return '';
+  const date = new Date(inputDate);
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
 const WorkScheduleForm = () => {
-  const [selectedDays, setSelectedDays] = useState<string[]>([]); // Ensure this is an array
+  const [selectedDay, setSelectedDay] = useState<string | null>(null); // Single day selection
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [allowProbono, setAllowProbono] = useState<boolean>(false);
   const [allowPaid, setAllowPaid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [authData, setAuthData] = useState<any | null>(null);
 
-  // Handle Day Selection with Toggle Buttons
-  const handleDayChange = (event: React.MouseEvent<HTMLElement>, newDays: string[]) => {
-    setSelectedDays(newDays);
+  // State to trigger re-render of ListTime
+  const [refreshList, setRefreshList] = useState<boolean>(false);
+
+  // Load the authentication data from localStorage
+  useEffect(() => {
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+      } catch (error) {
+        console.error("Failed to parse auth data:", error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  // Handle Day Selection with Toggle Button (single day selection)
+  const handleDayChange = (event: React.MouseEvent<HTMLElement>, newDay: string | null) => {
+    setSelectedDay(newDay); // Set the selected day as a single value
   };
 
   // Handle Submit Logic
   const handleSubmit = async () => {
-    if (!startTime || !endTime || selectedDays.length === 0) {
+    if (!startTime || !endTime || !selectedDay) {
       setErrorMessage("Please fill in all fields correctly.");
+      return;
+    }
+
+    // Convert start and end times to the required format (H:i)
+    const formattedStartTime = convertToApiTimeFormat(startTime);
+    const formattedEndTime = convertToApiTimeFormat(endTime);
+
+    // Retrieve the authorization token from authData
+    const token = authData ? authData?.data?.primaryData?.authorization : '';
+    if (!token) {
+      setErrorMessage("Authorization token not found.");
       return;
     }
 
     const payload = {
       ui_code: 'ui-manually-added-one-testingpurpose',
-      ot_dayOfWeek: selectedDays.join(','), // Days as a comma-separated string
-      ot_startTime: startTime.toISOString(), // ISO formatted time for submission
-      ot_endTime: endTime.toISOString(), // ISO formatted time for submission
+      ot_dayOfWeek: selectedDay, // Single day selected
+      ot_startTime: formattedStartTime, // Format start time to H:i
+      ot_endTime: formattedEndTime, // Format end time to H:i
       ot_allowProbonoMeeting: allowProbono ? '1' : '0',
       ot_allowPaidMeeting: allowPaid ? '1' : '0',
     };
 
     const headers = {
-      'Authorization': 'Bearer 600|rj7SWm6qgoMXDmQDtBxzElBKLexbSOT0mKvaRXiofd26c637',
+      'Authorization': `Bearer ${token}`, // Use the token from authData
       'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
@@ -49,136 +91,154 @@ const WorkScheduleForm = () => {
         payload,
         { headers }
       );
-      console.log(response.data);
-      setErrorMessage(null); // Clear error message if successful
+
+      // Handle the API response
+      if (response.data.status === "treatmentFailure") {
+        // Handle specific API errors (like validation failure, etc.)
+        setErrorMessage(response.data.data.primaryData.msg);
+        setSuccessMessage(null); // Clear any previous success message
+      } else {
+        // Clear the error message and set success message
+        setErrorMessage(null);
+        setSuccessMessage("Your work schedule has been successfully submitted!"); // Success message
+        console.log(response.data); // Log the successful response
+      }
+
+      // Trigger refresh of the ListTime component
+      setRefreshList(prev => !prev); // Toggle the state to trigger re-render
     } catch (error: any) {
-      setErrorMessage("An error occurred. Please try again.");
-      console.error(error);
+      // Handle errors that occur during the request
+      if (error.response) {
+        // If the error has a response (e.g., 4xx or 5xx error)
+        const errorData = error.response.data;
+        if (errorData && errorData.data && errorData.data.primaryData) {
+          // Handle API errors (e.g., validation or treatment failures)
+          setErrorMessage(errorData.data.primaryData.msg || "An unknown error occurred.");
+          setSuccessMessage(null); // Clear any previous success message
+        } else {
+          // Fallback for other errors
+          setErrorMessage("An error occurred while processing your request. Please try again.");
+          setSuccessMessage(null); // Clear any previous success message
+        }
+      } else {
+        // Network error or no response from the API
+        setErrorMessage("Network error. Please check your internet connection and try again.");
+        setSuccessMessage(null); // Clear any previous success message
+      }
+      console.error(error); // Log the error for debugging
     }
   };
 
   return (
-    <Box sx={{ padding: { xs: 2, sm: 3 }, maxWidth: 800, margin: 'auto' }}>
-      <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-        Set Your Work Schedule
-      </Typography>
-
-      {errorMessage && (
-        <Typography color="error" variant="body2" sx={{ marginBottom: 3 }}>
-          {errorMessage}
+    <div>
+      <Box sx={{ padding: { xs: 2, sm: 3 }, maxWidth: 800, margin: 'auto' }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2, fontSize: { xs: '1.5rem', sm: '2rem' }, textAlign: 'center' }}>
+          Set Your Work Schedule
         </Typography>
-      )}
 
-      <Grid container spacing={3}>
-        {/* Select Days of the Week with Toggle Buttons */}
-        <Grid item xs={12}>
-          <InputLabel htmlFor="working-days" sx={{ fontWeight: 'bold' }}>
-            Select Working Days
-          </InputLabel>
+        {errorMessage && (
+          <Typography color="error" variant="body2" sx={{ marginBottom: 3 }}>
+            {errorMessage}
+          </Typography>
+        )}
 
-          {/* Monday to Friday */}
-          <ToggleButtonGroup
-            value={selectedDays}
-            onChange={handleDayChange}
-            aria-label="day of week"
-            fullWidth
-            exclusive={false} // Allow multiple selections
-            color="primary"
-            sx={{
-              display: 'flex',
-              flexWrap: 'nowrap', // Ensure items are not wrapping in this section
-              justifyContent: 'space-between', // Distribute space between items
-              gap: 1, // Add space between buttons
-              marginBottom: 2, // Space between rows
-            }}
-          >
-            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map((day) => (
-              <ToggleButton key={day} value={day} aria-label={day}>
-                {day.charAt(0).toUpperCase() + day.slice(1)}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+        {successMessage && (
+          <Typography color="success" variant="body2" sx={{ marginBottom: 3 }}>
+            {successMessage}
+          </Typography>
+        )}
 
-          {/* Saturday and Sunday on another row */}
-          <ToggleButtonGroup
-            value={selectedDays}
-            onChange={handleDayChange}
-            aria-label="weekend days"
-            fullWidth
-            exclusive={false}
-            color="primary"
-            sx={{
-              display: 'flex',
-              flexWrap: 'nowrap', // Ensure items are not wrapping in this section
-              justifyContent: 'space-between',
-              gap: 1,
-            }}
-          >
-            {['saturday', 'sunday'].map((day) => (
-              <ToggleButton key={day} value={day} aria-label={day}>
-                {day.charAt(0).toUpperCase() + day.slice(1)}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </Grid>
+        <Grid container spacing={3}>
+          {/* Select Working Day */}
+          <Grid item xs={12}>
+            <InputLabel htmlFor="working-day" sx={{ fontWeight: 'bold' }}>
+              Select Working Day
+            </InputLabel>
 
-        {/* Start Time */}
-        <Grid item xs={12} sm={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <TimePicker
-              label="Work Start Time"
-              value={startTime}
-              onChange={setStartTime}
-              //@ts-ignore
-              renderInput={(params) => <TextField fullWidth {...params} />}
+            <ToggleButtonGroup
+              value={selectedDay}
+              onChange={handleDayChange}
+              aria-label="day of week"
+              fullWidth
+              exclusive={true} // Only one selection allowed
+              color="primary"
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' }, // Column on small screens, row on larger screens
+                gap: 1,
+                marginBottom: 2,
+                justifyContent: 'space-between',
+              }}
+            >
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                <ToggleButton key={day} value={day} aria-label={day}>
+                  {day.charAt(0).toUpperCase() + day.slice(1)}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Grid>
+
+          {/* Start Time */}
+          <Grid item xs={12} sm={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <TimePicker
+                label="Work Start Time"
+                value={startTime}
+                onChange={setStartTime}
+                //@ts-ignore
+                renderInput={(params) => <TextField fullWidth {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          {/* End Time */}
+          <Grid item xs={12} sm={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <TimePicker
+                label="Work End Time"
+                value={endTime}
+                onChange={setEndTime}
+                //@ts-ignore
+                renderInput={(params) => <TextField fullWidth {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          {/* Probono Meeting Option */}
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox checked={allowProbono} onChange={() => setAllowProbono(!allowProbono)} />}
+              label="Do you offer Probono/Free Consultation during selected time?"
+              sx={{ '& .MuiFormControlLabel-label': { fontWeight: 500 } }}
             />
-          </LocalizationProvider>
-        </Grid>
+          </Grid>
 
-        {/* End Time */}
-        <Grid item xs={12} sm={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <TimePicker
-              label="Work End Time"
-              value={endTime}
-              onChange={setEndTime}
-              //@ts-ignore
-              renderInput={(params) => <TextField fullWidth {...params} />}
+          {/* Paid Meeting Option */}
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox checked={allowPaid} onChange={() => setAllowPaid(!allowPaid)} />}
+              label="Do you allow paid meetings during selected time?"
+              sx={{ '& .MuiFormControlLabel-label': { fontWeight: 500 } }}
             />
-          </LocalizationProvider>
-        </Grid>
+          </Grid>
 
-        {/* Probono Meeting Option */}
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox checked={allowProbono} onChange={() => setAllowProbono(!allowProbono)} />}
-            label="Do you offer Probono/Free Consultation during selected time?"
-            sx={{ '& .MuiFormControlLabel-label': { fontWeight: 500 } }}
-          />
+          {/* Submit Button */}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              sx={{ width: '100%', padding: '10px 0', fontSize: { xs: '14px', sm: '16px' }, fontWeight: 'bold' }}
+            >
+              Submit Schedule
+            </Button>
+          </Grid>
         </Grid>
+      </Box>
 
-        {/* Paid Meeting Option */}
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox checked={allowPaid} onChange={() => setAllowPaid(!allowPaid)} />}
-            label="Do you allow paid meetings during selected time?"
-            sx={{ '& .MuiFormControlLabel-label': { fontWeight: 500 } }}
-          />
-        </Grid>
-
-        {/* Submit Button */}
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{ width: '100%', padding: '10px 0', fontSize: { xs: '14px', sm: '16px' }, fontWeight: 'bold' }}
-          >
-            Submit Schedule
-          </Button>
-        </Grid>
-      </Grid>
-    </Box>
+      {/* ListTime component with refresh trigger */}
+      <ListTime refresh={refreshList} />
+    </div>
   );
 };
 
