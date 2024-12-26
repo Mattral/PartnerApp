@@ -220,7 +220,7 @@ const DossierPage: React.FC = () => {
         <div style={styles.cardContainer}>
           <DossierCard
             key="sth"
-            title="Advoisor Application"
+            title="Advisor Application"
             status="approved"
             onConfigure={() => handleConfigure2()}
           />
