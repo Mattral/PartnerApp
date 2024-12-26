@@ -12,11 +12,16 @@ const API_URL = "https://lawonearth.co.uk/api/back-office/partner/office-times/u
 
 // Function to convert date to the required API time format (H:i)
 const convertToApiTimeFormat = (inputDate: Date | null): string => {
-  if (!inputDate) return '';
+  if (!inputDate) return '';  // Return empty string if inputDate is null or undefined
+
+  // Create a new Date object from the input to ensure it's a proper Date
   const date = new Date(inputDate);
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+
+  // Extract hours and minutes in local time (not UTC)
+  const hours = String(date.getHours()).padStart(2, '0');  // Get hours in local time and pad with leading zero if necessary
+  const minutes = String(date.getMinutes()).padStart(2, '0');  // Get minutes in local time and pad with leading zero if necessary
+
+  return `${hours}:${minutes}`;  // Return the time in "HH:mm" format (local time)
 };
 
 interface UpdateTimeProps {
@@ -77,7 +82,8 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
   
     const headers = {
       'Authorization': `Bearer ${token}`,
-      'COMPANY-CODE': 'def-mc-partner',
+      //ToDo
+      'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };
@@ -139,7 +145,19 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label=". ` . `.` . `.` . . . .Day of Week"
+              label={
+                <Typography
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    textAlign: 'center', // Centers the text inside the label
+                  }}
+                >
+                  .                        ,Day of Week
+                </Typography>
+              }
+              
               value={otDayOfWeek || ''}
               onChange={(e) => setOtDayOfWeek(e.target.value)}
               select
@@ -169,7 +187,7 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
           </Grid>
 
           {/* End Time */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <TimePicker
                 label="End Time"

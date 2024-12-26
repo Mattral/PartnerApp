@@ -1,26 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Button, Tooltip } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material';
 import { useRouter } from "next/navigation";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Make sure to import styles
 import { toast } from 'react-toastify'; // Import the toast library
 import DossierCount from 'views/apps/DossierCount';
+import { CheckCircle, Cancel } from '@mui/icons-material'; // Import MUI icons
+
 type Dossier = {
   vd_code: string;
   vd_status: string;
 };
 
+type AuthData = {
+  data?: {
+    primaryData?: {
+      authorization?: string;
+    };
+  };
+};
+
 const DossierPage: React.FC = () => {
   const [dossierData, setDossierData] = useState<{ count: number; dossiers: Dossier[] } | null>(null);
   const [bottomCards, setBottomCards] = useState<number[]>([]);
+  const [authData, setAuthData] = useState<AuthData | null>(null); // Added typing for authData
+  const [openPopup, setOpenPopup] = useState(false); // Track if popup is open
+  const [selectedRole, setSelectedRole] = useState<string>(''); // Track the selected role
   const router = useRouter();
 
-// auth key from local ho
-const [authData, setAuthData] = useState<any | null>(null);
-
-
+  // Retrieve auth data from localStorage
   useEffect(() => {
-    // Retrieve auth data from localStorage
     const storedAuthData = localStorage.getItem('authData');
     if (storedAuthData) {
       try {
@@ -34,69 +43,56 @@ const [authData, setAuthData] = useState<any | null>(null);
     }
   }, []);
 
-  
-// auth key from local host
+  const addTopCard = async () => {
+    let authorizationToken: string | undefined;
 
-const addTopCard = async () => {
-  let authorizationToken: string | undefined; // Declare it outside the block
+    // Check if authData and authData.data exist before accessing authorization
+    if (authData?.data?.primaryData?.authorization) {
+      authorizationToken = authData.data.primaryData.authorization; // Access token directly
+    }
 
-  // Check if authData and authData.data exist
-  if (authData && authData.data) {
-    const { primaryData } = authData.data;
-    authorizationToken = primaryData?.authorization; // Assign token if available
-  }
+    if (!authorizationToken) {
+      console.error("Authorization token not found.");
+      return; // Prevent further execution if token is missing
+    }
 
-  if (!authorizationToken) {
-    // Handle the case where there is no authorization token
-    console.error("Authorization token not found.");
-    return; // You can return here to prevent further execution if the token is missing
-  }
+    try {
+      const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authorizationToken}`,
+          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+          'FRONTEND-KEY': 'XXX',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({}),
+      });
 
-  try {
-    const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${authorizationToken}`,
-        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
-        'FRONTEND-KEY': 'XXX',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      body: JSON.stringify({}),
-    });
-
-      // Parse the response JSON
       const data = await response.json();
 
       // Check the status in the response data
       if (data.status === 'treatmentSuccess') {
-        // Success: Show a success toast with the vd_code
         toast.success(`Dossier created with code: ${data.data.primaryData._dossier.vd_code}`, {
-          autoClose: 5000, // Duration in ms (5 seconds)
+          autoClose: 5000, // 5 seconds
         });
       } else if (data.status === 'treatmentFailure') {
-        // Failure: Show an error toast with the error message from the response
         const errorMessage = data.data.primaryData.msg || 'An error occurred';
         toast.error(`Error: ${errorMessage}`, {
-          autoClose: 5000, // Duration in ms (5 seconds)
+          autoClose: 5000, // 5 seconds
         });
       } else {
-        // If the response status is unknown, show a generic error
         toast.error('Unexpected response from the server', {
-          autoClose: 5000, // Duration in ms (5 seconds)
+          autoClose: 5000, // 5 seconds
         });
       }
-
     } catch (error: unknown) {
-      // TypeScript requires us to assert the error as an instance of Error
       if (error instanceof Error) {
-        // Now TypeScript knows `error` is an instance of `Error` and we can access `message`
         toast.error(`An error occurred while creating the dossier: ${error.message}`, {
-          autoClose: 5000, // Duration in ms (5 seconds)
+          autoClose: 5000, // 5 seconds
         });
       } else {
-        // If error is not an instance of Error, handle as a generic unknown error
         toast.error('An unknown error occurred', {
-          autoClose: 5000, // Duration in ms (5 seconds)
+          autoClose: 5000, // 5 seconds
         });
       }
     }
@@ -109,24 +105,40 @@ const addTopCard = async () => {
   const handleConfigure = (vd_code: string) => {
     router.push(`/forms/VOI/Client?vd_code=${vd_code}`);
   };
-  
-  
+
+  // Open the popup for selecting a role
+  const handleConfigure2 = () => {
+    setOpenPopup(true);
+  };
+
+  // Close the popup
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
+
+  // Handle the selection of a role and continue
+  const handleContinue = () => {
+    if (selectedRole) {
+      router.push(`/apps/profiles/Advisor`);
+      setOpenPopup(false); // Close the popup after navigating
+    } else {
+      toast.error('Please select a role first');
+    }
+  };
+
 
   return (
     <div style={styles.container}>
       <ToastContainer />
       {/* Top Section */}
       <div style={styles.container}>
-        {/* Top Section */}
         <div style={styles.section}>
           <div style={styles.header}>
             {/* Left-aligned Title */}
             <div style={styles.textContainer}>
-              <span style={styles.titleText}>Apply as a user</span>
-
-              {/* Left-aligned Subtitle */}
+              <span style={styles.titleText}>Apply as a Client</span>
               <p style={styles.subtitleText}>
-                Submit your identity verification
+                Submit your identity verification documents
               </p>
             </div>
 
@@ -139,10 +151,10 @@ const addTopCard = async () => {
                   color="primary"
                   sx={{
                     borderRadius: 20,
-                    fontSize: '1.2rem', // Increase font size
-                    padding: '16px 32px', // Increase padding to make the button larger
-                    height: '45px', // Optionally increase height
-                    width: '240px' // Optionally increase width
+                    fontSize: '1.2rem',
+                    padding: '16px 32px',
+                    height: '45px',
+                    width: '240px',
                   }}
                 >
                   Start Application
@@ -151,20 +163,19 @@ const addTopCard = async () => {
             </div>
           </div>
 
-          {/* Card Container (still centered and scrollable) */}
-
+          {/* Card Container */}
           <div style={styles.cardContainer}>
             <DossierCount setDossierData={setDossierData} />
             {dossierData ? (
               <div style={{ display: 'flex', overflowX: 'auto', gap: '20px' }}>
-              {dossierData.dossiers.map((dossier) => (
-                <DossierCard
-                  key={dossier.vd_code} // Ensure the key is unique for each card
-                  title={`${dossier.vd_status}`} // Use vd_code in the title
-                  status={dossier.vd_status} // Pass the vd_status to the DossierCard
-                  onConfigure={() => handleConfigure(dossier.vd_code)} // Wrap the function call inside an arrow function
+                {dossierData.dossiers.map((dossier) => (
+                  <DossierCard
+                    key={dossier.vd_code}
+                    title={`Application`}
+                    status={dossier.vd_status}
+                    onConfigure={() => handleConfigure(dossier.vd_code)}
                   />
-              ))}
+                ))}
               </div>
             ) : (
               <div>Loading Dossier Data...</div>
@@ -179,18 +190,13 @@ const addTopCard = async () => {
       {/* Bottom Section */}
       <div style={styles.section}>
         <div style={styles.header}>
-
-          {/* Left-aligned Title */}
           <div style={styles.textContainer}>
             <span style={styles.titleText}>Apply as an Advisor</span>
-
-            {/* Left-aligned Subtitle */}
             <p style={styles.subtitleText}>
               Submit the documents that prove your professional status
             </p>
           </div>
 
-          {/* Tooltip on the Open Dossier Button */}
           <div style={styles.buttonContainer}>
             <Tooltip title="Opening a dossier helps you submit professional credentials that will help us confirm your expertise" arrow>
               <Button
@@ -199,10 +205,10 @@ const addTopCard = async () => {
                 color="primary"
                 sx={{
                   borderRadius: 20,
-                  fontSize: '1.2rem', // Increase font size
-                  padding: '16px 32px', // Increase padding to make the button larger
-                  height: '45px', // Optionally increase height
-                  width: '240px' // Optionally increase width
+                  fontSize: '1.2rem',
+                  padding: '16px 32px',
+                  height: '45px',
+                  width: '240px',
                 }}
               >
                 Start Application
@@ -212,12 +218,61 @@ const addTopCard = async () => {
         </div>
 
         <div style={styles.cardContainer}>
-          
+          <DossierCard
+            key="sth"
+            title="Advoisor Application"
+            status="approved"
+            onConfigure={() => handleConfigure2()}
+          />
         </div>
       </div>
+
+
+      <div style={styles.divider} />
+
+      {/* Popup Dialog */}
+      <Dialog open={openPopup} onClose={handleClosePopup} maxWidth="sm" fullWidth sx={{ padding: '32px' }}>
+        <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: '600' }}>Select Your Profession</DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          <FormControl fullWidth>
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              label="Role"
+              sx={{ fontSize: '1.1rem', height: '50px' }}
+            >
+              <MenuItem value="Legal Advisor">Legal Advisor</MenuItem>
+              <MenuItem value="Developer">Developer</MenuItem>
+              <MenuItem value="Engineer">Engineer</MenuItem>
+              <MenuItem value="Accountant">Accountant</MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions sx={{ padding: '20px' }}>
+          <Button
+            onClick={handleClosePopup}
+            color="secondary"
+            sx={{ fontSize: '1rem', textTransform: 'none' }}
+            startIcon={<Cancel />}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleContinue}
+            color="primary"
+            sx={{ fontSize: '1rem', textTransform: 'none' }}
+            startIcon={<CheckCircle />}
+          >
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 };
+
 
 const DossierCard = ({
   title,
@@ -226,7 +281,7 @@ const DossierCard = ({
 }: {
   title: string;
   status: string;  // Accept the status of the dossier
-  onConfigure:any;
+  onConfigure: any;
 }) => {
   return (
     <div className="dossier-card">
@@ -241,7 +296,7 @@ const DossierCard = ({
 
       <div className="card-content">
         <h3 className="title majestic-text">
-          VOI :
+          `
           <span className="hover-text">{title}</span>
         </h3>
         <div className="button-group">
@@ -343,22 +398,22 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    height: "100vh",
+    height: "120vh",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     backgroundColor: "#f8f9fa",
   },
 
-  
+
   cardContainer: {
     display: "flex",
     flexDirection: "row",
-    overflowX: "auto", // allows horizontal scrolling
     whiteSpace: "nowrap", // keeps the cards in a single row
     gap: "24px", // space between cards
     paddingTop: "20px",
     paddingBottom: "20px",
     scrollBehavior: "smooth",
     transition: "all 0.3s ease",
+    //overflow: 'hidden', // Prevents overflow
   },
 
   section: {
@@ -372,7 +427,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
     position: "relative",
     transition: "all 0.3s ease",
-    
+
   },
   header: {
     display: "flex",

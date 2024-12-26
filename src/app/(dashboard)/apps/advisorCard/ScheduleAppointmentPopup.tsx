@@ -44,17 +44,26 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
     }
   }, []);
 
-  // Convert date to API format
   const convertToApiDateFormat = (inputDate: string): string => {
     const date = new Date(inputDate);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Extract the month in UTC (add 1 because months are zero-indexed), pad it to two digits
-    const day = String(date.getUTCDate()).padStart(2, '0'); // Extract the day in UTC, pad it to two digits
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date format");
+    }
+  
+    // Get the local time components
+    const year = date.getFullYear(); // Get the full year (local time)
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get the month (local time, +1 to fix 0-indexed months)
+    const day = String(date.getDate()).padStart(2, '0'); // Get the day (local time)
+    const hours = String(date.getHours()).padStart(2, '0'); // Get the hour (local time)
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // Get the minutes (local time)
+    const seconds = String(date.getSeconds()).padStart(2, '0'); // Get the seconds (local time)
+  
+    // Return the formatted string with UTC timezone (+00:00)
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00:00`;
   };
+  
 
   // Book the appointment
   const bookAppointment = async () => {

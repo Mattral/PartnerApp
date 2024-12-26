@@ -11,12 +11,18 @@ import axios from 'axios';
 
 // Function to convert date to the required API time format (H:i)
 const convertToApiTimeFormat = (inputDate: Date | null): string => {
-  if (!inputDate) return '';
+  if (!inputDate) return '';  // Return empty string if inputDate is null or undefined
+
+  // Create a new Date object from the input to ensure it's a proper Date
   const date = new Date(inputDate);
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+
+  // Extract hours and minutes in local time (not UTC)
+  const hours = String(date.getHours()).padStart(2, '0');  // Get hours in local time and pad with leading zero if necessary
+  const minutes = String(date.getMinutes()).padStart(2, '0');  // Get minutes in local time and pad with leading zero if necessary
+
+  return `${hours}:${minutes}`;  // Return the time in "HH:mm" format (local time)
 };
+
 
 const WorkScheduleForm = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null); // Single day selection
@@ -136,18 +142,6 @@ const WorkScheduleForm = () => {
           Set Your Work Schedule
         </Typography>
 
-        {errorMessage && (
-          <Typography color="error" variant="body2" sx={{ marginBottom: 3 }}>
-            {errorMessage}
-          </Typography>
-        )}
-
-        {successMessage && (
-          <Typography color="success" variant="body2" sx={{ marginBottom: 3 }}>
-            {successMessage}
-          </Typography>
-        )}
-
         <Grid container spacing={3}>
           {/* Select Working Day */}
           <Grid item xs={12}>
@@ -221,6 +215,22 @@ const WorkScheduleForm = () => {
               sx={{ '& .MuiFormControlLabel-label': { fontWeight: 500 } }}
             />
           </Grid>
+
+
+          <div style={{ textAlign: 'center' }}>
+            {errorMessage && (
+              <Typography color="error" variant="body1" sx={{ marginBottom: 3, textAlign: 'center' }}>
+                {errorMessage}
+              </Typography>
+            )}
+
+            {successMessage && (
+              <Typography color="success" variant="body1" sx={{ marginBottom: 3, textAlign: 'center' }}>
+                {successMessage}
+              </Typography>
+            )}
+          </div>
+
 
           {/* Submit Button */}
           <Grid item xs={12}>
