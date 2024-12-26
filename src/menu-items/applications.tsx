@@ -120,6 +120,12 @@ const applications: NavItemType = {
           url: '/apps/advisorCard'
         },
         {
+          id: 'Schedule',
+          title: <FormattedMessage id="See Appointments" />,
+          type: 'item',
+          url: '/apps/listSchedules'
+        },
+        {
           id: 'MeetingRoom',
           title: <FormattedMessage id="Meeting Room" />,
           type: 'item',
@@ -133,12 +139,7 @@ const applications: NavItemType = {
           url: '/pages/room',///apps/e-commerce/MeetingRoom
           breadcrumbs: false
         },
-        {
-          id: 'Schedule',
-          title: <FormattedMessage id="Schedule" />,
-          type: 'item',
-          url: '/apps/e-commerce/Schedule'
-        },
+
         /*
         {
           id: 'Recordings',

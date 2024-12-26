@@ -40,7 +40,7 @@ const Login = () => {
               <Divider sx={{ mb: 2 }} />
               <Typography variant="body1">
                 <strong>Client</strong><br />
-                Email: <code>minmattral@gmail.com</code><br />
+                Email: <code>minhtetmyet2630@gmail.com</code><br />
                 Password: <code>aAertyuiop@1</code><br />
               </Typography>
               <Divider sx={{ my: 2 }} />

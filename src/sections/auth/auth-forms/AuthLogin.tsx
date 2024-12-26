@@ -213,7 +213,7 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
   return (
     <Formik
       initialValues={{
-        email: 'minmattral@gmail.com',
+        email: 'minhtetmyet2630@gmail.com',
         password: 'aAertyuiop@1',
         submit: null,
       }}
