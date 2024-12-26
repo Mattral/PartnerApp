@@ -14,6 +14,12 @@ let users = [
     name: 'Min Htet Myet',
     email: 'mattralminn@gmail.com',
     password: '1234ABB!123a'
+  },
+  {
+    id: 3,
+    name: 'Min Htet Myet',
+    email: 'minhtetmyet2630@gmail.com',
+    password: 'aAertyuiop@1'
   }
 ];
 

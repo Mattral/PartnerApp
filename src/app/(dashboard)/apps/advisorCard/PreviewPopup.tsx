@@ -23,6 +23,7 @@ import {
   ListItemAvatar,
   Stack,
 } from '@mui/material';
+
 import axios from 'axios';
 import ScheduleAppointmentPopup from './ScheduleAppointmentPopup'; // Import ScheduleAppointmentPopup
 import MainCard from 'components/MainCard';
@@ -287,6 +288,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                               >
                                 To
                               </TableCell>
+                              <Tooltip title="Pro Bono which means free consultations, advisors may choose to accept this as per their availibity" arrow>
                               <TableCell
                                 sx={{
                                   fontWeight: '600',
@@ -298,6 +300,9 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                               >
                                 Pro Bono Allowed
                               </TableCell>
+                              </Tooltip>
+                              
+                              <Tooltip title="This is the time frame for usual consultation with payment" arrow>
                               <TableCell
                                 sx={{
                                   fontWeight: '600',
@@ -309,6 +314,10 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                               >
                                 Paid Meeting Allowed
                               </TableCell>
+                              </Tooltip>
+
+                              <Tooltip title="Buffer time means the difference between the time you are scheduling and current time" arrow>
+
                               <TableCell
                                 sx={{
                                   fontWeight: '600',
@@ -320,6 +329,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                               >
                                 Paid Meeting Buffer Time
                               </TableCell>
+                              </Tooltip>
                               <TableCell
                                 sx={{
                                   fontWeight: '600',

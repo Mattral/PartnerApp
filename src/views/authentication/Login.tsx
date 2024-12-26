@@ -1,16 +1,18 @@
-// NEXT
 import Link from 'next/link';
 
 // MATERIAL - UI
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
 
 // PROJECT IMPORTS
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import AuthLogin from 'sections/auth/auth-forms/AuthLogin';
 
-// ================================|| LOGIN ||================================ //
+// ================================|| LOGIN ||================================ // 
 
 const Login = () => {
   return (
@@ -26,6 +28,29 @@ const Login = () => {
         </Grid>
         <Grid item xs={12}>
           <AuthLogin />
+        </Grid>
+
+        {/* New Card with Development and Testing Credentials */}
+        <Grid item xs={12}>
+          <Card sx={{ mt: 3, p: 2 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                For Development and Testing Purpose!
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Typography variant="body1">
+                <strong>Client</strong><br />
+                Email: <code>minmattral@gmail.com</code><br />
+                Password: <code>aAertyuiop@1</code><br />
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="body1">
+                <strong>Advisor</strong><br />
+                Email: <code>mattralminn@gmail.com</code><br />
+                Password: <code>1234ABB!123a</code><br />
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </AuthWrapper>
