@@ -143,7 +143,7 @@ const TabPersonal = () => {
                     {/* Hourly Rate */}
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="How much do you charge every hour?"
+                            label="How much do you charge every hour? *"
                             type="number"
                             fullWidth
                             value={hourlyRate}
@@ -155,7 +155,7 @@ const TabPersonal = () => {
                     {/* Currency */}
                     <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
-                            <FormLabel>Choose your preferred currency</FormLabel>
+                            <FormLabel>Choose your preferred currency *</FormLabel>
                             <RadioGroup row value={currency} onChange={(e) => setCurrency(e.target.value as 'usd' | 'euro')}>
                                 <FormControlLabel value="usd" control={<Radio />} label="USD" />
                                 <FormControlLabel value="euro" control={<Radio />} label="Euro" />
@@ -166,7 +166,7 @@ const TabPersonal = () => {
                     {/* Job Title */}
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="What is your Job Title?"
+                            label="What is your Job Title? *"
                             fullWidth
                             value={jobTitle}
                             onChange={(e) => setJobTitle(e.target.value)}
@@ -177,7 +177,7 @@ const TabPersonal = () => {
                     {/* Job Description */}
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="Explain what are your skills and your services"
+                            label="Explain what are your skills and your services *"
                             multiline
                             rows={4}
                             fullWidth
@@ -190,7 +190,7 @@ const TabPersonal = () => {
                     {/* Paid Meeting Buffer Time */}
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="How long usually should be between the time someone schedules a call with you and the call time?"
+                            label="How long usually should be between the time someone schedules a call with you and the call time? *"
                             type="number"
                             fullWidth
                             value={paidMeetingBufferTime}
@@ -202,7 +202,7 @@ const TabPersonal = () => {
                     {/* Pro bono Meeting Buffer Time */}
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="How about the buffer time for free consultation service?"
+                            label="How about the buffer time for free consultation service? *"
                             type="number"
                             fullWidth
                             value={probonoMeetingBufferTime}

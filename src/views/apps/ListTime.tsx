@@ -1,10 +1,10 @@
 // pages/ListTime.tsx
 import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Card, CardContent, Typography, Box, Button, Chip, InputAdornment } from '@mui/material';
-import { AccessTime, EventAvailable, CheckCircleOutline, Search } from '@mui/icons-material'; // Imported icons
+import { AccessTime, EventAvailable, CheckCircleOutline, Search, Add, Close } from '@mui/icons-material'; // Imported icons
 import axios from 'axios';
 import UpdateTime from './UpdateTime'; // Import the UpdateTime component
-
+import WorkScheduleForm from './AdvisorProfileTime';
 
 interface OfficeTime {
     ot_code: string;
@@ -28,6 +28,7 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
     const [error, setError] = useState<string>('');
     const [openDialog, setOpenDialog] = useState<boolean>(false); // Controls the dialog
     const [selectedOtCode, setSelectedOtCode] = useState<string>(''); // Stores selected ot_code
+    const [showWorkScheduleForm, setShowWorkScheduleForm] = useState<boolean>(false); // Controls visibility of WorkScheduleForm
 
     // Fetch office times from the API
     const fetchOfficeTimes = async (searchKey: string) => {
@@ -88,9 +89,14 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
         setOpenDialog(false); // Close the dialog
     };
 
+    // Toggle the visibility of WorkScheduleForm
+    const handleAddTimeClick = () => {
+        setShowWorkScheduleForm(!showWorkScheduleForm);
+    };
+
     return (
         <Box sx={{ padding: 4 }}>
-            <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', color: '#333', textAlign: 'center' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2, fontSize: { xs: '1.5rem', sm: '2rem' }, textAlign: 'center' }}>
                 Advisor Office Times
             </Typography>
 
@@ -116,7 +122,19 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                         ),
                     }}
                 />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginLeft: 2 }}
+                    startIcon={showWorkScheduleForm ? <Close /> : <Add />}  // Toggle icon between Add and Close
+                    onClick={handleAddTimeClick}
+                >
+                    {showWorkScheduleForm ? 'Close' : 'Add Time'}  
+                </Button>
             </Box>
+
+            {/* Conditionally Render the WorkScheduleForm */}
+            {showWorkScheduleForm && <WorkScheduleForm />}
 
             {loading ? (
                 <Typography>Loading...</Typography>

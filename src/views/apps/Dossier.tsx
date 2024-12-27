@@ -150,7 +150,7 @@ const DossierPage: React.FC = () => {
                   variant="contained"
                   color="primary"
                   sx={{
-                    borderRadius: 20,
+                    borderRadius: 10,
                     fontSize: '1.2rem',
                     padding: '16px 32px',
                     height: '45px',
@@ -193,7 +193,7 @@ const DossierPage: React.FC = () => {
           <div style={styles.textContainer}>
             <span style={styles.titleText}>Apply as an Advisor</span>
             <p style={styles.subtitleText}>
-              Submit the documents that prove your professional status
+              Submit the documents that can prove your professional status as an advisor.
             </p>
           </div>
 
@@ -204,7 +204,7 @@ const DossierPage: React.FC = () => {
                 variant="contained"
                 color="primary"
                 sx={{
-                  borderRadius: 20,
+                  borderRadius: 10,
                   fontSize: '1.2rem',
                   padding: '16px 32px',
                   height: '45px',
@@ -296,7 +296,7 @@ const DossierCard = ({
 
       <div className="card-content">
         <h3 className="title majestic-text">
-          `
+          
           <span className="hover-text">{title}</span>
         </h3>
         <div className="button-group">

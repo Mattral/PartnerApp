@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import TabPersonal from 'views/apps/AdvisorProfile';  // Adjust the path to where your TabPersonal component is located
-import WorkScheduleForm from 'views/apps/AdvisorProfileTime';  // Adjust the path for this as well
-
+//import WorkScheduleForm from 'views/apps/AdvisorProfileTime';  // Adjust the path for this as well
+import ListTime from 'views/apps/ListTime';
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("personal"); // Manage active tab state
+  const [refreshList, setRefreshList] = useState<boolean>(false);
 
   // Function to handle tab click
   const handleTabClick = (tab) => {
@@ -32,7 +33,7 @@ const ProfilePage = () => {
 
       {/* Tab Content */}
       {activeTab === "personal" && <TabPersonal />}
-      {activeTab === "schedule" && <WorkScheduleForm />}
+      {activeTab === "schedule" && <ListTime refresh={refreshList}/>}
     </div>
   );
 };

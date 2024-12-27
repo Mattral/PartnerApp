@@ -1,3 +1,4 @@
+//hidden page
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { Button, Checkbox, FormControlLabel, Grid, InputLabel, Typography, Box, 
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import ListTime from 'views/apps/ListTime';
+//import ListTime from 'views/apps/ListTime';
 
 import axios from 'axios';
 
@@ -247,7 +248,7 @@ const WorkScheduleForm = () => {
       </Box>
 
       {/* ListTime component with refresh trigger */}
-      <ListTime refresh={refreshList} />
+      {/*<ListTime refresh={refreshList} />*/}
     </div>
   );
 };

@@ -31,6 +31,7 @@ import Avatar from 'components/@extended/Avatar'; // Assume Avatar component
 import { Phone, Email, Event, Schedule, AttachMoney, Accessibility, AccessTime, ReportProblem, Star } from '@mui/icons-material'; // MUI icons
 import WorkIcon from '@mui/icons-material/Work';          // For Job Title
 import DescriptionIcon from '@mui/icons-material/Description';
+import WarningIcon from '@mui/icons-material/Warning';
 
 interface PreviewPopupProps {
   open: boolean;
@@ -251,8 +252,8 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                           <TableHead>
                             <TableRow
                               sx={{
-                                backgroundColor: 'rgba(0, 0, 0, 0.04)', // Light background with transparency for a sleek feel
-                                boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)', // Subtle shadow effect
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)',
                               }}
                             >
                               <TableCell
@@ -260,8 +261,8 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                                   fontWeight: '600',
                                   textAlign: 'center',
                                   fontSize: '16px',
-                                  color: '#444', // Darker color for text
-                                  minWidth: '100px', // Ensure minimum width for consistency
+                                  color: '#444',
+                                  minWidth: '100px',
                                 }}
                               >
                                 Day
@@ -272,7 +273,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                                   textAlign: 'center',
                                   fontSize: '16px',
                                   color: '#444',
-                                  minWidth: '80px', // Shrink width to avoid overflow
+                                  minWidth: '80px',
                                 }}
                               >
                                 From
@@ -283,64 +284,90 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                                   textAlign: 'center',
                                   fontSize: '16px',
                                   color: '#444',
-                                  minWidth: '80px', // Shrink width to avoid overflow
+                                  minWidth: '80px',
                                 }}
                               >
                                 To
                               </TableCell>
-                              <Tooltip title="Pro Bono which means free consultations, advisors may choose to accept this as per their availibity" arrow>
-                              <TableCell
-                                sx={{
-                                  fontWeight: '600',
-                                  textAlign: 'center',
-                                  fontSize: '16px',
-                                  color: '#444',
-                                  minWidth: '120px', // Adjust width for better readability
-                                }}
+                              <Tooltip
+                                title="Pro Bono which means free consultations, advisors may choose to accept this as per their availability"
+                                arrow
                               >
-                                Pro Bono Allowed
-                              </TableCell>
+                                <TableCell
+                                  sx={{
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                    fontSize: '16px',
+                                    color: '#444',
+                                    minWidth: '120px',
+                                  }}
+                                >
+                                  Pro Bono Allowed
+                                  <WarningIcon sx={{ fontSize: 20, marginRight: '8px' }} color="secondary" />
+
+                                </TableCell>
+                              </Tooltip>
+
+                              <Tooltip
+                                title="This is the time frame for usual consultation with payment"
+                                arrow
+                              >
+                                <TableCell
+                                  sx={{
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                    fontSize: '16px',
+                                    color: '#444',
+                                    minWidth: '120px',
+                                  }}
+                                >
+                                  Paid Meeting Allowed
+                                  <WarningIcon sx={{ fontSize: 20, marginRight: '8px' }} color="secondary" />
+
+                                </TableCell>
+                              </Tooltip>
+
+                              <Tooltip
+                                title="Buffer time means the difference between the time you are scheduling and current time"
+                                arrow
+                              >
+                                <TableCell
+                                  sx={{
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                    fontSize: '16px',
+                                    color: '#444',
+                                    minWidth: '120px',
+                                  }}
+                                >
+                                  Paid Meeting Buffer Time
+                                  <WarningIcon sx={{ fontSize: 20, marginRight: '8px' }} color="secondary" />
+
+                                </TableCell>
                               </Tooltip>
                               
-                              <Tooltip title="This is the time frame for usual consultation with payment" arrow>
-                              <TableCell
-                                sx={{
-                                  fontWeight: '600',
-                                  textAlign: 'center',
-                                  fontSize: '16px',
-                                  color: '#444',
-                                  minWidth: '120px', // Adjust width for better readability
-                                }}
+                              {/* Add exclamation icon for this header */}
+                              <Tooltip
+                                title="Information regarding Pro Bono Meeting Buffer Time"
+                                arrow
                               >
-                                Paid Meeting Allowed
-                              </TableCell>
-                              </Tooltip>
+                                <TableCell
+                                  sx={{
+                                    fontWeight: '600',
+                                    textAlign: 'center',
+                                    fontSize: '16px',
+                                    color: '#444',
+                                    minWidth: '120px',
 
-                              <Tooltip title="Buffer time means the difference between the time you are scheduling and current time" arrow>
+                                    justifyContent: 'center',
+                                  }}
+                                >
+                                  
+                                  ProBono's Buffer Time
+                                  <WarningIcon sx={{ fontSize: 20, marginRight: '4px' }} color="secondary" />
 
-                              <TableCell
-                                sx={{
-                                  fontWeight: '600',
-                                  textAlign: 'center',
-                                  fontSize: '16px',
-                                  color: '#444',
-                                  minWidth: '120px', // Set min-width to avoid overflow
-                                }}
-                              >
-                                Paid Meeting Buffer Time
-                              </TableCell>
+                                </TableCell>
                               </Tooltip>
-                              <TableCell
-                                sx={{
-                                  fontWeight: '600',
-                                  textAlign: 'center',
-                                  fontSize: '16px',
-                                  color: '#444',
-                                  minWidth: '120px', // Set min-width to avoid overflow
-                                }}
-                              >
-                                Pro Bono Meeting Buffer Time
-                              </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -348,13 +375,13 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                               <TableRow
                                 key={index}
                                 sx={{
-                                  backgroundColor: index % 2 === 0 ? '#fafafa' : 'white', // Alternating row colors
+                                  backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
                                   '&:hover': {
-                                    backgroundColor: '#e5e5e5', // Subtle hover effect
-                                    transform: 'translateY(-2px)', // Slight lift effect
-                                    transition: 'background-color 0.3s, transform 0.3s ease', // Smooth transition
+                                    backgroundColor: '#e5e5e5',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'background-color 0.3s, transform 0.3s ease',
                                   },
-                                  borderBottom: '1px solid rgba(0, 0, 0, 0.12)', // Soft border between rows
+                                  borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
                                 }}
                               >
                                 <TableCell sx={{ textAlign: 'center', padding: '12px' }}>
