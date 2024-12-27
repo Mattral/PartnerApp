@@ -79,7 +79,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const jwt = JWT;
   const [inSession, setInSession] = useState(false);
   const [userName, setUserName] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false); // State for chat popup
   const [elapsedTime, setElapsedTime] = useState(0); // State for elapsed time
   const [isScreenSharing, setIsScreenSharing] = useState(false); // State for screen sharing
@@ -93,16 +93,18 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
 
   useEffect(() => {
-    if (userName && !isDialogOpen) {
+    if (!userName) {
+      setUserName("User-1");
+    }
+    if (userName) {
       joinSession();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName, isDialogOpen]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (inSession) {
-      timer = setInterval(() => setElapsedTime((prev) => prev + 1), 1000); // Update every second
+      timer = setInterval(() => setElapsedTime((prev) => prev + 1), 1000);
     }
     return () => clearInterval(timer);
   }, [inSession]);
@@ -305,13 +307,18 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
           {/* Screen Share Button */}
           {/* Toggle Screen Share Button */}
           <Button
-            variant="contained"
-            color={isScreenSharing ? "secondary" : "primary"}
-            onClick={toggleScreenShare}
-            startIcon={isScreenSharing ? <StopScreenShareIcon /> : <ScreenShareIcon />}
-          >
-            {isScreenSharing ? "Stop Screen Share" : "Start Screen Share"}
-          </Button>
+  variant="contained"
+  color={isScreenSharing ? "secondary" : "primary"}
+  onClick={toggleScreenShare}
+  startIcon={isScreenSharing ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+  style={{
+    backgroundColor: isScreenSharing ? "#B0B0B0" : "#B0B0B0", // Custom colors
+    color: "white", // Ensure text is white
+  }}
+>
+  {isScreenSharing ? "Stop Screen Share" : "Start Screen Share"}
+</Button>
+
           <Button onClick={leaveSession}>
             <PhoneOff />
           </Button>
