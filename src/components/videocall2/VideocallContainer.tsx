@@ -31,7 +31,7 @@ const hardcodedRoom = {
   ],
   Transcripts: [],
   Notes: [],
-  jwt: "fake-jwt-token", 
+  jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJEVXdGWC15bFJueWFBa0ZVQ2R2MFpBIiwic2RrS2V5IjoiRFV3RlgteWxSbnlhQWtGVUNkdjBaQSIsIm1uIjoiMTIzNDU2NzgiLCJyb2xlIjoxLCJ0b2tlbkV4cCI6MTczNTU2NzczNSwiaWF0IjoxNzM1NTY0MTM1LCJleHAiOjE3MzU1Njc3MzV9.0yYC5u9u-xlEZaGCG5dTJGmHYlE35-6QjQJKxP7oy5w", 
 };
 
 // Define types for session and userData
@@ -81,7 +81,6 @@ const Home = () => {
           </span>
         </div>
         <div className="h-full justify-center self-center rounded-r-md p-4">
-          {/*<RightBar data={data} transcriptionSubtitle={transcriptionSubtitle} client={client} records={records} inCall={inCall} />*/}
         </div>
       </div>
       <Videocall

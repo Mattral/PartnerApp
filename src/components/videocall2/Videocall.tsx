@@ -1,5 +1,5 @@
 import { type MutableRefObject, useRef, useState } from "react";
-import { type VideoClient, VideoQuality, type VideoPlayer, type ChatMessage } from "@zoom/videosdk";
+import { type VideoClient, VideoQuality, type VideoPlayer } from "@zoom/videosdk";
 import { PhoneOff } from "lucide-react";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
@@ -12,8 +12,8 @@ import { type setTranscriptionType } from "./Transcript";
 import UIToolKit from "./UIToolKit";
 import TranscriptionButton from "./TranscriptionButton";
 import RecordingButton from "./RecordingButton";
-import { CameraButton, MicButton } from "./MuteButtons";
 import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
+import { Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 // Hardcoded user data
 const userData = {
@@ -23,16 +23,7 @@ const userData = {
   },
 };
 
-// Hardcoded room data
-const roomData = {
-  id: "room1",
-  title: "Team Meeting",
-  content: "Discussion about the upcoming project deadlines.",
-  time: new Date().toISOString(),
-  duration: 60,
-  jwt: "fake-jwt-token", // Hardcoded JWT
-  session: "room1-session-id", // Hardcoded Session ID
-};
+
 
 const Videocall = (props: VideoCallProps) => {
   const { setTranscriptionSubtitle, isCreator, jwt, session, client } = props;
@@ -40,13 +31,11 @@ const Videocall = (props: VideoCallProps) => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [inCall, setInCall] = useState(false); // Local state for inCall
   const videoContainerRef = useRef<HTMLDivElement>(null);
-
   const { toast } = useToast();
 
   const init = async () => {
     await client.current.init("en-US", "Global", { patchJsMedia: true });
     client.current.on("peer-video-state-change", (payload) => void renderVideo(payload));
-    client.current.on("chat-on-message", onChatMessage);
     await client.current.join(session, jwt, userData.user.name).catch((e) => {
       console.log(e);
     });
@@ -108,20 +97,38 @@ const Videocall = (props: VideoCallProps) => {
     }
   };
 
-  const onChatMessage = (payload: ChatMessage) => {
-    props.setRecords((previous) => [...previous, payload]);
-    if (payload.sender.userId !== client.current.getCurrentUserInfo().userId) {
-      toast({ title: `Chat from: ${payload.sender.name}`, description: payload.message, duration: 1000 });
-    }
-  };
-
   const leaveCall = async () => {
     toast({ title: "Leaving", description: "Please wait..." });
     client.current.off("peer-video-state-change", (payload: { action: "Start" | "Stop"; userId: number }) => void renderVideo(payload));
-    client.current.off("chat-on-message", onChatMessage);
     await client.current.leave().catch((e) => console.log("leave error", e));
     setInCall(false); // Set inCall to false when leaving
     window.location.href = "/";
+  };
+
+  // MicButton component code
+  const onMicrophoneClick = async () => {
+    const mediaStream = client.current.getMediaStream();
+    if (isAudioMuted) {
+      await mediaStream?.unmuteAudio();
+      setIsAudioMuted(false);
+    } else {
+      await mediaStream?.muteAudio();
+      setIsAudioMuted(true);
+    }
+  };
+
+  // CameraButton component code
+  const onCameraClick = async () => {
+    const mediaStream = client.current.getMediaStream();
+    if (isVideoMuted) {
+      await mediaStream.startVideo();
+      setIsVideoMuted(false);
+      // You could call renderVideo({ action: "Start", userId: client.current.getCurrentUserInfo().userId }) here
+    } else {
+      await mediaStream.stopVideo();
+      setIsVideoMuted(true);
+      // You could call renderVideo({ action: "Stop", userId: client.current.getCurrentUserInfo().userId }) here
+    }
   };
 
   return (
@@ -141,21 +148,17 @@ const Videocall = (props: VideoCallProps) => {
       ) : (
         <div className="flex w-full flex-col justify-around self-center">
           <div className="mt-4 flex w-[30rem] flex-1 justify-around self-center rounded-md bg-white p-4">
-            <CameraButton 
-              client={client} 
-              isVideoMuted={isVideoMuted} 
-              setIsVideoMuted={setIsVideoMuted} 
-              renderVideo={renderVideo} 
-            />
-            <MicButton 
-              isAudioMuted={isAudioMuted} 
-              client={client} 
-              setIsAudioMuted={setIsAudioMuted} 
-            />
-            <TranscriptionButton 
-              setTranscriptionSubtitle={setTranscriptionSubtitle} 
-              client={client} 
-            />
+            {/* Camera Button */}
+            <Button onClick={onCameraClick} variant={"outline"} title="camera">
+              {isVideoMuted ? <VideoOff /> : <Video />}
+            </Button>
+
+            {/* Mic Button */}
+            <Button onClick={onMicrophoneClick} variant={"outline"} title="microphone">
+              {isAudioMuted ? <MicOff /> : <Mic />}
+            </Button>
+
+            <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
             <RecordingButton client={client} />
             <SettingsModal client={client} />
             <ActionModal />
