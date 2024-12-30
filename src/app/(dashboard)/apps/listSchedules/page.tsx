@@ -4,12 +4,18 @@ import { TextField, Grid, Card, CardContent, Typography, Box, InputAdornment, Ci
 import { Search, AccessTime, Person, Email, Error } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
 import axios from 'axios';
-import PopUp from './pop';  // Import the pop-up component
+import { useRouter } from 'next/navigation';
 
 interface Appointment {
     idCA: string;
     ca_title: string;
     ca_desc: string;
+    ca_code:string;
+    conv_code:string;
+    advisor__pp_hourlyRate:string;
+    advisor__pp_paymentCurrency:string;
+    advisor__pp_jobTitle:string;
+    advisor__pp_jobDesc:string;
     ca_requestedFor: string;
     ca_status: string;
     ed_name: string;
@@ -29,6 +35,7 @@ const ListAppointments: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+    const router = useRouter();
 
     // Function to fetch appointments from API
     const fetchAppointments = async (searchKey: string) => {
@@ -85,7 +92,12 @@ const ListAppointments: React.FC = () => {
     };
 
     const handleCardClick = (appointment: Appointment) => {
-        setSelectedAppointment(appointment);  // Set the selected appointment for the pop-up
+        // Store the selected appointment in localStorage
+        localStorage.setItem('selectedAppointment', JSON.stringify(appointment));
+        
+        // Navigate to the schedule details page
+        router.push('/apps/scheduleDetails');
+        //setSelectedAppointment(appointment);  // Set the selected appointment for the pop-up
     };
 
     const handleClosePopUp = () => {
@@ -170,7 +182,7 @@ const ListAppointments: React.FC = () => {
                                             <Typography variant="body2" color="textPrimary" sx={{ fontSize: '1.1rem' }}>
                                                 <strong>Requested For:</strong> {appointment.ca_requestedFor}
                                             </Typography>
-                                            <Typography variant="body2" color="textPrimary" sx={{ fontSize: '1.1rem' }}>
+                                            <Typography variant="body2" color="textPrimary" sx={{ fontSize: '1.1rem', textAlign: 'center' }}>
                                                 <strong>Status:</strong> {appointment.ca_status}
                                             </Typography>
                                         </Box>
@@ -192,10 +204,6 @@ const ListAppointments: React.FC = () => {
                                                 <Person sx={{ fontSize: '1.2rem', color: 'primary.main', verticalAlign: 'middle', marginRight: 1 }} />
                                                 <strong>Client:</strong> {appointment.client__pers_fName} {appointment.client__pers_lName}
                                             </Typography>
-                                            <Typography variant="body2" color="textPrimary" sx={{ fontSize: '1.1rem' }}>
-                                                <Email sx={{ fontSize: '1.2rem', color: 'primary.main', verticalAlign: 'middle', marginRight: 1 }} />
-                                                <strong>Advisor Email:</strong> {appointment._advisors[0].email}
-                                            </Typography>
                                         </Box>
                                     </CardContent>
                                 </Card>
@@ -209,10 +217,7 @@ const ListAppointments: React.FC = () => {
                 </Grid>
             )}
 
-            {/* Render PopUp Modal with onClose */}
-            {selectedAppointment && (
-                <PopUp appointment={selectedAppointment} onClose={handleClosePopUp} />
-            )}
+
         </Box>
     );
 };

@@ -126,3 +126,12 @@ const PopUp: React.FC<PopUpProps> = ({ appointment, onClose }) => {
 };
 
 export default PopUp;
+
+/*
+import PopUp from './pop';  // Import the pop-up component
+
+            {selectedAppointment && (
+                <PopUp appointment={selectedAppointment} onClose={handleClosePopUp} />
+            )}
+
+ */
