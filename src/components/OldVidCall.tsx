@@ -358,9 +358,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       )}
 
       {/* Chat Popup */}
-      {inSession && isChatOpen && (
-        <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />
-      )}
+ 
     </Container>
   );
 };
