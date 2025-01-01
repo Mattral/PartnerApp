@@ -13,39 +13,15 @@ import {
 } from "@mui/material";
 import ChatPopup from "./ChatPopup"; // Existing chat component
 import { styled } from "@mui/material/styles";
-import Transcription from "./Transcription"; // Import the transcription component
 
-import { useToast } from "components/ui/use-toast";
-import { type ChatRecord } from "components/chat/Chat";
 import { videoCallStyle } from "lib/utils";
-import SettingsModal from "components/videocall2/SettingsModal";
-import ActionModal from "components/videocall2/ActionModal";
+import SettingsModal from "components/videocall/SettingsModal";
+import ActionModal from "components/videocall/ActionModal";
 import UIToolKit from "components/videocall2/UIToolKit";
 import TranscriptionButton from "components/videocall2/TranscriptionButton";
 import RecordingButton from "components/videocall2/RecordingButton";
 import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
 import { Mic, MicOff, Video, VideoOff } from "lucide-react";
-
-
-// Styled components for better visual aesthetics
-const Container = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  height: "100%",
-  width: "100%",
-  alignItems: "center",
-  backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(2),
-}));
-
-const ButtonGroup = styled("div")(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-around",
-  width: "100%",
-  maxWidth: "500px",
-  marginTop: theme.spacing(2),
-  flexWrap: "wrap",
-}));
 
 const ChatButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -56,6 +32,7 @@ const ChatButton = styled(Button)(({ theme }) => ({
     width: "100%", // Full width on smaller screens
   },
 }));
+
 
 const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const session = slug;
@@ -91,6 +68,61 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
     return () => clearInterval(timer);
   }, [inCall]);
 
+
+  // Handles the active-share-change event
+  const handleShareChange = (payload: { state: string; userId: number }) => {
+    const canvas = document.querySelector("#users-screen-share-content-canvas") as HTMLCanvasElement;
+    const mediaStream = client.current.getMediaStream();
+
+    if (payload.state === "Active") {
+      // Start showing the shared screen on the canvas
+      mediaStream.startShareView(canvas, payload.userId);
+    } else if (payload.state === "Inactive") {
+      // Stop showing the shared screen when the user stops sharing
+      mediaStream.stopShareView();
+    }
+  };
+
+  // Start screen share
+  const startScreenShare = async () => {
+    const videoElement = document.querySelector('#my-screen-share-content-video') as HTMLVideoElement | null;
+    const canvasElement = document.querySelector('#my-screen-share-content-canvas') as HTMLCanvasElement | null;
+    const userElement = document.querySelector('#users-screen-share-content-canvas') as HTMLCanvasElement | null;
+
+    const mediaStream = client.current.getMediaStream();
+
+    if (videoElement) {
+      // Add the video element to the video container
+      videoContainerRef.current?.appendChild(videoElement);
+      await mediaStream.startShareScreen(videoElement);
+      console.log("video share")
+    } else if (canvasElement) {
+      // Add the canvas element to the video container
+      videoContainerRef.current?.appendChild(canvasElement);
+      await mediaStream.startShareScreen(canvasElement);
+      console.log("canvas share")
+    } else if (userElement) {
+      // Add the canvas element to the video container
+      videoContainerRef.current?.appendChild(userElement);
+      console.log("user share")
+    } else {
+      console.error("No video or canvas element found for screen sharing.");
+    }
+  };
+
+  // Stop screen share
+  const stopScreenShare = async () => {
+    const mediaStream = client.current.getMediaStream();
+    await mediaStream.stopShareScreen();
+
+    // Optionally, you can remove the video or canvas element after stopping the share
+    const videoElement = document.querySelector('#my-screen-share-content-video') as HTMLVideoElement | null;
+    const canvasElement = document.querySelector('#my-screen-share-content-canvas') as HTMLCanvasElement | null;
+
+    if (videoElement) videoElement.remove();
+    if (canvasElement) canvasElement.remove();
+  };
+
   const joinCall = async () => {
     console.log("Joining session...");
     await client.current.init("en-US", "Global", { patchJsMedia: true });
@@ -98,6 +130,8 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       "peer-video-state-change",
       (payload) => void renderVideo(payload)
     );
+    client.current.on("active-share-change", (payload) => handleShareChange(payload));
+
 
     try {
       await client.current.join(session, jwt, userName);
@@ -191,6 +225,11 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
         {/* Video Player Container */}
         {/* @ts-expect-error html component */}
         <video-player-container ref={videoContainerRef} className="rounded-lg shadow-xl" style={videoCallStyle} />
+        {/* The video or canvas element will be dynamically injected here based on the screen share */}
+        <video id="my-screen-share-content-video" style={{ display: "none" }} height="1080" width="1920"></video>
+        <canvas id="my-screen-share-content-canvas" style={{ display: "none" }} height="1080" width="1920"></canvas>
+        <canvas id="users-screen-share-content-canvas" style={{ display: "none" }} height="1080" width="1920"></canvas>
+
       </div>
 
 
@@ -222,6 +261,8 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
             <Button variant={"destructive"} onClick={leaveSession} title="leave call">
               <PhoneOff />
             </Button>
+            <Button onClick={startScreenShare}>Start Screen Share</Button>
+            <Button onClick={stopScreenShare}>Stop Screen Share</Button>
           </div>
         </div>
       )}
