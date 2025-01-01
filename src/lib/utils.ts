@@ -17,7 +17,6 @@ export const videoCallStyle = {
   marginRight: "auto", // Automatically adjust the right margin to center it
   padding: "1rem", // Add padding for some inner spacing
   borderRadius: "20px", // Increase border radius for a softer, more elegant look
-  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Soft shadow to lift the container
   backgroundColor: "rgba(255, 255, 255, 0.6)", // Semi-transparent white for light theme
   display: "flex", // Flexbox layout to center the video player if needed
   justifyContent: "center", // Center the video content horizontally

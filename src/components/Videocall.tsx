@@ -12,7 +12,7 @@ import {
   Dialog,
   DialogTitle,
 } from "@mui/material";
-import ChatPopup from "./ChatPopup"; // Existing chat component
+import Chat from "./ChatPopup"; // Existing chat component
 import { styled } from "@mui/material/styles";
 
 import { videoCallStyle } from "lib/utils";
@@ -76,7 +76,8 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const startScreenShare = async () => {
     const videoElement = document.querySelector('#my-screen-share-content-video') as HTMLVideoElement | null;
     const canvasElement = document.querySelector('#my-screen-share-content-canvas') as HTMLCanvasElement | null;
-  
+    const userElement = document.querySelector('#users-screen-share-content-canvas') as HTMLCanvasElement | null;
+    
     const mediaStream = client.current.getMediaStream();
   
     if (videoElement) {
@@ -87,7 +88,11 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       // Add the canvas element to the video container
       videoContainerRef.current?.appendChild(canvasElement);
       await mediaStream.startShareScreen(canvasElement);
-    } else {
+    } else if (userElement) {
+      // Add the canvas element to the video container
+      videoContainerRef.current?.appendChild(userElement);
+      await mediaStream.startShareScreen(userElement);
+    }else {
       console.error("No video or canvas element found for screen sharing.");
     }
     setIsScreenSharing(true);
@@ -212,8 +217,9 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       {/* Chat Popup Toggle Button */}
       {isScreenSharing && (
         <div className="video-container">
-          <video id="my-screen-share-content-video" height="100%" width="100%"></video>
-          <canvas id="my-screen-share-content-canvas" height="100%" width="100%"></canvas>
+          <video id="my-screen-share-content-video" height="1" width="1.9"></video>
+          <canvas id="my-screen-share-content-canvas" height="1" width="1.9"></canvas>
+          <canvas id="users-screen-share-content-canvas" height="1" width="1.9"></canvas>
         </div>
       )}
   
@@ -283,7 +289,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       )}
   
       {/* Chat Popup */}
-      {inCall && isChatOpen && <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />}
+      {inCall && isChatOpen && <Chat conv_code="cv-9dd29dad-d628-4066-ab6c-32562a95dc79" ca_code="ca-9dd29dad-ce53-442d-8f75-320dc874d98c" onClose={() => setIsChatOpen(false)}/>}
   
       {/* Time Counter Display */}
       {inCall && (
