@@ -26,6 +26,7 @@ import { Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 const ChatButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(1),
+  width: "20",
   backgroundColor: theme.palette.primary.main,
   color: "#fff",
   padding: "0.5rem 1rem", // Adjust padding for better touch response on mobile
@@ -200,24 +201,22 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   };
 
   return (
-    <div className="flex flex-col h-auto min-h-screen w-full rounded-md px-6 bg-gradient-to-r from-white via-gray-100 to-gray-200 overflow-auto sm:px-4 lg:px-8 md:w-3/4">
-
-      <div className={`flex w-full flex-1 ${inCall ? "block" : "hidden"}`}>
+    <div className="flex flex-col h-auto min-h-screen w-full rounded-md px-6 bg-gradient-to-r from-white via-gray-100 to-gray-200 overflow-auto">
+      
+      <div className={`flex w-[80%] min-h-[90%] flex-grow h-auto rounded-md px-6 self-center ${inCall ? "block" : "hidden"}`}>
         {/* Video Player Container */}
         {/* @ts-expect-error html component */}
-        <video-player-container ref={videoContainerRef} className="rounded-lg shadow-xl" style={videoCallStyle} />
+        <video-player-container ref={videoContainerRef} style={videoCallStyle} />
       </div>
-
-
-
+  
       {/* Chat Popup Toggle Button */}
       {isScreenSharing && (
-      <div className="video-container">
-      <video id="my-screen-share-content-video" height="10" width="19"></video>
-      <canvas id="my-screen-share-content-canvas" height="10" width="19"></canvas>
-    </div>
+        <div className="video-container">
+          <video id="my-screen-share-content-video" height="100%" width="100%"></video>
+          <canvas id="my-screen-share-content-canvas" height="100%" width="100%"></canvas>
+        </div>
       )}
-
+  
       {!inCall ? (
         <div className="mx-auto flex w-64 flex-col self-center">
           <UIToolKit />
@@ -227,56 +226,75 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
           </Button>
         </div>
       ) : (
-        <div className="flex w-full flex-col justify-around self-center">
-          <div className="mt-4 flex w-[38rem] flex-1 justify-around self-center rounded-md bg-white p-4">
-            {/* Camera Button */}
-            <Button onClick={onCameraClick} variant={"outline"} title="camera">
-              {isVideoMuted ? <VideoOff /> : <Video />}
-            </Button>
+<div className="flex w-full flex-col justify-around self-center">
+  <div className="mt-4 flex w-full max-w-[45rem] flex-wrap justify-center self-center rounded-md bg-white p-4 gap-4">
+    {/* Camera Button */}
+    <Button onClick={onCameraClick} variant="outline" title="camera">
+      {isVideoMuted ? <VideoOff /> : <Video />}
+    </Button>
 
-            {/* Mic Button */}
-            <Button onClick={onMicrophoneClick} variant={"outline"} title="microphone">
-              {isAudioMuted ? <MicOff /> : <Mic />}
-            </Button>
+    {/* Mic Button */}
+    <Button onClick={onMicrophoneClick} variant="outline" title="microphone">
+      {isAudioMuted ? <MicOff /> : <Mic />}
+    </Button>
 
-            <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
-            <RecordingButton client={client} />
-            <SettingsModal client={client} />
-            <ActionModal />
-            <Button onClick={startScreenShare} variant={"outline"}>
-              <Share size={20} /> {/* Icon with a specific size */}
-            </Button>
-            <Button onClick={stopScreenShare} variant={"outline"}>
-              <StopCircle size={20} /> {/* Icon with a specific size */}
-            </Button>
-            <Button variant={"destructive"} onClick={leaveSession} title="leave call">
-              <PhoneOff />
-            </Button>
+    <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
+    <RecordingButton client={client} />
+    <SettingsModal client={client} />
+    <ActionModal />
+    <Button onClick={startScreenShare} variant="outline">
+      <Share size={20} />
+    </Button>
+    <Button onClick={stopScreenShare} variant="outline">
+      <StopCircle size={20} />
+    </Button>
+    <Button variant="destructive" onClick={leaveSession} title="leave call">
+      <PhoneOff />
+    </Button>
+  </div>
+</div>
 
-          </div>
-        </div>
       )}
-
+  
+      <style>
+        {`
+          /* Sticky positioning for chat button and elapsed time */
+          .sticky-chat-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+          }
+  
+          .sticky-time {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+          }
+        `}
+      </style>
+  
       {/* Chat Popup Toggle Button */}
       {inCall && (
-        <ChatButton onClick={() => setIsChatOpen(!isChatOpen)}>
+        <ChatButton className="sticky-chat-btn" onClick={() => setIsChatOpen(!isChatOpen)}>
           {isChatOpen ? "Close Chat" : "Open Chat"}
         </ChatButton>
       )}
-
-
+  
       {/* Chat Popup */}
-      {inCall && isChatOpen && (
-        <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />
-      )}
-
+      {inCall && isChatOpen && <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />}
+  
       {/* Time Counter Display */}
       {inCall && (
-        <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#333' }}>Elapsed Time: {formatTime(elapsedTime)}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#333' }} className="sticky-time">
+          Elapsed Time: {formatTime(elapsedTime)}
+        </DialogTitle>
       )}
-
     </div>
   );
+  
+
 };
 
 export default Videocall;

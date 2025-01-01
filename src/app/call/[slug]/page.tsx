@@ -10,9 +10,9 @@ const Videocall = dynamic<{ slug: string; JWT: string }>(
 export default async function Page({ params }: { params: { slug: string } }) {
   const jwt = await getData(params.slug);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div>
       <Videocall slug={params.slug} JWT={jwt} />
       <Script src="/coi-serviceworker.js" strategy="beforeInteractive" />
-    </main>
+    </div>
   );
 }

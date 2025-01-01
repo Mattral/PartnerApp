@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 //Addition
 
 export const videoCallStyle = {
-  height: "70vh", // Slightly reduced for better proportion
+  height: "85vh", // Slightly reduced for better proportion
   width: "100%", // Full width to ensure responsive layout
   marginTop: "2rem", // Increase the top margin to balance with other UI elements
   marginLeft: "auto", // Automatically adjust the left margin to center it
