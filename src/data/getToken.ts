@@ -6,6 +6,9 @@ export async function getData(slug: string) {
   return JWT;
 }
 
+console.log('ZOOM_SDK_KEY:', process.env.ZOOM_SDK_KEY);
+console.log('ZOOM_SDK_SECRET:', process.env.ZOOM_SDK_SECRET);
+
 function generateSignature(sessionName: string, role: number) {
   if (!process.env.ZOOM_SDK_KEY || !process.env.ZOOM_SDK_SECRET) {
     throw new Error("Missing ZOOM_SDK_KEY or ZOOM_SDK_SECRET");

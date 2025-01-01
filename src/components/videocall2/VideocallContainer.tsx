@@ -9,7 +9,7 @@ import Videocall from "components/videocall2/Videocall";
 import { type ChatRecord } from "components/chat/Chat";
 // Hardcoded room data
 const hardcodedRoom = {
-  id: "room1",
+  id: "12345678",
   title: "Team Meeting",
   content: "Discussion about the upcoming project deadlines.",
   time: new Date().toISOString(),
@@ -34,22 +34,9 @@ const hardcodedRoom = {
   jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiJEVXdGWC15bFJueWFBa0ZVQ2R2MFpBIiwic2RrS2V5IjoiRFV3RlgteWxSbnlhQWtGVUNkdjBaQSIsIm1uIjoiMTIzNDU2NzgiLCJyb2xlIjoxLCJ0b2tlbkV4cCI6MTczNTU2NzczNSwiaWF0IjoxNzM1NTY0MTM1LCJleHAiOjE3MzU1Njc3MzV9.0yYC5u9u-xlEZaGCG5dTJGmHYlE35-6QjQJKxP7oy5w", 
 };
 
-// Define types for session and userData
-type UserData = {
-  user: {
-    id: string;
-    name: string;
-  };
-};
-
 const Home = () => {
-  const [inCall, setInCall] = useState(false);
-  //const router = useRouter();
   const { toast } = useToast();
   const { data: userData } = useSession();
-  const [records, setRecords] = useState<ChatRecord[]>([]);
-  const [transcriptionSubtitle, setTranscriptionSubtitle] = useState({});
-  const client = useRef(ZoomVideo.createClient());
 
   // Type check for userData to ensure the id exists
   if (!userData || !userData.user) {
@@ -57,7 +44,6 @@ const Home = () => {
     return <div>Loading...</div>;
   }
 
-  const userId = "sth"; // Safely access user id
 
   const copyLink = async () => {
     const link = `${window.location.toString()}`;
@@ -84,12 +70,8 @@ const Home = () => {
         </div>
       </div>
       <Videocall
-        jwt={hardcodedRoom.jwt}
-        session={hardcodedRoom.id}
-        client={client}
-        setRecords={setRecords}
-        isCreator={hardcodedRoom.User_CreatedBy.id === userId}
-        setTranscriptionSubtitle={setTranscriptionSubtitle}
+        JWT={hardcodedRoom.jwt}
+        slug={hardcodedRoom.id}
       />
       
     </div>

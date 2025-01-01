@@ -15,6 +15,18 @@ import ChatPopup from "./ChatPopup"; // Existing chat component
 import { styled } from "@mui/material/styles";
 import Transcription from "./Transcription"; // Import the transcription component
 
+import { useToast } from "components/ui/use-toast";
+import { type ChatRecord } from "components/chat/Chat";
+import { videoCallStyle } from "lib/utils";
+import SettingsModal from "components/videocall2/SettingsModal";
+import ActionModal from "components/videocall2/ActionModal";
+import UIToolKit from "components/videocall2/UIToolKit";
+import TranscriptionButton from "components/videocall2/TranscriptionButton";
+import RecordingButton from "components/videocall2/RecordingButton";
+import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
+import { Mic, MicOff, Video, VideoOff } from "lucide-react";
+
+
 // Styled components for better visual aesthetics
 const Container = styled("div")(({ theme }) => ({
   display: "flex",
@@ -48,36 +60,38 @@ const ChatButton = styled(Button)(({ theme }) => ({
 const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const session = slug;
   const jwt = JWT;
-  const [inSession, setInSession] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [isChatOpen, setIsChatOpen] = useState(false); // State for chat popup
-  const [elapsedTime, setElapsedTime] = useState(0); // State for elapsed time
-  const [showTranscription, setShowTranscription] = useState(false); // Controls transcription visibility
-
   const client = useRef<typeof VideoClient>(ZoomVideo.createClient());
-  const videoContainerRef = useRef<HTMLDivElement>(null);
+
+  const [inCall, setinCall] = useState(false);
 
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+
+  const [userName, setUserName] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false); // State for chat popup
+  const [elapsedTime, setElapsedTime] = useState(0); // State for elapsed time
+  const [transcriptionSubtitle, setTranscriptionSubtitle] = useState({});
+
 
   useEffect(() => {
     if (!userName) {
       setUserName("User-1");
     }
     if (userName) {
-      joinSession();
+      joinCall();
     }
   }, [userName]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (inSession) {
+    if (inCall) {
       timer = setInterval(() => setElapsedTime((prev) => prev + 1), 1000);
     }
     return () => clearInterval(timer);
-  }, [inSession]);
+  }, [inCall]);
 
-  const joinSession = async () => {
+  const joinCall = async () => {
     console.log("Joining session...");
     await client.current.init("en-US", "Global", { patchJsMedia: true });
     client.current.on(
@@ -87,15 +101,18 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
 
     try {
       await client.current.join(session, jwt, userName);
-      setInSession(true);
+
+      setinCall(true);
       const mediaStream = client.current.getMediaStream();
       //@ts-expect-error
       window.safari
         ? await WorkAroundForSafari(client.current)
         : await mediaStream.startAudio();
+
       setIsAudioMuted(false);
       await mediaStream.startVideo();
       setIsVideoMuted(false);
+
       await renderVideo({
         action: "Start",
         userId: client.current.getCurrentUserInfo().userId,
@@ -117,31 +134,8 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
         event.userId,
         VideoQuality.Video_720P
       );
+      videoContainerRef.current!.appendChild(userVideo as VideoPlayer);
 
-      // Create a container for video and username
-      const videoContainer = document.createElement("div");
-      videoContainer.style.position = "relative";
-      videoContainer.style.textAlign = "center"; // Center username under video
-
-      // Append the video to the container
-      videoContainer.appendChild(userVideo as VideoPlayer);
-
-      // Create a div for the username
-      const userNameDiv = document.createElement("div");
-      userNameDiv.innerText = userName; // Use the current userName
-      userNameDiv.style.color = "white";
-      userNameDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-      userNameDiv.style.padding = "5px";
-      userNameDiv.style.position = "absolute";
-      userNameDiv.style.bottom = "0"; // Position it below the video
-      userNameDiv.style.width = "100%";
-      userNameDiv.style.textAlign = "center"; // Center text
-
-      // Append the username below the video
-      videoContainer.appendChild(userNameDiv);
-
-      // Append the container to the video container ref
-      videoContainerRef.current!.appendChild(videoContainer);
     }
   };
 
@@ -151,7 +145,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
     );
 
     await client.current.leave();
-    window.location.href = "/";
+    window.location.href = "/session";
   };
 
   const formatTime = (seconds: number) => {
@@ -163,19 +157,108 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
     )}`;
   };
 
-  return (
-    <Container>
 
-      <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#333' }}>Session: {session}</DialogTitle>
-      {/* @ts-expect-error html component */}
-      <video-player-container ref={videoContainerRef} />
+  // MicButton component code
+  const onMicrophoneClick = async () => {
+    const mediaStream = client.current.getMediaStream();
+    if (isAudioMuted) {
+      await mediaStream?.unmuteAudio();
+      setIsAudioMuted(false);
+    } else {
+      await mediaStream?.muteAudio();
+      setIsAudioMuted(true);
+    }
+  };
+
+  // CameraButton component code
+  const onCameraClick = async () => {
+    const mediaStream = client.current.getMediaStream();
+    if (isVideoMuted) {
+      await mediaStream.startVideo();
+      setIsVideoMuted(false);
+      // You could call renderVideo({ action: "Start", userId: client.current.getCurrentUserInfo().userId }) here
+    } else {
+      await mediaStream.stopVideo();
+      setIsVideoMuted(true);
+      // You could call renderVideo({ action: "Stop", userId: client.current.getCurrentUserInfo().userId }) here
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-auto min-h-screen w-full rounded-md px-6 bg-gradient-to-r from-white via-gray-100 to-gray-200 overflow-auto sm:px-4 lg:px-8 md:w-3/4">
+
+      <div className={`flex w-full flex-1 ${inCall ? "block" : "hidden"}`}>
+        {/* Video Player Container */}
+        {/* @ts-expect-error html component */}
+        <video-player-container ref={videoContainerRef} className="rounded-lg shadow-xl" style={videoCallStyle} />
+      </div>
+
+
+      {!inCall ? (
+        <div className="mx-auto flex w-64 flex-col self-center">
+          <UIToolKit />
+          <div className="w-4" />
+          <Button className="flex flex-1" onClick={joinCall}>
+            Join
+          </Button>
+        </div>
+      ) : (
+        <div className="flex w-full flex-col justify-around self-center">
+          <div className="mt-4 flex w-[30rem] flex-1 justify-around self-center rounded-md bg-white p-4">
+            {/* Camera Button */}
+            <Button onClick={onCameraClick} variant={"outline"} title="camera">
+              {isVideoMuted ? <VideoOff /> : <Video />}
+            </Button>
+
+            {/* Mic Button */}
+            <Button onClick={onMicrophoneClick} variant={"outline"} title="microphone">
+              {isAudioMuted ? <MicOff /> : <Mic />}
+            </Button>
+
+            <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
+            <RecordingButton client={client} />
+            <SettingsModal client={client} />
+            <ActionModal />
+            <Button variant={"destructive"} onClick={leaveSession} title="leave call">
+              <PhoneOff />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Popup Toggle Button */}
+      {inCall && (
+        <ChatButton onClick={() => setIsChatOpen(!isChatOpen)}>
+          {isChatOpen ? "Close Chat" : "Open Chat"}
+        </ChatButton>
+      )}
+
+
+      {/* Chat Popup */}
+      {inCall && isChatOpen && (
+        <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />
+      )}
 
       {/* Time Counter Display */}
-      {inSession && (
+      {inCall && (
         <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#333' }}>Elapsed Time: {formatTime(elapsedTime)}</DialogTitle>
       )}
 
-      {inSession && (
+    </div>
+  );
+};
+
+export default Videocall;
+
+
+// to show name
+// <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#333' }}>Session: {session}</DialogTitle>
+
+/*
+
+
+
+      {inCall && (
         <ButtonGroup>
           <CameraButton
             client={client}
@@ -192,48 +275,8 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
           <Button onClick={leaveSession}>
             <PhoneOff />
           </Button>
-          <Button onClick={() => setShowTranscription(!showTranscription)}>
-            {showTranscription ? "Hide Transcription" : "Show Transcription"}
-          </Button>
 
         </ButtonGroup>
       )}
 
-      {/* Chat Popup Toggle Button */}
-      {inSession && (
-        <ChatButton onClick={() => setIsChatOpen(!isChatOpen)}>
-          {isChatOpen ? "Close Chat" : "Open Chat"}
-        </ChatButton>
-      )}
-
-      {/* Conditionally Render Transcription Text */}
-      {inSession && showTranscription && (
-        <div
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            color: "white",
-            padding: "10px",
-            borderRadius: "8px",
-            textAlign: "center",
-            width: "100%",
-            maxWidth: "500px", // Limit width for wrapping
-            marginBottom: "2rem",
-            whiteSpace: "normal", // Allow wrapping
-            wordBreak: "break-word", // Wrap long words to the next line if necessary
-            fontSize: "1rem", // Adjust font size as needed
-          }}
-        >
-          <Transcription userName={userName} />
-        </div>
-      )}
-
-      {/* Chat Popup */}
-      {inSession && isChatOpen && (
-        <ChatPopup onClose={() => setIsChatOpen(false)} userName={userName} />
-      )}
-    </Container>
-  );
-};
-
-export default Videocall;
-
+*/

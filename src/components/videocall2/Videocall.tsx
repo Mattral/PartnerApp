@@ -1,3 +1,4 @@
+"use client"
 import { type MutableRefObject, useRef, useState } from "react";
 import { type VideoClient, VideoQuality, type VideoPlayer } from "@zoom/videosdk";
 import { PhoneOff } from "lucide-react";
@@ -14,6 +15,7 @@ import TranscriptionButton from "./TranscriptionButton";
 import RecordingButton from "./RecordingButton";
 import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
 import { Mic, MicOff, Video, VideoOff } from "lucide-react";
+import ZoomVideo from "@zoom/videosdk";
 
 // Hardcoded user data
 const userData = {
@@ -24,13 +26,18 @@ const userData = {
 };
 
 
-
-const Videocall = (props: VideoCallProps) => {
-  const { setTranscriptionSubtitle, isCreator, jwt, session, client } = props;
+const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
+  const session = slug;
+  const jwt = JWT;
+  const client = useRef(ZoomVideo.createClient());
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [inCall, setInCall] = useState(false); // Local state for inCall
+
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [transcriptionSubtitle, setTranscriptionSubtitle] = useState({});
+  const [records, setRecords] = useState<ChatRecord[]>([]);
+
   const { toast } = useToast();
 
   const init = async () => {
@@ -39,11 +46,13 @@ const Videocall = (props: VideoCallProps) => {
     await client.current.join(session, jwt, userData.user.name).catch((e) => {
       console.log(e);
     });
+    /*
     if (isCreator) {
       // For now, we'll skip the mutation since we aren't using the actual API
       // In real case, we would call `writeZoomSessionID.mutateAsync` here
       console.log("Room session ID saved:", client.current.getSessionInfo().sessionId);
     }
+      */
   };
 
   const startCall = async () => {
@@ -69,13 +78,6 @@ const Videocall = (props: VideoCallProps) => {
       toast({ title: "Error", description: "Unable to start the call. Please try again.", variant: "destructive" });
     }
 
-    const mediaStream = client.current.getMediaStream();
-    // @ts-ignore
-    window.safari ? await WorkAroundForSafari(client.current) : await mediaStream.startAudio();
-    setIsAudioMuted(client.current.getCurrentUserInfo().muted ?? true);
-    await mediaStream.startVideo();
-    setIsVideoMuted(false);
-    await renderVideo({ action: "Start", userId: client.current.getCurrentUserInfo().userId });
   };
 
   const renderVideo = async (event: { action: "Start" | "Stop"; userId: number }) => {
@@ -172,13 +174,6 @@ const Videocall = (props: VideoCallProps) => {
   );
 };
 
-type VideoCallProps = {
-  jwt: string;
-  session: string;
-  isCreator: boolean;
-  setTranscriptionSubtitle: setTranscriptionType;
-  setRecords: React.Dispatch<React.SetStateAction<ChatRecord[]>>;
-  client: MutableRefObject<typeof VideoClient>;
-};
+
 
 export default Videocall;
