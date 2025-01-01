@@ -195,17 +195,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                     <MainCard title="Contact Info">
                       <Grid container spacing={3}>
                         {/* Phone and Timezone */}
-                        <Grid item xs={6} sm={3}>
-                          <Grid container alignItems="center" spacing={1}>
-                            <Grid item>
-                              <Phone sx={{ color: 'primary.main' }} />
-                            </Grid>
-                            <Grid item>
-                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Phone</Typography>
-                              <Typography variant="body1">{sortedAdvisorProfile.phone || 'N/A'}</Typography>
-                            </Grid>
-                          </Grid>
-                        </Grid>
+
                         <Grid item xs={6} sm={3}>
                           <Grid container alignItems="center" spacing={1}>
                             <Grid item>
@@ -219,17 +209,8 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
                         </Grid>
 
                         {/* Email and Date of Birth */}
-                        <Grid item xs={6} sm={3}>
-                          <Grid container alignItems="center" spacing={1}>
-                            <Grid item>
-                              <Email sx={{ color: 'primary.main' }} />
-                            </Grid>
-                            <Grid item>
-                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Email</Typography>
-                              <Typography variant="body1">{sortedAdvisorProfile.email || 'N/A'}</Typography>
-                            </Grid>
-                          </Grid>
-                        </Grid>
+
+                        
                         <Grid item xs={6} sm={3}>
                           <Grid container alignItems="center" spacing={1}>
                             <Grid item>
@@ -481,3 +462,17 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
 };
 
 export default PreviewPopup;
+
+/*
+                        <Grid item xs={6} sm={3}>
+                          <Grid container alignItems="center" spacing={1}>
+                            <Grid item>
+                              <Phone sx={{ color: 'primary.main' }} />
+                            </Grid>
+                            <Grid item>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Phone</Typography>
+                              <Typography variant="body1">{sortedAdvisorProfile.phone || 'N/A'}</Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        */

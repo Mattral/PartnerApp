@@ -4,6 +4,7 @@ import { Box, Typography, Card, CardContent, Avatar, Grid, Button } from '@mui/m
 import { Person, Description as DescriptionIcon, Work as WorkIcon, AttachMoney as AttachMoneyIcon } from '@mui/icons-material';
 import Chat from './Chat';
 import Invite from './invite'; // Importing the Invite component
+import JoinCall from './join'; // Importing the Join component
 
 interface Appointment {
   idCA: string;
@@ -132,17 +133,16 @@ const ScheduleDetails: React.FC = () => {
 
         </Grid>
 
-        {/* Right Side - Chat Component */}
+        {/* Right Side - Chat and Call Join Section */}
         <Grid item xs={12} md={6}>
           {appointment ? (
-            <Chat conv_code={appointment.conv_code} ca_code={appointment.ca_code}/>
+            <Chat conv_code={appointment.conv_code} ca_code={appointment.ca_code} ca_requestedFor={appointment.ca_requestedFor}/>
           ) : (
             <Typography>Loading chat...</Typography>
           )}
+
         </Grid>
       </Grid>
-
-
     </Box>
   );
 };

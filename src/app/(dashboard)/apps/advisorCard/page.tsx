@@ -118,13 +118,13 @@ const AdvisorFetcher = () => {
                     <ListItemIcon>
                       <Sms size={18} />
                     </ListItemIcon>
-                    <ListItemText primary={<Typography color="secondary">{advisor.email}</Typography>} />
+                    <ListItemText primary={<Typography color="secondary">{advisor.pp_jobTitle}</Typography>} />
                   </ListItem>
                   <ListItem alignItems="flex-start">
                     <ListItemIcon>
                       <CallCalling size={18} />
                     </ListItemIcon>
-                    <ListItemText primary={<Typography color="secondary">{advisor.pers_phone1}</Typography>} />
+                    <ListItemText primary={<Typography color="secondary">{advisor.pers_preferredTimezone}</Typography>} />
                   </ListItem>
                 </List>
               </Grid>

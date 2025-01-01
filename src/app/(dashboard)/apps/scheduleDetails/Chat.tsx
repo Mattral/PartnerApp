@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, Paper, List, Avatar, Divider, Card,
 import { Send as SendIcon, AttachFile as AttachFileIcon } from '@mui/icons-material';
 import axios from 'axios';
 import FormData from 'form-data';
+import JoinCall from './join'; // Importing the Join component
 
 // Define the structure of the message data
 interface Message {
@@ -26,9 +27,10 @@ interface Message {
 interface ChatProps {
     conv_code: string; // Accepting conv_code as a prop, use this for api parameter instead of hardcoded value
     ca_code: string;   // Accepting ca_code as a prop, use this for api parameter instead of hardcoded value
+    ca_requestedFor: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ conv_code, ca_code }) => {
+const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, ca_requestedFor }) => {
     const [messages, setMessages] = useState<Message[]>([]); // To store fetched messages
     const [newMessage, setNewMessage] = useState(''); // Message input state
     const [files, setFiles] = useState<File[]>([]); // To store selected files
@@ -326,6 +328,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code }) => {
                     Appointment Code: <span style={{ fontWeight: 'normal', color: '#555' }}>{ca_code}</span>
                 </Typography>
             </Card>
+            <JoinCall ca_code={ca_code} ca_requestedFor={ca_requestedFor} />
 
         </Box>
     );
