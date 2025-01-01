@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from "react";
 import ZoomVideo, { VideoClient, VideoQuality, VideoPlayer } from "@zoom/videosdk";
-import { CameraButton, MicButton } from "./MuteButtons";
 import { WorkAroundForSafari } from "lib/utils";
 import { PhoneOff } from "lucide-react";
 import { Button } from "./ui/button";

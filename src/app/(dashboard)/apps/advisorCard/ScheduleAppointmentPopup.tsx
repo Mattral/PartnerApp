@@ -11,9 +11,11 @@ import {
   Box,
   IconButton,
   InputAdornment,
-} from '@mui/material';
+  } from '@mui/material';
 import { CheckCircleOutline, ErrorOutline, EventNote, Description, AccessTime } from '@mui/icons-material'; // Import additional icons
 import axios from 'axios';
+import { CloudUpload } from '@mui/icons-material'; // Correct import for the CloudUpload icon
+
 
 interface ScheduleAppointmentPopupProps {
   open: boolean;
@@ -64,6 +66,12 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00:00`;
   };
   
+  const [file, setFile] = useState(null);
+
+  // Handle file selection
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
 
   // Book the appointment
   const bookAppointment = async () => {
@@ -198,23 +206,38 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
             {error}
           </Typography>
         )}
+
+
+        {/* File Upload Section */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+          <Button
+            variant="contained"
+            component="label"
+            color="primary"
+            sx={{ fontWeight: '600' }}
+            startIcon={<CloudUpload />}
+          >
+            Upload Sample
+            <input
+              type="file"
+              hidden
+              onChange={handleFileChange}
+            />
+          </Button>
+        </Box>
+
+
       </DialogContent>
+      
       <DialogActions sx={{ padding: '16px 24px' }}>
-        <Button onClick={onClose} color="primary" sx={{ fontWeight: '600' }}>
+        <Button onClick={onClose} color="secondary" sx={{ fontWeight: '600' }}>
           Cancel
         </Button>
         <Button
           onClick={bookAppointment}
           color="primary"
           disabled={loading}
-          sx={{
-            fontWeight: '600',
-            backgroundColor: '#1976d2',
-            color: 'white',
-            '&:hover': {
-              backgroundColor: '#1565c0',
-            },
-          }}
+          sx={{ fontWeight: '600' }}
         >
           {loading ? 'Booking...' : 'Book Appointment'}
         </Button>
