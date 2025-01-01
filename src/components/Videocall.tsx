@@ -6,6 +6,7 @@ import { CameraButton, MicButton } from "./MuteButtons";
 import { WorkAroundForSafari } from "lib/utils";
 import { PhoneOff } from "lucide-react";
 import { Button } from "./ui/button";
+import { Share, StopCircle } from "lucide-react"; // Import the appropriate icons for screen share buttons
 
 import {
   Dialog,
@@ -49,6 +50,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const [isChatOpen, setIsChatOpen] = useState(false); // State for chat popup
   const [elapsedTime, setElapsedTime] = useState(0); // State for elapsed time
   const [transcriptionSubtitle, setTranscriptionSubtitle] = useState({});
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
 
 
   useEffect(() => {
@@ -69,58 +71,39 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   }, [inCall]);
 
 
-  // Handles the active-share-change event
-  const handleShareChange = (payload: { state: string; userId: number }) => {
-    const canvas = document.querySelector("#users-screen-share-content-canvas") as HTMLCanvasElement;
-    const mediaStream = client.current.getMediaStream();
-
-    if (payload.state === "Active") {
-      // Start showing the shared screen on the canvas
-      mediaStream.startShareView(canvas, payload.userId);
-    } else if (payload.state === "Inactive") {
-      // Stop showing the shared screen when the user stops sharing
-      mediaStream.stopShareView();
-    }
-  };
-
   // Start screen share
   const startScreenShare = async () => {
     const videoElement = document.querySelector('#my-screen-share-content-video') as HTMLVideoElement | null;
     const canvasElement = document.querySelector('#my-screen-share-content-canvas') as HTMLCanvasElement | null;
-    const userElement = document.querySelector('#users-screen-share-content-canvas') as HTMLCanvasElement | null;
-
+  
     const mediaStream = client.current.getMediaStream();
-
+  
     if (videoElement) {
       // Add the video element to the video container
       videoContainerRef.current?.appendChild(videoElement);
       await mediaStream.startShareScreen(videoElement);
-      console.log("video share")
     } else if (canvasElement) {
       // Add the canvas element to the video container
       videoContainerRef.current?.appendChild(canvasElement);
       await mediaStream.startShareScreen(canvasElement);
-      console.log("canvas share")
-    } else if (userElement) {
-      // Add the canvas element to the video container
-      videoContainerRef.current?.appendChild(userElement);
-      console.log("user share")
     } else {
       console.error("No video or canvas element found for screen sharing.");
     }
+    setIsScreenSharing(true);
   };
-
+  
   // Stop screen share
   const stopScreenShare = async () => {
     const mediaStream = client.current.getMediaStream();
     await mediaStream.stopShareScreen();
-
+  
     // Optionally, you can remove the video or canvas element after stopping the share
     const videoElement = document.querySelector('#my-screen-share-content-video') as HTMLVideoElement | null;
     const canvasElement = document.querySelector('#my-screen-share-content-canvas') as HTMLCanvasElement | null;
-
+  
     if (videoElement) videoElement.remove();
     if (canvasElement) canvasElement.remove();
+    setIsScreenSharing(false);
   };
 
   const joinCall = async () => {
@@ -130,8 +113,6 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       "peer-video-state-change",
       (payload) => void renderVideo(payload)
     );
-    client.current.on("active-share-change", (payload) => handleShareChange(payload));
-
 
     try {
       await client.current.join(session, jwt, userName);
@@ -225,13 +206,17 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
         {/* Video Player Container */}
         {/* @ts-expect-error html component */}
         <video-player-container ref={videoContainerRef} className="rounded-lg shadow-xl" style={videoCallStyle} />
-        {/* The video or canvas element will be dynamically injected here based on the screen share */}
-        <video id="my-screen-share-content-video" style={{ display: "none" }} height="1080" width="1920"></video>
-        <canvas id="my-screen-share-content-canvas" style={{ display: "none" }} height="1080" width="1920"></canvas>
-        <canvas id="users-screen-share-content-canvas" style={{ display: "none" }} height="1080" width="1920"></canvas>
-
       </div>
 
+
+
+      {/* Chat Popup Toggle Button */}
+      {isScreenSharing && (
+      <div className="video-container">
+      <video id="my-screen-share-content-video" height="10" width="19"></video>
+      <canvas id="my-screen-share-content-canvas" height="10" width="19"></canvas>
+    </div>
+      )}
 
       {!inCall ? (
         <div className="mx-auto flex w-64 flex-col self-center">
@@ -243,7 +228,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
         </div>
       ) : (
         <div className="flex w-full flex-col justify-around self-center">
-          <div className="mt-4 flex w-[30rem] flex-1 justify-around self-center rounded-md bg-white p-4">
+          <div className="mt-4 flex w-[38rem] flex-1 justify-around self-center rounded-md bg-white p-4">
             {/* Camera Button */}
             <Button onClick={onCameraClick} variant={"outline"} title="camera">
               {isVideoMuted ? <VideoOff /> : <Video />}
@@ -258,11 +243,16 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
             <RecordingButton client={client} />
             <SettingsModal client={client} />
             <ActionModal />
+            <Button onClick={startScreenShare} variant={"outline"}>
+              <Share size={20} /> {/* Icon with a specific size */}
+            </Button>
+            <Button onClick={stopScreenShare} variant={"outline"}>
+              <StopCircle size={20} /> {/* Icon with a specific size */}
+            </Button>
             <Button variant={"destructive"} onClick={leaveSession} title="leave call">
               <PhoneOff />
             </Button>
-            <Button onClick={startScreenShare}>Start Screen Share</Button>
-            <Button onClick={stopScreenShare}>Stop Screen Share</Button>
+
           </div>
         </div>
       )}
