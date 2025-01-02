@@ -179,17 +179,17 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
                 sx={{
                   marginBottom: 2,
                   display: 'flex',
-                  flexDirection: message.msg_senderType === 'Client' ? 'row-reverse' : 'row',
+                  flexDirection: message.msg_senderType === 'consulting-client' ? 'row-reverse' : 'row',
                   alignItems: 'flex-start',
                 }}
               >
                 <Avatar
                   sx={{
                     marginRight: 2,
-                    backgroundColor: message.msg_senderType === 'Client' ? 'secondary.main' : 'primary.main',
+                    backgroundColor: message.msg_senderType === 'consulting-client' ? 'secondary.main' : 'primary.main',
                   }}
                 >
-                  {message.msg_senderType === 'Client' ? 'C' : 'A'}
+                  {message.msg_senderType === 'consulting-client' ? 'C' : 'A'}
                 </Avatar>
                 <Card sx={{ maxWidth: '80%', borderRadius: '12px', padding: 2, boxShadow: 3 }}>
                   <Typography
@@ -201,7 +201,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
 
                   <CardContent
                     sx={{
-                      backgroundColor: message.msg_senderType === 'Client' ? '#e1f5fe' : '#f1f1f1',
+                      backgroundColor: message.msg_senderType === 'consulting-client' ? '#e1f5fe' : '#f1f1f1',
                       padding: 2,
                       textAlign: 'left',
                     }}
