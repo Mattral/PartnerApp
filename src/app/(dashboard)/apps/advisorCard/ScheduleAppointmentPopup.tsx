@@ -208,25 +208,6 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
         )}
 
 
-        {/* File Upload Section */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-          <Button
-            variant="contained"
-            component="label"
-            color="primary"
-            sx={{ fontWeight: '600' }}
-            startIcon={<CloudUpload />}
-          >
-            Upload Sample
-            <input
-              type="file"
-              hidden
-              onChange={handleFileChange}
-            />
-          </Button>
-        </Box>
-
-
       </DialogContent>
       
       <DialogActions sx={{ padding: '16px 24px' }}>

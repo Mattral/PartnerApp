@@ -243,7 +243,6 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
       {isAudioMuted ? <MicOff /> : <Mic />}
     </Button>
 
-    <TranscriptionButton setTranscriptionSubtitle={setTranscriptionSubtitle} client={client} />
     <RecordingButton client={client} />
     <SettingsModal client={client} />
     <ActionModal />
