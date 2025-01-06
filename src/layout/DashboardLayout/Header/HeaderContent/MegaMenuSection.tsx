@@ -29,6 +29,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import { DRAWER_WIDTH } from 'config';
 
 // ASSETS
+import QuizIcon from '@mui/icons-material/Quiz';
 import { Windows, ArrowRight3 } from 'iconsax-react';
 const cardBack = '/assets/images/widget/img-dropbox-bg.svg';
 const imageChart = '/assets/images/mega-menu/chart.svg';
@@ -70,7 +71,7 @@ const MegaMenuSection = () => {
         size="large"
         sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, ml: { xs: 0, lg: -2 }, p: 1 }}
       >
-        <Windows variant="Bulk" size={22} />
+        <QuizIcon />
       </IconButton>
       <Popper
         placement="bottom"

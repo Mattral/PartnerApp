@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 // ASSETS
 import { KyberNetwork, Story, Messages2, Calendar1, Profile2User, Bill, UserSquare, ShoppingBag } from 'iconsax-react';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
 
 // TYPE
 import { NavItemType } from 'types/menu';
@@ -16,7 +17,7 @@ const icons = {
   invoice: Bill,
   statistics: Story,
   profile: UserSquare,
-  ecommerce: ShoppingBag
+  video: VideoCallIcon
 };
 
 // ==============================|| MENU ITEMS - APPLICATIONS ||============================== //
@@ -111,7 +112,7 @@ const applications: NavItemType = {
       id: 'e-commerce',
       title: <FormattedMessage id="Video Call" />,
       type: 'collapse',
-      icon: icons.ecommerce,
+      icon: icons.video,
       children: [
         {
           id: 'PersonalRoom',

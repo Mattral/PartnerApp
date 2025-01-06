@@ -41,11 +41,9 @@ const HeaderContent = () => {
       {!downLG && megaMenu}
       {!downLG && localization}
       {downLG && <Box sx={{ width: '100%', ml: 1 }} />}
-
+      {!downLG && <Profile />}
       <Notification />
       
-      {!downLG && <Profile />}
-     
       {downLG && <MobileSection />}
     </>
   );

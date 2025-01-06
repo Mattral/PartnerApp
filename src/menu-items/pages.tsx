@@ -21,7 +21,7 @@ const icons = {
 
 const pages: NavItemType = {
   id: 'group-pages',
-  title: <FormattedMessage id="Landing" />,
+  title: <FormattedMessage id="Commercial Options" />,
   type: 'group',
   icon: icons.page,
   children: [
@@ -50,13 +50,6 @@ const pages: NavItemType = {
       url: '/contact-us',
       icon: icons.contactus,
       target: true
-    },
-    {
-      id: 'landing',
-      title: <FormattedMessage id="landing" />,
-      type: 'item',
-      icon: icons.landing,
-      url: '/landing'
     }
   ]
 };

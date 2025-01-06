@@ -18,7 +18,6 @@ import { videoCallStyle } from "lib/utils";
 import SettingsModal from "components/videocall/SettingsModal";
 import ActionModal from "components/videocall/ActionModal";
 import UIToolKit from "components/videocall2/UIToolKit";
-import TranscriptionButton from "components/videocall2/TranscriptionButton";
 import RecordingButton from "components/videocall2/RecordingButton";
 import "@zoom/videosdk-ui-toolkit/dist/videosdk-ui-toolkit.css";
 import { Mic, MicOff, Video, VideoOff } from "lucide-react";
@@ -49,7 +48,6 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const [userName, setUserName] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false); // State for chat popup
   const [elapsedTime, setElapsedTime] = useState(0); // State for elapsed time
-  const [transcriptionSubtitle, setTranscriptionSubtitle] = useState({});
   const [isScreenSharing, setIsScreenSharing] = useState(false);
 
 
