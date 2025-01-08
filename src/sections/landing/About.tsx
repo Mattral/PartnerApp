@@ -22,7 +22,7 @@ const initialImage = 'https://d3hh6raz9l4662.cloudfront.net/media/various/small_
 
 const AboutPanel = () => {
   const panelId = 'about';
-  const title = 'About Law On Earth';
+  const title = 'About Lorem Ipsum';
 
   const initialText1 = `
     We believe that every human being has a right to a basic level of legal assistance and education. 
@@ -407,7 +407,7 @@ const initialImage = 'https://d3hh6raz9l4662.cloudfront.net/media/various/small_
 
 const AboutPanel = () => {
   const panelId = 'about';
-  const title = 'About Law On Earth';
+  const title = 'About Lorem Ipsum';
 
   const initialText1 = `
     We believe that every human being has a right to a basic level of legal assistance and education. 

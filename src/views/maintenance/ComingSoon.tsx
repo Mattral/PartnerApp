@@ -44,7 +44,7 @@ function ComingSoonPage() {
                       <Box sx={{ color: theme.palette.primary.main, display: 'inline-block' }}>Able Pro</Box> - The Bootstrap Admin Template
                     </Typography>
                     <Typography color="textSecondary">
-                      Presenting law On Earth.
+                      Presenting Lorem Ipsum.
                     </Typography>
                   </Stack>
                 </Grid>

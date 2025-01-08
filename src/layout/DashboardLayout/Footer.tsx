@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 const Footer = () => (
   <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ p: '24px 16px 0px', mt: 'auto' }}>
-    <Typography variant="caption">&copy; Copyright © 2024 Law On Earth IP Pty Ltd</Typography>
+    <Typography variant="caption">&copy; Copyright © 2024 Lorem Ipsum IP Pty Ltd</Typography>
     
   </Stack>
 );

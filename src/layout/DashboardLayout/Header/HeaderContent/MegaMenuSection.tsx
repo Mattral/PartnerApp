@@ -138,7 +138,7 @@ const MegaMenuSection = () => {
                             Explore Components
                           </Typography>
                           <Typography variant="h6">
-                            Try Law On Earth&apos;s service pages to check how it feels and suits as per your need.
+                            Try Lorem Ipsum&apos;s service pages to check how it feels and suits as per your need.
                           </Typography>
                           <Stack direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mt: -1 }}>
                             <AnimateButton>

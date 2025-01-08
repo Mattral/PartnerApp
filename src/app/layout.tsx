@@ -7,8 +7,8 @@ import { AuthProvider } from '../sections/auth/auth-forms/AuthContext'; // Adjus
 import ProviderWrapper from './ProviderWrapper';
 
 export const metadata: Metadata = {
-  title: 'Law On Earth- Partner App',
-  description: 'Law On Earth- Partner App'
+  title: 'Lorem Ipsum- Partner App',
+  description: 'Lorem Ipsum- Partner App'
 };
 
 export default function RootLayout({ children }: { children: React.ReactElement }) {

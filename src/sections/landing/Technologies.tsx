@@ -33,12 +33,12 @@ const techIcons = [
 ];
 
 const initialTechnologies = [
-  { icon: techIcons[0].value, title: 'Pro Bono (Free) Legal Support', description: "If you are struggling financially and cannot afford a lawyer, you can apply for a 20-minute free advice session with a lawyer through Law On Earth. To help determine your eligibility we will need to submit a request form which can help us determine what type of lawyer will be able to provide the best support for your situation." , free: '/#', preview: '/#'},
-  { icon: techIcons[1].value, title: 'Online Company Registration', description: 'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Law On Earth.' , free: '/#', preview: '/#'},
-  { icon: techIcons[2].value, title: 'Create Legal Documents', description: "Change the way you use legal documents with Law On Earth. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents." , free: '/#', preview: '/#' },
+  { icon: techIcons[0].value, title: 'Legal Support', description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s" , free: '/#', preview: '/#'},
+  { icon: techIcons[1].value, title: 'Online Company Registration', description: 'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Lorem Ipsum.' , free: '/#', preview: '/#'},
+  { icon: techIcons[2].value, title: 'Create Legal Documents', description: "Change the way you use legal documents with Lorem Ipsum. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents." , free: '/#', preview: '/#' },
   { icon: techIcons[3].value, title: 'Legal Advisors', description: 'Speak to a Lawyer. Booking sessions with fixed-fee Advisors.' , free: '/#', preview: '/#' },
   { icon: techIcons[4].value, title: 'Legal Guides and Courses', description: "Browse the Learning Centre to access hundreds of articles & guides." , free: '/#', preview: '/#'},
-  { icon: techIcons[5].value, title: 'Available Anytime Anywhere', description: 'Access Law on Earth\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.' , free: '/#', preview: '/#'},
+  { icon: techIcons[5].value, title: 'Available Anytime Anywhere', description: 'Access Lorem Ipsum\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.' , free: '/#', preview: '/#'},
   { icon: techIcons[6].value, title: 'Quality You Can Trust', description: 'Each advisor has at least 3-years\' experience in their field, so you can have peace of mind knowing that you can access the expert support that you need.' , free: '/#', preview: '/#'},
   { icon: techIcons[7].value, title: 'Transparent Pricing', description: 'You can save thousands on legal fees with our fixed-price system, you\'ll know exactly what you\'ll pay for from the start so you can make the best decision for your needs.' , free: '/#', preview: '/#'},
 ];
@@ -192,7 +192,7 @@ const TechnologiesPage = () => {
         </Grid>
 
         <Grid item xs={12} sx={{ textAlign: 'center', mt: 5 }}>
-          <Typography variant="h3">Why Choose Law On Earth?</Typography>
+          <Typography variant="h3">Why Choose Lorem Ipsum?</Typography>
         </Grid>
 
         <Grid item xs={12}>
@@ -359,7 +359,7 @@ const Technologies = [
     icon: techBootstrap,
     title: 'Pro Bono (Free) Legal Support',
     description:
-      "If you are struggling financially and cannot afford a lawyer, you can apply for a 20-minute free advice session with a lawyer through Law On Earth. To help determine your eligibility we will need to submit a request form which can help us determine what type of lawyer will be able to provide the best support for your situation.",
+      "If you are struggling financially and cannot afford a lawyer, you can apply for a 20-minute free advice session with a lawyer through Lorem Ipsum. To help determine your eligibility we will need to submit a request form which can help us determine what type of lawyer will be able to provide the best support for your situation.",
     preview: '#',
     free: '#',
     style: { textAlign: 'center' }
@@ -369,7 +369,7 @@ const Technologies = [
     icon: techMui,
     title: 'Online Company Registration',
     description:
-      'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Law On Earth.',
+      'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Lorem Ipsum.',
     preview: '#',
     free: '#',
     style: { textAlign: 'center' }
@@ -379,7 +379,7 @@ const Technologies = [
     icon: techAngular,
     title: 'Create Legal Documents',
     description:
-      "Change the way you use legal documents with Law On Earth. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents.",
+      "Change the way you use legal documents with Lorem Ipsum. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents.",
     preview: '#',
     free: '#',
     style: { textAlign: 'center' }
@@ -409,7 +409,7 @@ const Technologies = [
     icon: techNet,
     title: 'Available Anytime Anywhere',
     description:
-      'Access Law on Earth\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.',
+      'Access Lorem Ipsum\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.',
     preview: '#',
     free: '#',
     style: { textAlign: 'center' }
@@ -546,7 +546,7 @@ const TechnologiesPage = () => {
         </Grid>
 
         <Grid item xs={12} sx={{ textAlign: 'center', mt: 5 }}>
-          <EditableTextSection initialText="Why Choose Law On Earth?" variant="h3" />
+          <EditableTextSection initialText="Why Choose Lorem Ipsum?" variant="h3" />
         </Grid>
 
         <Grid item xs={12}>
@@ -679,7 +679,7 @@ const Technologies = [
     trending: false,
     icon: techBootstrap,
     title: 'Pro Bono (Free) Legal Support',
-    description: "If you are struggling financially and cannot afford a lawyer, you can apply for a 20-minute free advice session with a lawyer through Law On Earth. To help determine your eligibility we will need to submit a request form which can help us determine what type of lawyer will be able to provide the best support for your situation.",
+    description: "If you are struggling financially and cannot afford a lawyer, you can apply for a 20-minute free advice session with a lawyer through Lorem Ipsum. To help determine your eligibility we will need to submit a request form which can help us determine what type of lawyer will be able to provide the best support for your situation.",
     preview: ispValue !== null && parseInt(ispValue) === 1 ? '#' : '#',// # is link
     free: '#',
     style: { textAlign: 'center' }
@@ -689,7 +689,7 @@ const Technologies = [
     icon: techMui,
     title: 'Online Company Registration',
     description:
-      'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Law On Earth.',
+      'Register your company online, in Australia, in just minutes for as little as $562 AUD. This covers all government fees and includes 16 critical business documents and a company constitution! Start your company with confidence & legal security. You can set your company up for success with Lorem Ipsum.',
     preview: ispValue !== null && parseInt(ispValue) === 1 ? '#' : '#',
     free: '#',
     style: { textAlign: 'center' }
@@ -698,7 +698,7 @@ const Technologies = [
     trending: false,
     icon: techAngular,
     title: 'Create Legal Documents',
-    description: "Change the way you use legal documents with Law On Earth. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents.",
+    description: "Change the way you use legal documents with Lorem Ipsum. We are more than just a 'template' company. Our documents aren't filled with legal jargon and are companies with 'Human Guides'. These guides are written at a grade-7 reading standard, and explain each clause of the legal documents.",
     preview:
       ispValue !== null && parseInt(ispValue) === 1
         ? '#'
@@ -733,7 +733,7 @@ const Technologies = [
     icon: techNet,
     title: 'Available Anytime Anywhere',
     description:
-      'Access Law on Earth\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.',
+      'Access Lorem Ipsum\'s services online 24/7. You can complete your documents and business registration in as little as 5 minutes and then instantly download your document.',
     preview:
       ispValue !== null && parseInt(ispValue) === 1 ? '#' : '#',
     free: '#',
@@ -876,7 +876,7 @@ const TechnologiesPage = () => {
         </Grid>
 
         <Grid item xs={12} sx={{ textAlign: 'center', mt: 5 }}>
-          <Typography variant="h3">Why Choose Law On Earth?</Typography>
+          <Typography variant="h3">Why Choose Lorem Ipsum?</Typography>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={3} alignItems="center">

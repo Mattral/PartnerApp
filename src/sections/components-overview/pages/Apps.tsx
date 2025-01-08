@@ -21,7 +21,7 @@ const initialTechnologies = [
   {
     image: '/assets/images/landing/feature-figma.png',
     title: 'Chat',
-    description: 'Power your web apps with the chat app of Law on Earth, send documents and even active before, during and after meeting sessions '
+    description: 'Power your web apps with the chat app of Lorem Ipsum, send documents and even active before, during and after meeting sessions '
   },
   {
     image: '/assets/images/landing/feature-components.png',
@@ -261,7 +261,7 @@ const initialTechnologies = [
   {
     image: '/assets/images/landing/feature-figma.png',
     title: 'Chat',
-    description: 'Power your web apps with the chat app of Law on Earth, send documents and even active before, during and after meeting sessions '
+    description: 'Power your web apps with the chat app of Lorem Ipsum, send documents and even active before, during and after meeting sessions '
   },
   {
     image: '/assets/images/landing/feature-components.png',
@@ -477,7 +477,7 @@ const Technologies = [
   {
     image: featureFigma,
     title: 'Chat',
-    description: 'Power your web apps with the chat app of Law on Earth, send documents and even active before, during and after meeting sessions '
+    description: 'Power your web apps with the chat app of Lorem Ipsum, send documents and even active before, during and after meeting sessions '
   },
   {
     image: featureComponents,

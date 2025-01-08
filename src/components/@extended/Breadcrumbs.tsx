@@ -243,7 +243,7 @@ const Breadcrumbs = ({
             if (link.to) {
               breadcrumbLink = (
                 <NextLink key={key} href={link.to} passHref legacyBehavior>
-                  {breadcrumbLink}
+                  {breadcrumbLink} 
                 </NextLink>
               );
             }
@@ -275,11 +275,7 @@ const Breadcrumbs = ({
               </Grid>
             )}
             <Grid item>{tempContent}</Grid>
-            {title && titleBottom && (
-              <Grid item sx={{ mt: card === false ? 0.25 : 1 }}>
-                <Typography variant="h2">{custom ? heading : item?.title}</Typography>
-              </Grid>
-            )}
+
           </Grid>
           {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
         </MainCard>
@@ -291,3 +287,12 @@ const Breadcrumbs = ({
 };
 
 export default Breadcrumbs;
+
+/*
+line 278
+            {title && titleBottom && (
+              <Grid item sx={{ mt: card === false ? 0.25 : 1 }}>
+                <Typography variant="h2">{custom ? heading : item?.title} </Typography>
+              </Grid>
+            )}
+*/

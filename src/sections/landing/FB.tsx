@@ -22,7 +22,7 @@ const ContactUsPage = () => {
               </Grid>
               <Grid item xs={12}>
                 <Typography>
-                  Simply submit your email, we share you the top news related to LAW on Earth updates, roadmap, and news.
+                  Simply submit your email, we share you the top news related to Lorem Ipsum updates, roadmap, and news.
                 </Typography>
               </Grid>
             </Grid>

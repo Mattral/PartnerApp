@@ -62,51 +62,7 @@ const applications: NavItemType = {
       url: '/forms/DocGen',
       icon: icons.statistics
     },
-
-    {
-      id: 'customer',
-      title: <FormattedMessage id="customer" />,
-      type: 'collapse',
-      icon: icons.customer,
-      children: [
-        {
-          id: 'customer-list',
-          title: <FormattedMessage id="list" />,
-          type: 'item',
-          url: '/apps/customer/customer-list'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="cards" />,
-          type: 'item',
-          url: '/apps/customer/customer-card'
-        }
-      ]
-    },
-
     
-    {
-      id: 'profile',
-      title: <FormattedMessage id="profile" />,
-      type: 'collapse',
-      icon: icons.profile,
-      children: [
-        {
-          id: 'user-profile',
-          title: <FormattedMessage id="user-profile" />,
-          type: 'item',
-          url: '/apps/profiles/user/personal',
-          breadcrumbs: false
-        },
-        {
-          id: 'account-profile',
-          title: <FormattedMessage id="account-profile" />,
-          type: 'item',
-          url: '/apps/profiles/account/basic',
-          breadcrumbs: false
-        }
-      ]
-    },
     
     {
       id: 'e-commerce',

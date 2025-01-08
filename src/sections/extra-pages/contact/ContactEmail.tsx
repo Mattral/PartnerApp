@@ -18,7 +18,7 @@ const ContactUsPage = () => {
             </Grid>
             <Grid item xs={12}>
               <Typography>
-              Simply submit your email, we share you the top news and updates from Law On Earth
+              Simply submit your email, we share you the top news and updates from Lorem Ipsum
               </Typography>
             </Grid>
           </Grid>

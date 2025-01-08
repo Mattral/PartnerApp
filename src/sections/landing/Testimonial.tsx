@@ -75,7 +75,7 @@ const TestimonialPage = () => {
     },
     {
       image: Avatar6,
-      text: '“I love the UI of Law on Earth. I really like the colors you guys have chosen for this theme. It looks really nice.. 💎“',
+      text: '“I love the UI of Lorem Ipsum. I really like the colors you guys have chosen for this theme. It looks really nice.. 💎“',
       name: 'ritelogic',
       designation: 'Other'
     },
@@ -113,7 +113,7 @@ const TestimonialPage = () => {
                   <Box component="span" sx={{ color: 'primary.main' }}>
                     love{' '}
                   </Box>{' '}
-                  Law on Earth, Now your turn 😍
+                  Lorem Ipsum, Now your turn 😍
                 </Typography>
               </motion.div>
             </Grid>

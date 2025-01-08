@@ -1,5 +1,5 @@
 import { FormattedMessage } from 'react-intl';
-import { Home3, HomeTrendUp, Box1, Airplane, Profile2User, Story } from 'iconsax-react';
+import { Home3, UserSquare, HomeTrendUp, Box1, Airplane, Profile2User, Story } from 'iconsax-react';
 import { NavItemType } from 'types/menu';
 //import { useGetMenu } from 'api/menu';
 
@@ -8,11 +8,13 @@ const icons = {
   components: Box1,
   customer: Profile2User,
   loading: Home3,
+  profile: UserSquare,
+
   statistics: Story,
   landing: Airplane
 };
 
-const MenuFromAPI : NavItemType = {
+const MenuFromAPI: NavItemType = {
   id: 'group-dashboard-loading',
   title: <FormattedMessage id="dashboard" />,
   icon: icons.loading,
@@ -25,38 +27,30 @@ const MenuFromAPI : NavItemType = {
       url: '/dashboard/default',
       icon: icons.dashboard,
     },
+
     {
-      id: 'customer',
-      title: <FormattedMessage id="Users" />,
+      id: 'profile',
+      title: <FormattedMessage id="profile" />,
       type: 'collapse',
-      icon: icons.customer,
+      icon: icons.profile,
       children: [
         {
-          id: 'customer-list',
-          title: <FormattedMessage id="Dummy List" />,
+          id: 'user-profile',
+          title: <FormattedMessage id="user-profile" />,
           type: 'item',
-          url: '/apps/customer/customer-list'
+          url: '/apps/profiles/user/personal',
+          breadcrumbs: false
         },
         {
-          id: 'customer-card',
-          title: <FormattedMessage id="Advisors" />,
+          id: 'account-profile',
+          title: <FormattedMessage id="account-profile" />,
           type: 'item',
-          url: '/apps/customer/advisor-list'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="Client" />,
-          type: 'item',
-          url: '/apps/customer/client-list'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="Managers" />,
-          type: 'item',
-          url: '/apps/customer/manager-list'
+          url: '/apps/profiles/account/basic',
+          breadcrumbs: false
         }
       ]
     },
+
     {
       id: 'customer',
       title: <FormattedMessage id="Verification of Identiy" />,
@@ -65,27 +59,9 @@ const MenuFromAPI : NavItemType = {
       children: [
         {
           id: 'customer-list',
-          title: <FormattedMessage id="Verify as Client" />,
+          title: <FormattedMessage id="VOI Application" />,
           type: 'item',
-          url: '/forms/VOI/Client'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="Verify as Advisor" />,
-          type: 'item',
-          url: '/forms/VOI/Advisor'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="Client VOI list" />,
-          type: 'item',
-          url: '/apps/VOI/client-list'
-        },
-        {
-          id: 'customer-card',
-          title: <FormattedMessage id="Advisor VOI list" />,
-          type: 'item',
-          url: '/apps/VOI/advisor-list'
+          url: '/apps/Dossier'
         },
         {
           id: 'rt-empty',
@@ -103,7 +79,7 @@ const MenuFromAPI : NavItemType = {
     }
   ]
 };
-export default MenuFromAPI 
+export default MenuFromAPI
 
 
 // test

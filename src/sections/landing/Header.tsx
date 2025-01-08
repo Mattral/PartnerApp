@@ -25,9 +25,9 @@ import AnimateButton from 'components/@extended/AnimateButton';
 const HeaderPage = () => {
   const theme = useTheme();
   const [text, setText] = useState<string>(
-    "Browse the Learning Centre to access hundreds of articles & guides. Prepare documents & contracts in just a few clicks. " +
-    "Connect with legal advisors in affordable video sessions. " +
-    "With Law On Earth, you'll be able to understand your legal matter and self-act safely and affordably."
+    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s," +
+    "when an unknown printer took a galley of type and scrambled it to make a type specimen book " +
+    "It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. "
   );
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -89,7 +89,7 @@ const HeaderPage = () => {
                       }
                     }}
                   >
-                    <span>Legal Services </span>
+                    <span>Lorem Ipsum </span>
                   </Box>
                   <span> accessible for everyone.</span>
                 </Typography>
@@ -315,7 +315,7 @@ const HeaderPage = () => {
   const [text, setText] = useState<string>( // Specify type for useState
     "Browse the Learning Centre to access hundreds of articles & guides. Prepare documents & contracts in just a few clicks. " +
     "Connect with legal advisors in affordable video sessions. " +
-    "With Law On Earth, you'll be able to understand your legal matter and self-act safely and affordably."
+    "With Lorem Ipsum, you'll be able to understand your legal matter and self-act safely and affordably."
   );
   const [isEditing, setIsEditing] = useState<boolean>(false); // Specify type for useState
   const [hoverIndex, setHoverIndex] = useState<number | null>(null); // Specify type for useState
