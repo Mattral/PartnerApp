@@ -34,8 +34,8 @@ const mockRoomData: MockRoomData = {
   room: {
     id: "1",
     title: "Test Room",
-    content: "This is a test room ",
-    time: new Date().toISOString(),
+    content: "This is a test link ",
+    time: "https://partner-app-beta.vercel.app/pages/room?cr_sessionKey=Y3RAPVXJXOACACK2GUM6R7IM8Z0CVUS97DSQ&gai_code=ca",
     User_CreatedBy: { id: 1 },  // Assume creator has ID 1
   },
   jwt: "mock-jwt-token",
@@ -85,7 +85,7 @@ const Home = () => {
               </span>
               <span className="inline-flex">
                 <p className="ml-4 text-left text-lg text-gray-700">{data.room.content}</p>
-                <p className="ml-4 text-left text-lg text-gray-700">| {new Date(data.room.time).toTimeString().split(" ")[0]}</p>
+                <p className="ml-4 text-left text-lg text-gray-700">| {data.room.time}</p>
               </span>
             </div>
 
