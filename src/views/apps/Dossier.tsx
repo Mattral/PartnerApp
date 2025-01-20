@@ -109,6 +109,7 @@ const DossierPage: React.FC = () => {
   // Open the popup for selecting a role
   const handleConfigure2 = () => {
     setOpenPopup(true);
+    router.push(`/forms/VOI/Advisor`); // remove
   };
 
   // Close the popup
@@ -119,7 +120,7 @@ const DossierPage: React.FC = () => {
   // Handle the selection of a role and continue
   const handleContinue = () => {
     if (selectedRole) {
-      router.push(`/apps/profiles/Advisor`);
+      router.push(`/apps/profiles/Advisor`); //
       setOpenPopup(false); // Close the popup after navigating
     } else {
       toast.error('Please select a role first');
@@ -398,7 +399,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    height: "120vh",
+    height: "150vh",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     backgroundColor: "#f8f9fa",
   },
