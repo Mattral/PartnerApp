@@ -20,7 +20,8 @@ import Transitions from 'components/@extended/Transitions';
 import useConfig from 'hooks/useConfig';
 
 // ASSETS
-// import { LanguageSquare } from 'iconsax-react'; //old one
+import { LanguageSquare } from 'iconsax-react'; //old one
+import TranslateIcon from '@mui/icons-material/Translate';
 import GTranslateIcon from '@mui/icons-material/GTranslate';
 // TYPES
 import { I18n, ThemeMode } from 'types/config';
@@ -67,7 +68,7 @@ const Localization = () => {
         size="large"
         sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, p: 1 }}
       >
-        <GTranslateIcon />
+        <TranslateIcon />
       </IconButton>
       <Popper
         placement={matchesXs ? 'bottom-start' : 'bottom'}
