@@ -12,7 +12,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { getCookie, hasCookie, setCookie } from "cookies-next";
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 
 // PROJECT IMPORTS
 import MainCard from 'components/MainCard';
@@ -57,13 +57,15 @@ const Localization = () => {
   const iconBackColorOpen = theme.palette.mode === ThemeMode.DARK ? 'secondary.200' : 'secondary.200';
   const iconBackColor = theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'secondary.100';
 
-  // Language options for the picker (English, French, Japanese, German, Chinese)
+  // Updated languages with Spanish and Hindi
   const languages = [
     { label: 'English', value: '/auto/en' },
-    { label: 'Français', value: '/auto/fr' },
-    { label: '日本語', value: '/auto/ja' },
-    { label: 'Deutsch', value: '/auto/de' },
-    { label: '中文', value: '/auto/zh-CN' },
+    { label: 'Français (France)', value: '/auto/fr' },
+    { label: 'Español (Spanish)', value: '/auto/es' }, // Added Spanish
+    { label: 'Deutsch (German)', value: '/auto/de' },
+    { label: '中文 (Mandrin)', value: '/auto/zh-CN' },
+    { label: '日本語 (Japanese)', value: '/auto/ja' },
+    { label: 'हिन्दी (Hindi)', value: '/auto/hi' },  // Added Hindi
   ];
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -92,7 +94,7 @@ const Localization = () => {
       {
         pageLanguage: 'auto', // Automatically detect the current language
         autoDisplay: false, // Disable automatic translation display
-        includedLanguages: 'en,fr,ja,de,zh-CN', // Supported languages (English, French, Japanese, German, Chinese)
+        includedLanguages: 'en,fr,ja,de,zh-CN,es,hi', // Include Spanish and Hindi
         // @ts-expect-error
         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
       },
@@ -195,6 +197,7 @@ const Localization = () => {
 };
 
 export default Localization;
+
 
 
 /* // original
