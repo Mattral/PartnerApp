@@ -8,7 +8,6 @@ import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import Image from "next/image";
-import docLogo from "./images/docs_logo.png";
 
 // Dynamically import components with no SSR
 const TextEditor = dynamic(() => import("./TextEditor"), { ssr: false });
@@ -18,7 +17,6 @@ function Doc() {
   return (
     <div>
       <header className="flex justify-between items-center p-2 pb-1">
-        <Image src={docLogo} className="h-10 w-10" alt="doc-logo" />
         <div className="flex-grow px-2">
           <div className="flex">
             <h1 className="flex text-xl ml-1 text-gray-600">Legal document</h1>

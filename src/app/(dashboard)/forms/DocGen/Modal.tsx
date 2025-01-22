@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from "react";
 import { Button } from "@material-tailwind/react";
-import profileLogo from "./images/profile.jpg";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import InsertLinkOutlinedIcon from "@mui/icons-material/InsertLinkOutlined";
@@ -100,11 +99,7 @@ function Modal() {
 
             <div className="text-lg mb-2">People with access</div>
             <div className="flex items-center mb-3">
-              <Image
-                src={profileLogo.src}
-                className="cursor-pointer rounded-full h-10 w-10 mr-3"
-                alt="profile-logo"
-              />
+
               <div className="flex-grow">
                 <h2>ABC (you)</h2>
                 <p className="text-xs text-gray-600">abc@gmail.com</p>
@@ -167,7 +162,6 @@ export default Modal;
 'use client';
 import React, { useState } from "react";
 import { Button } from "@material-tailwind/react";
-import profileLogo from "./images/profile.jpg";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import InsertLinkOutlinedIcon from "@mui/icons-material/InsertLinkOutlined";
