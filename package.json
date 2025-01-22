@@ -122,6 +122,7 @@
     "react-timer-hook": "^3.0.7",
     "react-to-print": "^2.14.15",
     "react-toastify": "^10.0.5",
+    "react-use": "^17.6.0",
     "react-window": "^1.8.10",
     "react-zoom-pan-pinch": "^3.3.0",
     "react18-input-otp": "^1.1.4",

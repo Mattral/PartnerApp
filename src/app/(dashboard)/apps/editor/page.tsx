@@ -10,7 +10,7 @@ const Page = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column', // Default to column for small screens
-        height: '80vh',  // Set full viewport height
+        height: '80vh',  // Set 80vh viewport height
         '@media (min-width: 768px)': {
           flexDirection: 'row', // For larger screens, use row layout
         },
@@ -19,13 +19,17 @@ const Page = () => {
       {/* Question Section */}
       <Box
         sx={{
-          position: 'sticky',  // Make the question sticky
-          top: 0,  // Stick to the top of the viewport
-          height: '30%',  // For small screens
+          // For mobile screens, make it a normal element without sticky
+          position: 'relative',  // No sticky for mobile
+          height: '40%',  // For small screens, 40% of height
+          width: '100%',  // Full width for small screens
           zIndex: 10,  // Ensure it's above other content if needed
+          overflowY: 'auto',
           '@media (min-width: 768px)': {
+            position: 'sticky',  // Make it sticky only on large screens
+            top: 0,  // Stick to the top of the viewport
             height: '100%', // For larger screens, make it take full height
-            width: '30%', // For larger screens, make it 30% of the width
+            width: '35%', // For large screens, 30% width
             padding: '20px',
           },
         }}
@@ -37,11 +41,12 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,  // Ensure editor fills remaining space
-          height: '70%',  // For small screens
+          height: '60%',  // For small screens, 60% height
+          width: '100%',  // Full width for small screens
           overflowY: 'auto',  // Make editor scrollable vertically if needed
           '@media (min-width: 768px)': {
-            height: '100%', // For larger screens, make it take 70% of the height
-            width: '70%', // For large screens, make it 70% of the width
+            height: '100%', // For large screens, make it take full height
+            width: '65%', // For large screens, 70% width
             padding: '20px',
           },
         }}

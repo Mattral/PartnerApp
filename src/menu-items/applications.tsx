@@ -59,7 +59,7 @@ const applications: NavItemType = {
       id: 'Generate Legal Document',
       title: <FormattedMessage id="Generate Legal Document" />,
       type: 'item',
-      url: '/apps/editor',
+      url: '/apps/Documents',
       icon: icons.statistics
     },
     
