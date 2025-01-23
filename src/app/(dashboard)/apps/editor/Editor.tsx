@@ -3,6 +3,91 @@ import Button from '@mui/material/Button';
 import React, { useState } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css"; // Import SunEditor styles
+import { Box, Typography, TextField } from '@mui/material'; // Import MUI components
+
+const Editor = () => {
+  const [content, setContent] = useState<string>("This is an example paragraph with a placeholder: {{title}}. You can edit the content freely.");
+  const [title, setTitle] = useState<string>("");
+
+  // Handle changes in the title input
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+
+    // Replace the placeholder {{title}} with the current title input in the content
+    const updatedContent = `This is an example paragraph with a placeholder: ${newTitle}. You can edit the content freely.`;
+    setContent(updatedContent);
+  };
+
+  const handleChange = (newContent: string) => {
+    setContent(newContent);  // Update SunEditor content when edited
+  };
+
+  const handleSave = () => {
+    console.log("Document Title:", title);
+    console.log("Content saved:", content);
+    // Send content and title to API or store it in a database
+  };
+
+  return (
+    <div>
+      {/* Form container with title and save button */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '16px' }}>
+        {/* Title input field */}
+        <TextField
+          label="Example Input"
+          value={title}
+          onChange={handleTitleChange}  // Handle title change
+          variant="outlined"
+          fullWidth
+          sx={{ marginBottom: '16px' }} // Margin for spacing
+        />
+        
+        {/* Flex container for Save button */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            Name of the document will show up here!
+          </Typography>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+          >
+            Save
+          </Button>
+        </Box>
+      </Box>
+
+      {/* SunEditor Component */}
+      <SunEditor
+        placeholder="Write here..."  // Updated placeholder text
+        setContents={content}  // Set content dynamically from state
+        onChange={handleChange}  // Handle editor content change
+        setOptions={{
+          minHeight: "480px", // Set height
+          height: 'auto',
+          buttonList: [
+            ["undo", "redo", "font", "fontSize","fullScreen"], // Undo, redo, font, font size
+            ["bold", "underline", "italic", "strike", "subscript", "superscript"], // Text styles
+            ["fontColor", "hiliteColor","paragraphStyle","textStyle","imageGallery"], // Text color and highlight
+            ["align", "list", "lineHeight", "indent", "outdent"], // Alignment, list, indent
+            ["table", "horizontalRule", "link", "image","audio","video"], // Table, horizontal rule, link, image
+            ["removeFormat","save", "preview", "print"], // Remove format
+            ["dir", "dir_ltr", "dir_rtl"],
+          ],
+        }}
+      />
+    </div>
+  );
+};
+
+export default Editor;
+
+/*"use client";
+import Button from '@mui/material/Button';
+import React, { useState } from "react";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css"; // Import SunEditor styles
 import { Box, Typography } from '@mui/material'; // Import Box and Typography from MUI for styling
 
 const Editor = () => {
@@ -19,7 +104,7 @@ const Editor = () => {
 
   return (
     <div>
-      {/* Flex container for header and button */}
+      
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
         <Typography variant="h5" sx={{ flexGrow: 1 }}>Name of the document will show up here!</Typography>
         <Button
@@ -31,7 +116,7 @@ const Editor = () => {
         </Button>
       </Box>
 
-      {/* SunEditor Component */}
+      
       <SunEditor
         placeholder={"Write here..."}  // Updated placeholder text
         setContents={content}
@@ -56,7 +141,7 @@ const Editor = () => {
 
 export default Editor;
 
-
+*/
 
 
 /*

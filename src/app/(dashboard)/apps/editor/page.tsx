@@ -15,13 +15,13 @@ const Page = () => {
           flexDirection: 'row', // For larger screens, use row layout
         },
       }}
-    >
+    > 
       {/* Question Section */}
       <Box
         sx={{
           // For mobile screens, make it a normal element without sticky
           position: 'relative',  // No sticky for mobile
-          height: '40%',  // For small screens, 40% of height
+          height: '45%',  // For small screens, 45% of height
           width: '100%',  // Full width for small screens
           zIndex: 10,  // Ensure it's above other content if needed
           overflowY: 'auto',
@@ -41,7 +41,7 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,  // Ensure editor fills remaining space
-          height: '60%',  // For small screens, 60% height
+          height: '55%',  // For small screens, 55% height
           width: '100%',  // Full width for small screens
           overflowY: 'auto',  // Make editor scrollable vertically if needed
           '@media (min-width: 768px)': {
