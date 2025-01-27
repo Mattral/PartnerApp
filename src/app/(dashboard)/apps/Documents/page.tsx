@@ -85,7 +85,7 @@ const Page: React.FC = () => {
                                 animation: 'fadeIn 1s ease-out', // Smooth fade-in animation
                             }}
                         >
-                            No documents selected yet. <br /> Please select from our existing list and modify for your use case.
+                            To get started, <br /> Please select from our existing list and modify for your use case below.
                         </Typography>
 
                         {/* Loader with animation */}
@@ -99,7 +99,7 @@ const Page: React.FC = () => {
                             color="primary"
                             onClick={() => setIsDiscoverOpen(true)} // Open the Discover modal
                         >
-                            Discover
+                            Choose the Document
                         </Button>
                     </Box>
                 </Fade>
@@ -178,7 +178,7 @@ const Page: React.FC = () => {
                     color="primary"
                     onClick={() => setIsDiscoverOpen(true)} // Open the Discover modal
                 >
-                    Discover
+                    Choose the Document
                 </Button>
             </Box>
 
