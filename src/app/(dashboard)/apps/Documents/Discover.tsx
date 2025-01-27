@@ -4,6 +4,7 @@ import { Modal, Box, Button, Typography, Grid, Card, CardContent, Divider, TextF
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';  // Import CloseIcon
 import { red } from '@mui/material/colors';
+import { useRouter } from 'next/navigation';
 
 interface Doc {
     id: string;
@@ -23,6 +24,14 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ open, onClose, onSelectDo
     const [newName, setNewName] = useState<string>('');
     const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
     const [selectedTab, setSelectedTab] = useState<number>(0); // State for tabs
+    const router = useRouter();  // Initialize the router
+
+
+    const handlePreviewClick = () => {
+        // Redirect to the /AboutDoc page when clicked
+        router.push('/AboutDoc');
+    };
+
 
     const docs: Doc[] = [
         {
@@ -185,6 +194,7 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ open, onClose, onSelectDo
                                             <Button
                                                 variant="outlined"
                                                 color="secondary"
+                                                onClick={handlePreviewClick}
                                                 sx={{
                                                     borderRadius: 5, fontWeight: 'bold', '&:hover': {
                                                         backgroundColor: 'secondary.main', color: 'white',
