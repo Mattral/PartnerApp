@@ -57,15 +57,19 @@ const Localization = () => {
   const iconBackColorOpen = theme.palette.mode === ThemeMode.DARK ? 'secondary.200' : 'secondary.200';
   const iconBackColor = theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'secondary.100';
 
-  // Updated languages with Spanish and Hindi
+  // Updated languages with Arabic, Vietnamese, Greek, and Italian
   const languages = [
     { label: 'English', value: '/auto/en' },
     { label: 'Français (France)', value: '/auto/fr' },
     { label: 'Español (Spanish)', value: '/auto/es' }, // Added Spanish
     { label: 'Deutsch (German)', value: '/auto/de' },
-    { label: '中文 (Mandrin)', value: '/auto/zh-CN' },
+    { label: '中文 (Mandarin)', value: '/auto/zh-CN' },
     { label: '日本語 (Japanese)', value: '/auto/ja' },
     { label: 'हिन्दी (Hindi)', value: '/auto/hi' },  // Added Hindi
+    { label: 'عربى (Arabic)', value: '/auto/ar' },    // Added Arabic
+    { label: 'Tiếng Việt (Vietnamese)', value: '/auto/vi' }, // Added Vietnamese
+    { label: 'Ελληνικά (Greek)', value: '/auto/el' }, // Added Greek
+    { label: 'Italiano (Italian)', value: '/auto/it' }, // Added Italian
   ];
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -94,7 +98,7 @@ const Localization = () => {
       {
         pageLanguage: 'auto', // Automatically detect the current language
         autoDisplay: false, // Disable automatic translation display
-        includedLanguages: 'en,fr,ja,de,zh-CN,es,hi', // Include Spanish and Hindi
+        includedLanguages: 'en,fr,ja,de,zh-CN,es,hi,ar,vi,el,it', // Include new languages
         // @ts-expect-error
         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
       },
@@ -157,6 +161,8 @@ const Localization = () => {
                       width: '100%',
                       minWidth: 200,
                       maxWidth: 290,
+                      maxHeight: 300, // Set maximum height
+                      overflowY: 'auto', // Make it scrollable
                       bgcolor: theme.palette.background.paper,
                       [theme.breakpoints.down('md')]: {
                         maxWidth: 250,
@@ -197,6 +203,7 @@ const Localization = () => {
 };
 
 export default Localization;
+
 
 
 
