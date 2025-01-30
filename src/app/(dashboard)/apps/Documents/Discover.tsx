@@ -29,7 +29,7 @@ const DiscoverModal: React.FC<DiscoverModalProps> = ({ open, onClose, onSelectDo
 
     const handlePreviewClick = () => {
         // Redirect to the /AboutDoc page when clicked
-        router.push('/AboutDoc');
+        router.push('/apps/AboutDoc');
     };
 
 
