@@ -93,8 +93,10 @@ const WorkScheduleForm = () => {
     };
 
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
       const response = await axios.post(
-        'https://lawonearth.co.uk/api/back-office/partner/office-times/create',
+        `${baseUrl}/api/back-office/partner/office-times/create`,
         payload,
         { headers }
       );

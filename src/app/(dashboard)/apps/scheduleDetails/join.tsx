@@ -75,8 +75,9 @@ const JoinCall: React.FC<JoinCallProps> = ({ ca_code, ca_requestedFor }) => {
       setLoading(false);
       return;
     }
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
-    const url = "https://lawonearth.co.uk/api/back-office/partner/identified-call-identities/create";
+    const url = `${baseUrl}/api/back-office/partner/identified-call-identities/create`;
     const headers = {
       'Authorization': `Bearer ${token}`,  // Use the token retrieved from localStorage
       'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',

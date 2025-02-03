@@ -62,7 +62,9 @@ const ListAppointments: React.FC = () => {
         }
 
         try {
-            const response = await axios.get('https://lawonearth.co.uk/api/back-office/partner/call-appointments', {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+            const response = await axios.get(`${baseUrl}/api/back-office/partner/call-appointments`, {
                 headers: {
                     Authorization: `Bearer ${token}`, // Use the token from localStorage
                     'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',

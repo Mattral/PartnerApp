@@ -10,7 +10,9 @@ const AdvisorList = () => {
   useEffect(() => {
     const fetchAdvisors = async () => {
       try {
-        const url = "https://lawonearth.co.uk/api/partner/advisors?searchKey=";
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+        const url = `${baseUrl}/api/partner/advisors?searchKey=`;
 
         const payload = {
           ed_codes: "",

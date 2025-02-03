@@ -68,11 +68,12 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
 
     const formData = new FormData();
     formData.append('vd_code', vd_code);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
     // Set up the axios config
     const config = {
       method: 'post',
-      url: 'https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/submit',
+      url: `${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/submit`,
       headers: {
         'Authorization': authorizationToken, // Use the token from state
         'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',

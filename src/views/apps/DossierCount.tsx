@@ -44,7 +44,9 @@ const DossierCount = ({ setDossierData }: { setDossierData: (data: DossierData) 
     if (authToken) {
       const fetchDossiers = async () => {
         try {
-          const response = await axios.get('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/', {
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+          const response = await axios.get(`${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/`, {
             headers: {
               'Authorization': `Bearer ${authToken}`, // Use the token retrieved from localStorage
               'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',

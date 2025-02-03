@@ -65,8 +65,9 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
     setProfileLoading(true);
     setAdvisorProfile(null);
     setSortedAdvisorProfile(null); // Reset sorted data
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
-    const apiUrl = `https://lawonearth.co.uk/api/partner/advisors/${pers_code}`;
+    const apiUrl = `${baseUrl}/api/partner/advisors/${pers_code}`;
     const token = authData ? authData?.data?.primaryData?.authorization : '';
     const companyCode = 'MC-H3HBRZU6ZK5744S';
     const frontendKey = 'XXX'; // Replace with your frontend key

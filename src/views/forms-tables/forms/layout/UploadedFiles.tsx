@@ -76,8 +76,10 @@ const UploadedFiles = () => {
 
     try {
       setLoading(true);
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
       const response = await axios.get<ApiResponse>(
-        `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vd_code}`,
+        `${baseUrl}/api/back-office/partner/manual-client-voi/files/${vd_code}`,
         {
           headers: {
             Authorization: authorizationToken, // Use the token from state
@@ -122,10 +124,11 @@ const UploadedFiles = () => {
                 const formData = new FormData();
                 formData.append('vd_code', vd_code);
                 formData.append('vf_codes[0]', fileToDelete.vf_code); // Delete only this file
-    
+                const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
                 // Send the delete request to the API
                 const response = await axios.post(
-                    'https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/delete',
+                    `${baseUrl}/api/back-office/partner/manual-client-voi/files/delete`,
                     formData,
                     {
                         headers: {

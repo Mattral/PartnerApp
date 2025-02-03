@@ -75,10 +75,11 @@ export default function DashboardDomain2() {
 
     try {
       setLoading(true);
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
       // Example axios call
       await axios.post(
-        "https://lawonearth.co.uk/api/back-office/core/apps/create", // Replace with actual API URL
+        `${baseUrl}/api/back-office/core/apps/create`, // Replace with actual API URL
         formDataForApi,
         {
           headers: {

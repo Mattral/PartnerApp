@@ -53,8 +53,10 @@ const Invite: React.FC<InviteProps> = ({ ca_code }) => {
         }
 
         try {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
             const response = await axios.post(
-                `https://lawonearth.co.uk/api/back-office/partner/call-invites/create`,
+                `${baseUrl}/api/back-office/partner/call-invites/create`,
                 {
                     ca_code: ca_code,
                     gai_email: email,
@@ -118,8 +120,10 @@ const Invite: React.FC<InviteProps> = ({ ca_code }) => {
         }
 
         try {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
             const response = await axios.get(
-                `https://lawonearth.co.uk/api/back-office/partner/call-invites/${ca_code}`,
+                `${baseUrl}/api/back-office/partner/call-invites/${ca_code}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`, // Use the token from localStorage

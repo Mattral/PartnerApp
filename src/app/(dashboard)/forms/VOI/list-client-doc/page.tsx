@@ -38,8 +38,10 @@ const PointSystemConfig = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
         const response = await fetch(
-          'https://lawonearth.co.uk/api/back-office/core/point-system-configs',
+          `${baseUrl}/api/back-office/core/point-system-configs`,
           {
             method: 'GET',
             headers: {

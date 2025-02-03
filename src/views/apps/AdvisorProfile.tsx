@@ -42,9 +42,11 @@ const TabPersonal = () => {
         setError(null);
 
         try {
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
             // POST request to create the profile
             const response = await axios.post(
-                'https://lawonearth.co.uk/api/back-office/partner/advisor-profile/create',
+                `${baseUrl}/api/back-office/partner/advisor-profile/create`,
                 data,
                 {
                     headers: {
@@ -109,9 +111,10 @@ const TabPersonal = () => {
                 pp_paidMeetingBufferTime: paidMeetingBufferTime,
                 pp_probonoMeetingBufferTime: probonoMeetingBufferTime
             };
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
             const response = await axios.post(
-                'https://lawonearth.co.uk/api/back-office/partner/advisor-profile/update',
+                `${baseUrl}/api/back-office/partner/advisor-profile/update`,
                 data,
                 {
                     headers: {

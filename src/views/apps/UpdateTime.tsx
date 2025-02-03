@@ -8,7 +8,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 // API URL
-const API_URL = "https://lawonearth.co.uk/api/back-office/partner/office-times/update";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+const API_URL = `${baseUrl}/api/back-office/partner/office-times/update`;
 
 // Function to convert date to the required API time format (H:i)
 const convertToApiTimeFormat = (inputDate: Date | null): string => {

@@ -57,7 +57,9 @@ const DossierPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch('https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/dossiers/create', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+      const response = await fetch(`${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authorizationToken}`,

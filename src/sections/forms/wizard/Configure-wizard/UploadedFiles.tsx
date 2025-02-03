@@ -75,8 +75,10 @@ const UploadedFiles = () => {
 
     try {
       setLoading(true);
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
       const response = await axios.get<ApiResponse>(
-        `https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/${vd_code}`,
+        `${baseUrl}/api/back-office/partner/manual-client-voi/files/${vd_code}`,
         {
           headers: {
             Authorization: authorizationToken, // Use the token from state

@@ -90,8 +90,9 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
     setLoading(true);
     setError(null);
     setSuccess(null);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
 
-    const apiUrl = 'https://lawonearth.co.uk/api/back-office/partner/call-appointments/create';
+    const apiUrl = `${baseUrl}/api/back-office/partner/call-appointments/create`;
     const token = authData ? authData?.data?.primaryData?.authorization : '';
     const companyCode = 'MC-H3HBRZU6ZK5744S';
     const frontendKey = 'XXX';

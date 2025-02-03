@@ -10,7 +10,9 @@ const ApiData: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = 'https://lawonearth.co.uk/api/auth/core/login';
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+
+      const url = `${baseUrl}/api/auth/core/login`;
 
       // Define the headers
       const myHeaders = new Headers();
