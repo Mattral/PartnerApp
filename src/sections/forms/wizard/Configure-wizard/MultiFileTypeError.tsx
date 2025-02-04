@@ -116,7 +116,7 @@ const MultiFileUpload = ({
         {
           headers: {
             'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630', // Replace with your actual token
-            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+            'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
             'FRONTEND-KEY': 'XXX', // Replace with your frontend key
             'X-Requested-With': 'XMLHttpRequest'
           }
@@ -383,7 +383,7 @@ const MultiFileUpload = ({
         {
           headers: {
             'Authorization': 'Bearer 520|VmpluNvqeBkZeuskfZF5fAv4ddlsaOazSePhk1Vlb1dd7630', // Replace with your actual token
-            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+            'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
             'FRONTEND-KEY': 'XXX', // Replace with your frontend key
             'X-Requested-With': 'XMLHttpRequest'
           }

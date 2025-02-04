@@ -57,7 +57,7 @@ const UploadedFiles = () => {
     const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
 
     const [authorizationToken, setAuthorizationToken] = useState<string | null>(null);
-    const companyCode = 'MC-H3HBRZU6ZK5744S'; // Replace with actual company code
+    const companyCode = process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV"; // Replace with actual company code
     const frontendKey = 'XXX'; // Replace with your frontend key
 
 

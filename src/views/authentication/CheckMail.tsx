@@ -38,7 +38,7 @@ const CheckMail = () => {
         formData, 
         {
           headers: {
-            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+            'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
             'FRONTEND-KEY': 'XXX',
           },
         }
@@ -82,7 +82,7 @@ const handleOtpSubmit = async (e: React.FormEvent) => {
       formData, 
       {
         headers: {
-          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+          'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
           'FRONTEND-KEY': 'XXX',
         },
       }

@@ -87,7 +87,7 @@ const WorkScheduleForm = () => {
 
     const headers = {
       'Authorization': `Bearer ${token}`, // Use the token from authData
-      'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+      'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };

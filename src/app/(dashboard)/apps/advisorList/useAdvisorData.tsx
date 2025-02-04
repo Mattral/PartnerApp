@@ -24,7 +24,7 @@ export const useAdvisorData = () => {
 
         // Set the headers for the API request
         const headers = {
-          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',  // Replace with actual COMPANY-CODE
+          'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",  // Replace with actual COMPANY-CODE
           'FRONTEND-KEY': 'XXX',  // Replace with actual FRONTEND-KEY
           'PaginateResults': '1',
           'MaxResultsPerPage': '12',

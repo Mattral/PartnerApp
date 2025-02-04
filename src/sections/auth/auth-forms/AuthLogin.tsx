@@ -237,7 +237,7 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
             method: 'post',
             url: `${baseUrl}/api/auth/partner/login`,
             headers: {
-              'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+              'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
               'FRONTEND-KEY': 'XXX', 
               //'User-Agent': 'Apidog/1.0.0 (https://apidog.com)',
             },

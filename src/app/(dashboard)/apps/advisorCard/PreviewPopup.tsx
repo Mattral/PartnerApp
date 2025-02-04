@@ -69,7 +69,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
 
     const apiUrl = `${baseUrl}/api/partner/advisors/${pers_code}`;
     const token = authData ? authData?.data?.primaryData?.authorization : '';
-    const companyCode = 'MC-H3HBRZU6ZK5744S';
+    const companyCode = process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV";
     const frontendKey = 'XXX'; // Replace with your frontend key
 
     const headers = {

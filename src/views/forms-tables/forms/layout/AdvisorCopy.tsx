@@ -51,7 +51,7 @@ const PointSystemConfig = () => {
               Authorization: 'Bearer 468|Z3R1e6AafzevNYXbMF2QJhpkcwfKpukgqNjTGbI7dbde9b5f',
               'COMPANY-CODE': 'def-mc-admin',
               'FRONTEND-KEY': 'XXX',
-              'TARGET-COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+              'TARGET-COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
               'PaginateResults': '1',
               'MaxResultsPerPage': '12',
               'X-Requested-With': 'XMLHttpRequest',

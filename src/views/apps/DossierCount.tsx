@@ -49,7 +49,7 @@ const DossierCount = ({ setDossierData }: { setDossierData: (data: DossierData) 
           const response = await axios.get(`${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/`, {
             headers: {
               'Authorization': `Bearer ${authToken}`, // Use the token retrieved from localStorage
-              'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+              'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
               'FRONTEND-KEY': 'XXX', // Replace with actual frontend key
               'PaginateResults': '1',
               'MaxResultsPerPage': '12',

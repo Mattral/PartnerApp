@@ -65,7 +65,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
     const url = `${baseUrl}/api/back-office/partner/consulting-messages`; // Your API endpoint
     const headers = {
       Authorization: `Bearer ${token}`, // Use the token from localStorage
-      'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+      'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };
@@ -128,7 +128,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
 
     const headers = {
       Authorization: `Bearer ${token}`, // Use the token from localStorage
-      'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+      'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };

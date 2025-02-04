@@ -94,7 +94,7 @@ const ScheduleAppointmentPopup: React.FC<ScheduleAppointmentPopupProps> = ({ ope
 
     const apiUrl = `${baseUrl}/api/back-office/partner/call-appointments/create`;
     const token = authData ? authData?.data?.primaryData?.authorization : '';
-    const companyCode = 'MC-H3HBRZU6ZK5744S';
+    const companyCode = process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV";
     const frontendKey = 'XXX';
     const redirectUrl = 'https://lawonearth.org/';
 

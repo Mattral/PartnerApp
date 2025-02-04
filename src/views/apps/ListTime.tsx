@@ -58,7 +58,7 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                     },
                     headers: {
                         Authorization: `Bearer ${token}`,  // Use the token from localStorage
-                        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+                        'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
                         'FRONTEND-KEY': 'XXX', // Replace with actual frontend key if needed
                         'X-Requested-With': 'XMLHttpRequest',
                         PaginateResults: '1',

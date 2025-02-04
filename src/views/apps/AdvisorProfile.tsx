@@ -51,7 +51,7 @@ const TabPersonal = () => {
                 {
                     headers: {
                         'Authorization': 'Bearer 600|rj7SWm6qgoMXDmQDtBxzElBKLexbSOT0mKvaRXiofd26c637', // Replace with actual token
-                        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',  // Replace with actual company code
+                        'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",  // Replace with actual company code
                         'FRONTEND-KEY': 'XXX',  // Replace with actual key
                         'X-Requested-With': 'XMLHttpRequest'
                     }
@@ -119,7 +119,7 @@ const TabPersonal = () => {
                 {
                     headers: {
                         'Authorization': 'Bearer 600|rj7SWm6qgoMXDmQDtBxzElBKLexbSOT0mKvaRXiofd26c637', // Replace with actual token
-                        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',  // Replace with actual company code
+                        'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",  // Replace with actual company code
                         'FRONTEND-KEY': 'XXX',  // Replace with actual key
                         'X-Requested-With': 'XMLHttpRequest'
                     }

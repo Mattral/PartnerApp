@@ -80,7 +80,7 @@ const JoinCall: React.FC<JoinCallProps> = ({ ca_code, ca_requestedFor }) => {
     const url = `${baseUrl}/api/back-office/partner/identified-call-identities/create`;
     const headers = {
       'Authorization': `Bearer ${token}`,  // Use the token retrieved from localStorage
-      'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+      'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };

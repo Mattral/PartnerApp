@@ -79,7 +79,7 @@ const ProfileTabs = ({ focusInput }: Props) => {
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
-                'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S', // Replace with actual company code if needed
+                'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV", // Replace with actual company code if needed
                 'FRONTEND-KEY': 'XXX', // Replace with actual key if needed
               },
             });

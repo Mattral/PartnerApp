@@ -67,7 +67,7 @@ const ListAppointments: React.FC = () => {
             const response = await axios.get(`${baseUrl}/api/back-office/partner/call-appointments`, {
                 headers: {
                     Authorization: `Bearer ${token}`, // Use the token from localStorage
-                    'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+                    'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
                     'FRONTEND-KEY': 'XXX',
                     'X-Requested-With': 'XMLHttpRequest',
                     PaginateResults: '5',

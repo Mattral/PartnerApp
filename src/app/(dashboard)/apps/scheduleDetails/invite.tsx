@@ -32,7 +32,7 @@ const Invite: React.FC<InviteProps> = ({ ca_code }) => {
     };
 
     // API constants
-    const COMPANY_CODE = 'MC-H3HBRZU6ZK5744S';  // The company code of the partner
+    const COMPANY_CODE = process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV";  // The company code of the partner
     const FRONTEND_KEY = 'XXX';  // Replace with your frontend key
 
     // Handle API call to send invite

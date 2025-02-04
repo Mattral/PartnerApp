@@ -76,7 +76,7 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
       url: `${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/submit`,
       headers: {
         'Authorization': authorizationToken, // Use the token from state
-        'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+        'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
         'FRONTEND-KEY': 'XXX',
         'X-Requested-With': 'XMLHttpRequest',
       },
