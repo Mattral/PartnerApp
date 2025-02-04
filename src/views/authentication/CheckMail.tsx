@@ -65,46 +65,68 @@ const CheckMail = () => {
     }
   };
 
-  // Handle OTP verification
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage('');
-    setApiResponse(''); // Reset API response on each new request
+// Handle OTP verification
+const handleOtpSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setMessage(''); // Clear previous message
+  setApiResponse(''); // Reset API response
 
-    try {
-      const formData = new FormData();
-      formData.append('email', email);
-      formData.append('verificationOTP', otp);
+  try {
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('verificationOTP', otp);
 
-      const response = await axios.post(
-        'https://lawonearth.co.nz/api/auth/partner/verify-email',
-        formData, 
-        {
-          headers: {
-            'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
-            'FRONTEND-KEY': 'XXX',
-          },
-        }
-      );
-
-      console.log(response.data);
-      if (response.data.status === 'treatmentSuccess') {
-        router.push('/login'); // Redirect to login page on success
-      } else if (response.data.status === 'validationError') {
-        // Handle OTP related validation error
-        const otpErrorMessage = response.data.data.primaryData.errors?.verificationOTP?.[0] || 'Invalid OTP. Please try again.';
-        setMessage(otpErrorMessage);
-      } else {
-        setMessage('Invalid OTP. Please try again.');
+    const response = await axios.post(
+      'https://lawonearth.co.nz/api/auth/partner/verify-email',
+      formData, 
+      {
+        headers: {
+          'COMPANY-CODE': 'MC-H3HBRZU6ZK5744S',
+          'FRONTEND-KEY': 'XXX',
+        },
       }
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      setMessage('An error occurred. Please try again later.');
-    } finally {
-      setLoading(false);
+    );
+
+    console.log(response.data);
+
+    // Success case
+    if (response.data.status === 'treatmentSuccess') {
+      router.push('/login'); // Redirect to login page
+    } else if (response.data.status === 'validationError') {
+      // Handle OTP related validation error
+      const otpErrorMessage =
+        response.data.data.primaryData.errors?.verificationOTP?.[0] || 
+        'Invalid OTP. Please try again.';
+      setMessage(otpErrorMessage);
+    } else {
+      setMessage('Invalid OTP. Please try again.');
     }
-  };
+  } catch (error: any) {
+    console.error('Error verifying OTP:', error);
+
+    // Check if the error has a response and is a validationError from API
+    if (error.response && error.response.data) {
+      const apiError = error.response.data;
+      if (apiError.status === 'validationError') {
+        // Show specific validation error if it exists
+        const validationMessage =
+          apiError.data.primaryData.errors?.verificationOTP?.[0] || 
+          apiError.data.primaryData.errors?.email?.[0] ||
+          'An error occurred. Please try again later.';
+        setMessage(validationMessage);
+      } else {
+        setMessage('An error occurred. Please try again later.');
+      }
+    } else {
+      // Handle network or unexpected errors
+      setMessage('An error occurred. Please check your connection or try again later.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <AuthWrapper>
