@@ -79,7 +79,7 @@ const CreateWS = () => {
               data.append('Please upload Logo', file);
             }
           }
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
           const config = {
             method: 'post',
@@ -499,7 +499,7 @@ const CreateWL = ({ providers, csrfToken }: any) => {
             
             const config = {
               method: 'post',
-              url: 'https://lawonearth.co.uk/api/back-office/core/apps/create',
+              url: 'https://lawonearth.co.nz/api/back-office/core/apps/create',
               headers: {
                 'Authorization' : localStorage.getItem("Authorization"),
                 'COMPANY-CODE' : process.env.COMPANY_CODE,

@@ -10,7 +10,7 @@ const ApiData: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
       const url = `${baseUrl}/api/auth/core/login`;
 

@@ -98,7 +98,7 @@ const AuthRegister = () => {
           data.append('pers_mName', values.pers_mName);
           data.append('pers_lName', values.pers_lName);
           //data.append('redirectUrl', '');
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
           const config = {
             method: 'post',

@@ -48,7 +48,7 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
         }
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
             const response = await axios.get(
                 `${baseUrl}/api/back-office/partner/office-times/ui-manually-added-one-testingpurpose`,

@@ -60,7 +60,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
       setLoading(false);
       return;
     }
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
     const url = `${baseUrl}/api/back-office/partner/consulting-messages`; // Your API endpoint
     const headers = {
@@ -135,7 +135,7 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, onClose }) => {
 
     try {
       setLoading(true);
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
       const response = await axios.post(
         `${baseUrl}/api/back-office/partner/consulting-messages/create`,

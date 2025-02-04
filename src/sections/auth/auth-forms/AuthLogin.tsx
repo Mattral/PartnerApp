@@ -229,7 +229,7 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
           data.append('email', values.email);
           data.append('password', values.password);
           
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // Provide a fallback if needed
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // Provide a fallback if needed
 
           //data.append('redirectUrl', '');
       
@@ -507,7 +507,7 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
       
           const config = {
             method: 'post',
-            url: 'https://lawonearth.co.uk/api/auth/core/login',
+            url: 'https://lawonearth.co.nz/api/auth/core/login',
             headers: {
               'COMPANY-CODE': 'def-mc-admin',
               'FRONTEND-KEY': 'XXX', 

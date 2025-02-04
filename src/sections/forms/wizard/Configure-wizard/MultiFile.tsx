@@ -112,7 +112,7 @@ const UploadFiles = () => {
     
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
       const response = await axios.post<UploadResponse>(
         `${baseUrl}/api/back-office/partner/manual-client-voi/files/upload`,

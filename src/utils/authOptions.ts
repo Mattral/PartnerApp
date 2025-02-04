@@ -139,7 +139,7 @@ export const authOptions: NextAuthOptions = {
           data.append('email', credentials.email);
           data.append('password', credentials.password);
 
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';
           const response = await axios.post(`${baseUrl}/api/auth/core/login`, data, {
             headers: {
               'COMPANY-CODE': process.env.COMPANY_CODE || 'def-mc-admin',
@@ -223,7 +223,7 @@ export const authOptions: NextAuthOptions = {
           // Login API call
           const response = await axios({
             method: 'post',
-            url: 'https://lawonearth.co.uk/api/auth/core/login',
+            url: 'https://lawonearth.co.nz/api/auth/core/login',
             headers: {
               'COMPANY-CODE': 'def-mc-admin',
               'FRONTEND-KEY': 'XXX',///process.env.FRONTEND_KEY, // Replace with your actual FRONTEND-KEY
@@ -276,7 +276,7 @@ export const authOptions: NextAuthOptions = {
           // Register API call
           const response = await axios({
             method: 'post',
-            url: 'https://lawonearth.co.uk/api/auth/core/register',
+            url: 'https://lawonearth.co.nz/api/auth/core/register',
             headers: {
               'COMPANY-CODE': 'def-mc-admin',
               'FRONTEND-KEY': 'XXX',//process.env.FRONTEND_KEY,
@@ -374,7 +374,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           const response = await axios.post(
-            'https://lawonearth.co.uk/api/auth/core/login',
+            'https://lawonearth.co.nz/api/auth/core/login',
             {
               email: credentials?.email,
               password: credentials?.password
@@ -411,7 +411,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const user = await axios.post('https://lawonearth.co.uk/api/auth/core/register', {
+          const user = await axios.post('https://lawonearth.co.nz/api/auth/core/register', {
             firstName: credentials?.firstname,
             lastName: credentials?.lastname,
             company: credentials?.company,
@@ -489,7 +489,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const user = await axios.post('https://lawonearth.co.uk/api/auth/core/login', {
+          const user = await axios.post('https://lawonearth.co.nz/api/auth/core/login', {
             password: credentials?.password,
             email: credentials?.email
           });
@@ -516,7 +516,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const user = await axios.post('https://lawonearth.co.uk/api/auth/core/register', {
+          const user = await axios.post('https://lawonearth.co.nz/api/auth/core/register', {
             firstName: credentials?.firstname,
             lastName: credentials?.lastname,
             company: credentials?.company,

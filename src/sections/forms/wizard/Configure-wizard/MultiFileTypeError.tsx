@@ -108,7 +108,7 @@ const MultiFileUpload = ({
     console.log('FormData:', formData);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
       const response = await axios.post(
         `${baseUrl}/api/back-office/partner/manual-client-voi/files/upload`,
@@ -378,7 +378,7 @@ const MultiFileUpload = ({
 
     try {
       const response = await axios.post(
-        'https://lawonearth.co.uk/api/back-office/partner/manual-client-voi/files/upload',
+        'https://lawonearth.co.nz/api/back-office/partner/manual-client-voi/files/upload',
         formData,
         {
           headers: {

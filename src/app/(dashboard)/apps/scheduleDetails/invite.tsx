@@ -53,7 +53,7 @@ const Invite: React.FC<InviteProps> = ({ ca_code }) => {
         }
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
             const response = await axios.post(
                 `${baseUrl}/api/back-office/partner/call-invites/create`,
@@ -120,7 +120,7 @@ const Invite: React.FC<InviteProps> = ({ ca_code }) => {
         }
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
             const response = await axios.get(
                 `${baseUrl}/api/back-office/partner/call-invites/${ca_code}`,

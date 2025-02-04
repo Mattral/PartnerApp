@@ -10,7 +10,7 @@ const AdvisorList = () => {
   useEffect(() => {
     const fetchAdvisors = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.uk';  // `${baseUrl}/`
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
         const url = `${baseUrl}/api/partner/advisors?searchKey=`;
 
