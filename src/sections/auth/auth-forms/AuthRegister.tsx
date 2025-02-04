@@ -290,7 +290,7 @@ const AuthRegister = () => {
               password: values.password,
               password_confirmation: values.password_confirmation,
               pers_lName: values.pers_lName,
-              redirectUrl: '/dashboard/default',
+              redirectUrl: '/check-mail',
             });
 
             if (signInResult?.error) {
@@ -304,7 +304,7 @@ const AuthRegister = () => {
                 setStatus({ success: true });
                 setSubmitting(false);
                 //preload('api/menu/dashboard', fetcher); // Preload dashboard menu on login success
-                window.location.href = '/login'; // Manually redirect to the desired page
+                window.location.href = '/check-mail'; // Manually redirect to the desired page
               }
             }
           } else {
