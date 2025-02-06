@@ -66,7 +66,7 @@ const TabProfile = () => {
           try {
             const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
 
-            const response = await fetch(`${baseUrl}/api/back-office/partner/profile`, {
+            const response = await fetch(`${baseUrl}/api/auth/partner/profile`, { //
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${authorizationToken}`, 

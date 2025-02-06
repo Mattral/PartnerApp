@@ -1,4 +1,290 @@
 import { useEffect, useState, ChangeEvent } from 'react';
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import FormLabel from '@mui/material/FormLabel';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import Typography from '@mui/material/Typography';
+import Avatar from 'components/@extended/Avatar';
+import MainCard from 'components/MainCard';
+import { Camera } from 'iconsax-react';
+
+const avatarImage = '/assets/images/users';
+
+const TabPersonal = () => {
+  const theme = useTheme();
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined);
+  const [avatar, setAvatar] = useState<string | undefined>(`${avatarImage}/default.png`);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [country, setCountry] = useState('nsw'); // defaulting to 'nsw' for now
+  const [authData, setAuthData] = useState<any | null>(null);
+  const [authorizationToken, setAuthorizationToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch the auth data from localStorage
+    const storedAuthData = localStorage.getItem('authData');
+    if (storedAuthData) {
+      try {
+        const parsedData = JSON.parse(storedAuthData);
+        setAuthData(parsedData);
+
+        // Extract the authorization token and store it in state
+        const token = parsedData?.data?.primaryData?.authorization;
+        if (token) {
+          setAuthorizationToken(token);
+        } else {
+          console.error('Authorization token not found in auth data');
+        }
+      } catch (error) {
+        console.error('Failed to parse auth data:', error);
+      }
+    } else {
+      console.error('No authentication data found in localStorage');
+    }
+  }, []);
+
+  useEffect(() => {
+    // If we have the auth token, we can fetch the user data
+    if (authorizationToken) {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch('https://lawonearth.co.nz/api/auth/partner/profile', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${authorizationToken}`,
+              'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
+              'FRONTEND-KEY': 'XXX',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+
+          const data = await response.json();
+          console.log('User data fetched:', data);
+          // You can update user data here if needed
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [authorizationToken]);
+
+  const handleSubmit = async () => {
+    if (!authorizationToken) {
+      console.error('Authorization token is missing');
+      return;
+    }
+
+    const payload = {
+      pers_fName: firstName,
+      pers_mName: '', // Optional middle name
+      pers_lName: lastName,
+      s_code: country, // Example state or country code
+      pers_phone1: phoneNumber,
+      pers_whatsappLine: whatsapp, // Optional
+      pers_birthdate: birthDate, // In YYYY-MM-DD format
+    };
+
+    try {
+      const response = await fetch('https://lawonearth.co.nz/api/back-office/partner/profile/complete', {
+        method: 'POST',
+        headers: {
+          'Authorization': `${authorizationToken}`,
+          'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
+          'FRONTEND-KEY': 'XXX',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      const data = await response.json();
+      console.log('Profile updated successfully:', data);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      setSelectedImage(file);
+
+      // FormData to handle the file upload
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      // Upload the image to the server
+      try {
+        const response = await fetch('https://lawonearth.co.nz/api/auth/partner/update-photo', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authorizationToken}`,
+            'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
+            'FRONTEND-KEY': 'XXX',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const data = await response.json();
+        console.log('Image uploaded successfully:', data);
+        
+        // Set the avatar to the uploaded image's URL
+        setAvatar(data?.imageUrl); // assuming 'imageUrl' is returned in the response
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  };
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} sm={6}>
+        <MainCard title="Personal Information">
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Stack spacing={2.5} alignItems="center" sx={{ m: 3 }}>
+                <FormLabel
+                  htmlFor="change-avtar"
+                  sx={{
+                    position: 'relative',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    '&:hover .MuiBox-root': { opacity: 1 },
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Avatar alt="Avatar 1" src={avatar} sx={{ width: 76, height: 76 }} />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .75)' : 'rgba(0,0,0,.65)',
+                      width: '100%',
+                      height: '100%',
+                      opacity: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Stack spacing={0.5} alignItems="center">
+                      <Camera style={{ color: theme.palette.secondary.lighter, fontSize: '1.5rem' }} />
+                      <Typography sx={{ color: 'secondary.lighter' }} variant="caption">
+                        Upload
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </FormLabel>
+                <TextField
+                  type="file"
+                  id="change-avtar"
+                  variant="outlined"
+                  sx={{ display: 'none' }}
+                  onChange={handleImageChange}
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={1.25}>
+                <InputLabel htmlFor="personal-first-name">First Name</InputLabel>
+                <TextField
+                  fullWidth
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  id="personal-first-name"
+                  placeholder="First Name"
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={1.25}>
+                <InputLabel htmlFor="personal-last-name">Last Name</InputLabel>
+                <TextField
+                  fullWidth
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  id="personal-last-name"
+                  placeholder="Last Name"
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={1.25}>
+                <InputLabel htmlFor="personal-phone">Phone Number</InputLabel>
+                <TextField
+                  fullWidth
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  id="personal-phone"
+                  placeholder="Phone Number"
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={1.25}>
+                <InputLabel htmlFor="personal-whatsapp">WhatsApp Line</InputLabel>
+                <TextField
+                  fullWidth
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  id="personal-whatsapp"
+                  placeholder="WhatsApp Line"
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={1.25}>
+                <InputLabel htmlFor="personal-birthdate">Birth Date</InputLabel>
+                <TextField
+                  fullWidth
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  id="personal-birthdate"
+                />
+              </Stack>
+            </Grid>
+          </Grid>
+        </MainCard>
+      </Grid>
+      <Grid item xs={12}>
+        <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
+          <Button variant="outlined" color="secondary">
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleSubmit}>Update Profile</Button>
+        </Stack>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default TabPersonal;
+
+
+
+
+/*
+import { useEffect, useState, ChangeEvent } from 'react';
 
 // MATERIAL - UI
 import { useTheme } from '@mui/material/styles';
@@ -93,7 +379,7 @@ const TabPersonal = () => {
           try {
             const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // Provide a fallback if needed
 
-            const response = await fetch(`${baseUrl}/api/back-office/partner/profile`, {
+            const response = await fetch(`${baseUrl}/api/auth/partner/profile`, {
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${authorizationToken}`, // Use authorization from primaryData
@@ -346,3 +632,4 @@ const TabPersonal = () => {
 };
 
 export default TabPersonal;
+*/
