@@ -64,7 +64,7 @@ const TabProfile = () => {
       if (authorizationToken) {
         const fetchUserData = async () => {
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
             const response = await fetch(`${baseUrl}/api/auth/partner/profile`, { //
               method: 'GET',

@@ -75,7 +75,7 @@ const JoinCall: React.FC<JoinCallProps> = ({ ca_code, ca_requestedFor }) => {
       setLoading(false);
       return;
     }
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
     const url = `${baseUrl}/api/back-office/partner/identified-call-identities/create`;
     const headers = {

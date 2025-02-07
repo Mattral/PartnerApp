@@ -57,7 +57,7 @@ const DossierPage: React.FC = () => {
     }
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
       const response = await fetch(`${baseUrl}/api/back-office/partner/manual-client-voi/dossiers/create`, {
         method: 'POST',

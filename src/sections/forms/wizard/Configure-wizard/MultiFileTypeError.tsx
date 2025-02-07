@@ -108,7 +108,7 @@ const MultiFileUpload = ({
     console.log('FormData:', formData);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
       const response = await axios.post(
         `${baseUrl}/api/back-office/partner/manual-client-voi/files/upload`,

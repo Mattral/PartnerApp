@@ -8,7 +8,7 @@ export const useAdvisorData = (searchKey, min_price, max_price) => {
   useEffect(() => {
     const fetchAdvisors = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
         const url = `${baseUrl}/api/partner/advisors?searchKey=${encodeURIComponent(searchKey || '')}`;
 
         // Define the payload for the POST request

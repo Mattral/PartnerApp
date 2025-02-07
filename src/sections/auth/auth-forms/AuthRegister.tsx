@@ -256,7 +256,7 @@ const AuthRegister = () => {
           data.append('pers_lName', values.pers_lName);
           data.append('redirectUrl', 'https://temporary-umber.vercel.app/login');
 
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // Provide a fallback if needed
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // Provide a fallback if needed
 
 
           const config = {

@@ -32,9 +32,9 @@ const CheckMail = () => {
       const formData = new FormData();
       formData.append('email', email);
       formData.append('redirectUrl', 'http://lawonearth.org/');
-
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
       const response = await axios.post(
-        'https://lawonearth.co.nz/api/auth/partner/request-email-validation-otp',
+        `${baseUrl}/api/auth/partner/request-email-validation-otp`,
         formData, 
         {
           headers: {
@@ -76,9 +76,10 @@ const handleOtpSubmit = async (e: React.FormEvent) => {
     const formData = new FormData();
     formData.append('email', email);
     formData.append('verificationOTP', otp);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
     const response = await axios.post(
-      'https://lawonearth.co.nz/api/auth/partner/verify-email',
+      `${baseUrl}/api/auth/partner/verify-email`,
       formData, 
       {
         headers: {

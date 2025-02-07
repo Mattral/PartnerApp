@@ -85,7 +85,7 @@ const TabAccount = () => {
       if (authorizationToken) {
         const fetchUserData = async () => {
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // Provide a fallback if needed
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // Provide a fallback if needed
             const response = await fetch(`${baseUrl}/api/auth/partner/profile`, {
               method: 'GET',
               headers: {

@@ -139,7 +139,7 @@ export const authOptions: NextAuthOptions = {
           data.append('email', credentials.email);
           data.append('password', credentials.password);
 
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;
           const response = await axios.post(`${baseUrl}/api/auth/core/login`, data, {
             headers: {
               'COMPANY-CODE': process.env.COMPANY_CODE || 'def-mc-admin',

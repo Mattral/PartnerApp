@@ -79,7 +79,7 @@ const CreateWS = () => {
               data.append('Please upload Logo', file);
             }
           }
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
           const config = {
             method: 'post',

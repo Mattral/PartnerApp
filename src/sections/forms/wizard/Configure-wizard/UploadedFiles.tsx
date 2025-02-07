@@ -75,7 +75,7 @@ const UploadedFiles = () => {
 
     try {
       setLoading(true);
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://lawonearth.co.nz';  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
       const response = await axios.get<ApiResponse>(
         `${baseUrl}/api/back-office/partner/manual-client-voi/files/${vd_code}`,
