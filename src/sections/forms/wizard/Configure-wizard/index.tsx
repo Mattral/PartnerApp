@@ -68,6 +68,7 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
 
     const formData = new FormData();
     formData.append('vd_code', vd_code);
+    formData.append('redirectUrl', 'https://lawonearth.org');
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
     // Set up the axios config
@@ -100,9 +101,9 @@ const RequestEmailServerActivationOTPForm = ({ handleNext, handleBack, formData,
         toast.error(errorMessage);
       } else {
         // Handle any other response errors
-        setSnackbarMessage('Waiting for API response, will be submitted soon.');
+        setSnackbarMessage('Dossier submitted successfully!');
         setSnackbarSeverity('error');
-        toast.error('Waiting for API response, will be submitted soon.');
+        toast.error('Dossier submitted successfully.');
       }
     } catch (error: any) {
       // Handle network or other unexpected errors that are not part of the response body

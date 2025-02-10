@@ -197,7 +197,7 @@ const UploadedFiles = () => {
 
 
     return (
-        <div className="min-h-[50vh] bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">
+        <div className="min-h-[45vh] bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">
             <div className="max-w-7xl mx-auto mb-auto">
                 <h1 className="text-5xl font-extrabold text-center text-gray-900 mb-12 animate__animated animate__fadeIn">
                     Uploaded Files

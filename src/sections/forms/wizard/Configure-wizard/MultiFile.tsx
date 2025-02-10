@@ -1,22 +1,12 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { CloudUpload as CloudUploadIcon, FileUpload as FileUploadIcon, Description as DescriptionIcon } from '@mui/icons-material';
 import { Button, CircularProgress, Typography } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDropzone } from 'react-dropzone'; // Importing dropzone for drag-and-drop upload
-import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
-
-
-const documentOptions = [
-  { name: 'Business Visa', value: 'vidoc-9d8a21b6-72d4-4427-b9f2-510357a333b6' },
-  { name: 'Green Card', value: 'vidoc-9d84ce3d-a0e7-44ae-8ec9-16fa15c52b04' },
-  { name: 'National ID', value: 'vidoc-9d84ce3d-a44c-46d9-870e-490401b16354' },
-  { name: 'Passport', value: 'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889' },
-  { name: 'Schengen Visa', value: 'vidoc-9d8a21b6-7516-4533-80fe-5e23643346a2' },
-  { name: 'Student Identity', value: 'vidoc-9d84ed9e-1315-427b-98df-d14c0c35f889' },
-];
-
+import { useDropzone } from 'react-dropzone'; 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useDocumentOptions } from './useDocumentOptions';  // Import the custom hook
 
 interface UploadResponse {
   status: string;
@@ -35,16 +25,16 @@ const UploadFiles = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams(); // Access search params
-
   const vd_code = searchParams.get('vd_code'); // Extract vd_code from the search params
 
+  const { documentOptions, loading, error } = useDocumentOptions();  // Use the custom hook
+
   useEffect(() => {
-    // If vd_code is not available, handle it or show a loading message
     if (!vd_code) {
       console.error("vd_code is missing");
     }
   }, [vd_code]);
-  
+
   // Retrieve the authorization token from localStorage
   useEffect(() => {
     const storedAuthData = localStorage.getItem('authData');
@@ -53,7 +43,7 @@ const UploadFiles = () => {
         const parsedData = JSON.parse(storedAuthData);
         const token = parsedData?.data?.primaryData?.authorization;
         if (token) {
-          setAuthToken(token); // Store the token in the state
+          setAuthToken(token);
         } else {
           console.error('Authorization token not found');
         }
@@ -65,7 +55,6 @@ const UploadFiles = () => {
     }
   }, []);
 
-
   // Handle file selection (drag-and-drop or manual file picker)
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -74,7 +63,7 @@ const UploadFiles = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: '.pdf,.doc,.docx,.jpg,.png,.jpeg' as any, // Cast accept to any type
+    accept: '.pdf,.doc,.docx,.jpg,.png,.jpeg' as any,
   });
 
   const handleDocumentCodeChange = (index: number, code: string) => {
@@ -87,32 +76,25 @@ const UploadFiles = () => {
     if (!authToken) {
       toast.error('Error: Authorization token is missing.');
       return;
-    }    
+    }
     setIsUploading(true);
 
-  // Get vd_code from searchParams
-  const vd_code = searchParams.get('vd_code'); 
+    if (!vd_code) {
+      toast.error('Error: Dossier code (vd_code) is missing.');
+      setIsUploading(false);
+      return;
+    }
 
-  // Check if vd_code is null and handle it
-  if (!vd_code) {
-    toast.error('Error: Dossier code (vd_code) is missing.');
-    setIsUploading(false);
-    return;
-  }
-
-  // Proceed with FormData if vd_code is available
-  const formData = new FormData();
-  formData.append('vd_code', vd_code); // Append vd_code to formData
-
+    const formData = new FormData();
+    formData.append('vd_code', vd_code); // Append vd_code to formData
 
     files.forEach((file, index) => {
       formData.append('files[' + index + ']', file);
       formData.append('vidoc_codes[' + index + ']', fileDocumentCodes[index]);
     });
-    
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
       const response = await axios.post<UploadResponse>(
         `${baseUrl}/api/back-office/partner/manual-client-voi/files/upload`,
@@ -130,16 +112,14 @@ const UploadFiles = () => {
       console.log('Upload Successful:', response.data);
       toast.success('Upload Successful!');
 
-      // Clear the files and document codes after a successful upload to avoid duplicate submission
+      // Clear the files and document codes after a successful upload
       setFiles([]);
       setFileDocumentCodes([]);
     } catch (error) {
       const axiosError = error as AxiosError<UploadResponse>;
-
       const errorMessage =
         axiosError?.response?.data?.data?.primaryData?.msg ||
         'Error uploading files. Please try again.';
-
       toast.error(`Upload Failed: ${errorMessage}`);
       console.error('Error uploading files:', error);
     } finally {
@@ -185,15 +165,18 @@ const UploadFiles = () => {
                     onChange={(e) => handleDocumentCodeChange(index, e.target.value)}
                   >
                     <option value="">Select Document Code</option>
-                    {documentOptions.map((option, i) => (
-                      <option key={i} value={option.value}>  {/* Use option.value for the value */}
-                        {option.name}  {/* Display option.name in the dropdown */}
-                      </option>
-                    ))}
+                    {loading ? (
+                      <option>Loading...</option>
+                    ) : error ? (
+                      <option>{error}</option>
+                    ) : (
+                      documentOptions.map((option, i) => (
+                        <option key={i} value={option.value}>
+                          {option.name}
+                        </option>
+                      ))
+                    )}
                   </select>
-
-
-                  
                 </div>
               </div>
             ))}
@@ -219,6 +202,7 @@ const UploadFiles = () => {
 };
 
 export default UploadFiles;
+
 
 /*
                   <select
