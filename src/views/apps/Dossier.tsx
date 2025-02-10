@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Modal, Select, Tooltip } from '@mui/material';
 import { useRouter } from "next/navigation";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Make sure to import styles
 import { toast } from 'react-toastify'; // Import the toast library
 import DossierCount from 'views/apps/DossierCount';
+import DossierCountAdv from "./DossierCountAdv";
 import { CheckCircle, Cancel } from '@mui/icons-material'; // Import MUI icons
+import { getExpertiseDomains } from './getExp';  // Import the getExp function
 
 type Dossier = {
   vd_code: string;
   vd_status: string;
+  ed_code?:any;
 };
 
 type AuthData = {
@@ -27,6 +30,11 @@ const DossierPage: React.FC = () => {
   const [openPopup, setOpenPopup] = useState(false); // Track if popup is open
   const [selectedRole, setSelectedRole] = useState<string>(''); // Track the selected role
   const router = useRouter();
+  
+  const [openModal, setOpenModal] = useState(false); // State to manage modal visibility
+  const [domains, setDomains] = useState<{ ed_name: string, ed_code: string}[]>([]); // State to hold expertise domains
+  const [selectedEdCode, setSelectedEdCode] = useState<string>(''); // State to hold the selected expertise code
+  const [loading, setLoading] = useState(false); // State to manage loading state
 
   // Retrieve auth data from localStorage
   useEffect(() => {
@@ -100,18 +108,90 @@ const DossierPage: React.FC = () => {
     }
   };
 
-  const addBottomCard = () => {
-    setBottomCards(prevBottomCards => [...prevBottomCards, prevBottomCards.length + 1]);
+  // Function to handle button click to open the modal
+  const addBottomCard = async () => {
+    setLoading(true);
+    const domainsData = await getExpertiseDomains(); // Get the expertise domains
+    setDomains(domainsData); // Set the domains to state
+    setLoading(false);
+    setOpenModal(true); // Open the modal
   };
+
+    // Function to handle form submission (POST request)
+    const handleSubmit = async () => {
+      if (!selectedEdCode) {
+        alert('Please select an expertise domain');
+        return;
+      }
+    
+      let authorizationToken: string | undefined;
+    
+      // Check if authData and authData.data exist before accessing authorization
+      if (authData?.data?.primaryData?.authorization) {
+        authorizationToken = authData.data.primaryData.authorization; // Access token directly
+      }
+    
+      try {
+        // Create a new FormData object to append data
+        const formData = new FormData();
+        formData.append('ed_code', selectedEdCode); // Append the ed_code to the FormData
+    
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    
+        // Check if baseUrl is correct
+        console.log("API URL:", `${baseUrl}/api/back-office/partner/manual-advisor-voi/dossiers/create`);
+    
+        // API request to create the VOI dossier using FormData
+        const response = await fetch(`${baseUrl}/api/back-office/partner/manual-advisor-voi/dossiers/create`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `${authorizationToken}`,
+            'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
+            'FRONTEND-KEY': 'XXX', // Replace with the actual frontend key
+            'X-Requested-With': 'XMLHttpRequest',
+            // Do not set 'Content-Type' header when using FormData, as it will be set automatically
+          },
+          body: formData, // Send the FormData object as the request body
+        });
+    
+        const data = await response.json();
+
+        // Check the status in the response data
+        if (data.status === 'treatmentSuccess') {
+          toast.success(`Dossier created with code: ${data.data.primaryData._dossier.vd_code}`, {
+            autoClose: 5000, // 5 seconds
+          });
+        } else if (data.status === 'treatmentFailure') {
+          const errorMessage = data.data.primaryData.msg || 'An error occurred';
+          toast.error(`Error: ${errorMessage}`, {
+            autoClose: 5000, // 5 seconds
+          });
+        } else {
+          toast.error('Unexpected response from the server', {
+            autoClose: 5000, // 5 seconds
+          });
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(`An error occurred while creating the dossier: ${error.message}`, {
+            autoClose: 5000, // 5 seconds
+          });
+        } else {
+          toast.error('An unknown error occurred', {
+            autoClose: 5000, // 5 seconds
+          });
+        }
+      }
+    };
 
   const handleConfigure = (vd_code: string) => {
     router.push(`/forms/VOI/Client?vd_code=${vd_code}`);
   };
 
   // Open the popup for selecting a role
-  const handleConfigure2 = () => {
+  const handleConfigure2 = (vd_code: string, ed_code:string) => {
     setOpenPopup(true);
-    router.push(`/forms/VOI/Advisor`); // remove
+    router.push(`/forms/VOI/Advisor?vd_code=${vd_code}&ed_code=${ed_code}`); // remove
   };
 
   // Close the popup
@@ -218,16 +298,71 @@ const DossierPage: React.FC = () => {
               </Button>
             </Tooltip>
           </div>
+
+          {/* Modal for selecting expertise domain */}
+          <Modal open={openModal} onClose={() => setOpenModal(false)}>
+            <Box sx={styles.modalBox}>
+              <h2>Select Your Expertise</h2>
+
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Select Expertise</InputLabel>
+                    <Select
+                      value={selectedEdCode}
+                      onChange={(e) => setSelectedEdCode(e.target.value)}
+                      label="Select Expertise"
+                    >
+                      {domains.map((domain, index) => (
+                        <MenuItem key={index} value={domain.ed_code}>
+                          {domain.ed_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <Button
+                    onClick={handleSubmit}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      borderRadius: 10,
+                      fontSize: '1rem',
+                      padding: '8px 16px',
+                      width: '100%',
+                      marginTop: '16px',
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </>
+              )}
+            </Box>
+          </Modal>
+
+
         </div>
 
-        <div style={styles.cardContainer}>
-          <DossierCard
-            key="sth"
-            title="Advisor Application"
-            status="approved"
-            onConfigure={() => handleConfigure2()}
-          />
-        </div>
+          {/* Card Container */}
+          <div style={styles.cardContainer}>
+            <DossierCountAdv setDossierData={setDossierData} />
+            {dossierData ? (
+              <div style={{ display: 'flex', overflowX: 'auto', gap: '20px' }}>
+                {dossierData.dossiers.map((dossier) => (
+                  <DossierCard
+                    key={dossier.vd_code}
+                    title={`Application`}
+                    status={dossier.vd_status}
+                    onConfigure={() => handleConfigure2(dossier.vd_code, dossier.ed_code)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div>Loading Dossier Data...</div>
+            )}
+          </div>
       </div>
 
 
@@ -465,6 +600,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "flex-end", // Align button to the right
     alignItems: "center", // Align the button vertically with the text
     marginLeft: "auto", // Push the button to the right
+  },
+
+  modalBox: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '20px',
+    width: '300px',
   },
 
   button: {

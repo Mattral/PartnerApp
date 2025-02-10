@@ -22,10 +22,20 @@ export const useDocumentOptions = () => {
         'X-Requested-With': 'XMLHttpRequest', // Required header
       };
 
+      // Get the URL search parameters (query string)
+      const urlParams = new URLSearchParams(window.location.search);
+      const ed_code = urlParams.get('ed_code'); // Retrieve the ed_code from the query string
+
+      if (!ed_code) {
+        setError('ed_code is missing from the query string');
+        setLoading(false);
+        return;
+      }
+
       const queryParams = new URLSearchParams({ searchKey });
 
       try {
-        const response = await fetch(`${url}?${queryParams.toString()}`, { headers });
+        const response = await fetch(`${url}/${ed_code}`, { headers });
 
         if (response.ok) {
           const data = await response.json();

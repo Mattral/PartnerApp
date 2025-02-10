@@ -26,11 +26,21 @@ const ClientLevelVOIDocumentTable: React.FC = () => {
     const [minNbPoint, setMinNbPoint] = useState<number>(0);
     const [minNbPrimaryDoc, setMinNbPrimaryDoc] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchDocuments = async () => {
+      // Get the URL search parameters (query string)
+      const urlParams = new URLSearchParams(window.location.search);
+      const ed_code = urlParams.get('ed_code'); // Retrieve the ed_code from the query string
+
+      if (!ed_code) {
+        setError('ed_code is missing from the query string');
+        setLoading(false);
+        return;
+      }            
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/partner/advisor-identification-documents`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/partner/advisor-identification-documents/${ed_code}`, {
                     method: 'GET',
                     headers: {
                         'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
@@ -38,6 +48,8 @@ const ClientLevelVOIDocumentTable: React.FC = () => {
                         'X-Requested-With': 'XMLHttpRequest',
                     },
                 });
+
+
 
                 if (response.ok) {
                     const data: ApiResponse = await response.json();
