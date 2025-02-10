@@ -79,7 +79,7 @@ const UploadedFiles = () => {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
 
       const response = await axios.get<ApiResponse>(
-        `${baseUrl}/api/back-office/partner/manual-client-voi/files/${vd_code}`,
+        `${baseUrl}/api/back-office/partner/manual-advisor-voi/files/${vd_code}`,
         {
           headers: {
             Authorization: authorizationToken, // Use the token from state
@@ -128,7 +128,7 @@ const UploadedFiles = () => {
 
                 // Send the delete request to the API
                 const response = await axios.post(
-                    `${baseUrl}/api/back-office/partner/manual-client-voi/files/delete`,
+                    `${baseUrl}/api/back-office/partner/manual-advisor-voi/files/delete`,
                     formData,
                     {
                         headers: {

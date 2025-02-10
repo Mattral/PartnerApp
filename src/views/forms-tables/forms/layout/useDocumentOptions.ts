@@ -13,7 +13,7 @@ export const useDocumentOptions = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
-      const url = `${baseUrl}/api/partner/client-identification-documents`;
+      const url = `${baseUrl}/api/partner/advisor-identification-documents`;
       const searchKey = ""; // Replace with your search key, if needed
 
       const headers = {
