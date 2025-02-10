@@ -257,6 +257,7 @@ const AuthRegister = () => {
           data.append('redirectUrl', 'https://temporary-umber.vercel.app/login');
 
           const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // Provide a fallback if needed
+          console.log('NEXT_PUBLIC_API_BASE_URL is:', process.env.NEXT_PUBLIC_API_BASE_URL);
 
 
           const config = {

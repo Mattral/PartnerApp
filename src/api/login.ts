@@ -6,6 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email, password } = req.body;
 
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Use .env for your base URL
+    console.log('NEXT_PUBLIC_API_BASE_URL is:', process.env.NEXT_PUBLIC_API_BASE_URL);
 
     try {
       // Prepare form data for the API request
