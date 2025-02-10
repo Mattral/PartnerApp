@@ -43,7 +43,7 @@ const PreviewPopup: React.FC<PreviewPopupProps> = ({ open, onClose, pers_code, u
     const frontendKey = 'XXX'; // Replace with your frontend key
 
     const headers = {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
       'COMPANY-CODE': companyCode,
       'FRONTEND-KEY': frontendKey,
       'X-Requested-With': 'XMLHttpRequest',

@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // Material UI imports
@@ -17,6 +17,23 @@ const TabPersonal = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [authData, setAuthData] = useState<any | null>(null);
+
+    useEffect(() => {
+        const storedAuthData = localStorage.getItem('authData');
+        if (storedAuthData) {
+            try {
+                const parsedData = JSON.parse(storedAuthData);
+                setAuthData(parsedData);
+            } catch (error) {
+                console.error("Failed to parse auth data:", error);
+            }
+        } else {
+            console.error('No authentication data found in localStorage');
+        }
+    }, []);
+
+    const token = authData ? authData?.data?.primaryData?.authorization : '';
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,6 +43,9 @@ const TabPersonal = () => {
             setError("Please fill all the fields");
             return;
         }
+
+
+
 
         const data = {
             ui_code: 'ui-manually-added-one-testingpurpose',  // Static UI code
@@ -42,7 +62,7 @@ const TabPersonal = () => {
         setError(null);
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
 
             // POST request to create the profile
             const response = await axios.post(
@@ -50,7 +70,7 @@ const TabPersonal = () => {
                 data,
                 {
                     headers: {
-                        'Authorization': 'Bearer 600|rj7SWm6qgoMXDmQDtBxzElBKLexbSOT0mKvaRXiofd26c637', // Replace with actual token
+                        'Authorization': `${token}`, // Replace with actual token
                         'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",  // Replace with actual company code
                         'FRONTEND-KEY': 'XXX',  // Replace with actual key
                         'X-Requested-With': 'XMLHttpRequest'
@@ -111,14 +131,14 @@ const TabPersonal = () => {
                 pp_paidMeetingBufferTime: paidMeetingBufferTime,
                 pp_probonoMeetingBufferTime: probonoMeetingBufferTime
             };
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
 
             const response = await axios.post(
                 `${baseUrl}/api/back-office/partner/advisor-profile/update`,
                 data,
                 {
                     headers: {
-                        'Authorization': 'Bearer 600|rj7SWm6qgoMXDmQDtBxzElBKLexbSOT0mKvaRXiofd26c637', // Replace with actual token
+                        'Authorization': `${token}`, // Replace with actual token
                         'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",  // Replace with actual company code
                         'FRONTEND-KEY': 'XXX',  // Replace with actual key
                         'X-Requested-With': 'XMLHttpRequest'
