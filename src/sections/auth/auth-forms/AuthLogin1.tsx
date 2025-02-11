@@ -1,3 +1,5 @@
+// original to recover from client api call
+
 'use client';
 import { useState, SyntheticEvent } from 'react';
 import Link from 'next/link';
@@ -14,14 +16,19 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useAuth } from './AuthContext';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import axios from 'axios';
+import FormData from 'form-data';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { Eye, EyeSlash } from 'iconsax-react';
 import useScriptRef from 'hooks/useScriptRef';
+import { fetcher } from 'utils/axios';
+import { preload } from 'swr';
+
 import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, Box, IconButton } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import { styled, keyframes } from '@mui/system';
 
-// Popup and animations
+// Keyframes for shimmer and gentle glow animations
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -33,6 +40,7 @@ const pulse = keyframes`
   100% { transform: scale(1); }
 `;
 
+// Majestic dialog styling with ethereal glow
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-root': {
     background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7))',
@@ -46,7 +54,8 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const TitleBox = styled(DialogTitle)(({
+// Title box with shimmering gradient and gold accent
+const TitleBox = styled(DialogTitle)({
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
@@ -55,8 +64,9 @@ const TitleBox = styled(DialogTitle)(({
   color: 'transparent',
   animation: `${shimmer} 3s linear infinite`,
   backgroundSize: '400% 100%',
-}));
+});
 
+// Golden ring for success indication
 const GoldenRing = styled('div')({
   width: '50px',
   height: '50px',
@@ -66,6 +76,7 @@ const GoldenRing = styled('div')({
   animation: `${pulse} 2s ease-in-out infinite`,
 });
 
+// Radiant warning icon for error
 const RadiantWarning = styled('div')({
   width: '50px',
   height: '50px',
@@ -75,6 +86,7 @@ const RadiantWarning = styled('div')({
   animation: `${pulse} 2s ease-in-out infinite`,
 });
 
+// Token box styling for copy functionality
 const TokenBox = styled(Box)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.6)',
   padding: '12px 18px',
@@ -93,6 +105,7 @@ const TokenBox = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Majestic animated button styling
 const AnimatedButton = styled(Button)({
   transition: 'transform 0.4s ease, background 0.3s',
   backgroundColor: '#ffd700',
@@ -109,7 +122,6 @@ const AnimatedButton = styled(Button)({
   },
 });
 
-// Popup component
 const Popup = ({ open, onClose, message, authorization, success = true }) => {
   const [copied, setCopied] = useState(false);
 
@@ -120,13 +132,18 @@ const Popup = ({ open, onClose, message, authorization, success = true }) => {
   };
 
   const handleClose = () => {
+    // Execute further actions and close the dialog
     onClose();
   };
 
   return (
     <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <TitleBox>
-        {success ? <GoldenRing /> : <RadiantWarning />}
+        {success ? (
+          <GoldenRing />
+        ) : (
+          <RadiantWarning />
+        )}
         <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
           {success ? 'Welcome!' : 'Action Required'}
         </Typography>
@@ -164,27 +181,34 @@ const Popup = ({ open, onClose, message, authorization, success = true }) => {
   );
 };
 
+
+
+
+
+
+
 const AuthLogin = ({ providers, csrfToken }: any) => {
   const scriptedRef = useScriptRef();
   const [checked, setChecked] = useState(false);
   const { data: session } = useSession();
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuthData } = useAuth(); 
+  const { setAuthData } = useAuth(); // Get setAuthData from context
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [authorization, setAuthorization] = useState('');
-  const [keepSignedIn, setKeepSignedIn] = useState(false); 
+  const [keepSignedIn, setKeepSignedIn] = useState(false);  // New state for "Keep me signed in"
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
   
+
   const handleMouseDownPassword = (event: SyntheticEvent) => {
     event.preventDefault();
   };
 
   const handleCheckboxChange = (event) => {
-    setKeepSignedIn(event.target.checked);
+    setKeepSignedIn(event.target.checked);  // Update "Keep me signed in" state
   };
 
   return (
@@ -198,54 +222,111 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
         email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
         password: Yup.string().max(255).required('Password is required'),
       })}
+
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          const response = await fetch('/api/login', {
-            method: 'POST',
+          signIn('login', { redirect: false, email: values.email, password: values.password });
+          const data = new FormData();
+          data.append('email', values.email);
+          data.append('password', values.password);
+          
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // Provide a fallback if needed
+          console.log('NEXT_PUBLIC_API_BASE_URL is:', process.env.NEXT_PUBLIC_API_BASE_URL);
+
+          //data.append('redirectUrl', '');
+      
+          const config = {
+            method: 'post',
+            url: `${baseUrl}/api/auth/partner/login`,
             headers: {
-              'Content-Type': 'application/json',
+              'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
+              'FRONTEND-KEY': 'XXX', 
+              //'User-Agent': 'Apidog/1.0.0 (https://apidog.com)',
             },
-            body: JSON.stringify({
-              email: values.email,
-              password: values.password,
-            }),
-          });
-
-          const data = await response.json();
-
-          if (response.status === 200 && data.status === 'treatmentSuccess') {
-            const authToken = data.data.primaryData.authorization;
+            data: data,
+          };
+      
+          const response = await axios(config);
+      
+          if (response.status === 200 && response.data.status === 'treatmentSuccess') {
+            const authToken = response.data.data.primaryData.authorization;
             setStatus({ success: true });
             setSubmitting(false);
-            setAuthData(data);
-            localStorage.setItem('authData', JSON.stringify(data));
-            sessionStorage.setItem('authData', JSON.stringify(data));
-
+            preload('api/menu/dashboard', fetcher);
+            setAuthData(response.data);
+            localStorage.setItem('authData', JSON.stringify(response.data));
+            sessionStorage.setItem('authData', JSON.stringify(response.data));
+      
             setPopupMessage('Login succeeded!');
             setAuthorization(authToken);
             setShowPopup(true);
-
+      
+            preload('api/menu/dashboard', fetcher);
             await signIn('credentials', { redirect: false, email: values.email, password: values.password });
-            window.location.href = '/dashboard/default';
-          } else {
-            setStatus({ success: false });
-            setErrors({ submit: data.message || 'Login failed' });
+            setStatus({ success: true });
             setSubmitting(false);
+            window.location.href = '/dashboard/default';
+
+            const signInResult = await signIn('credentials', {
+              redirect: false, // Prevent automatic redirect
+              email: values.email,
+              password: values.password,
+              //callbackUrl: '/dashboard/default'
+            });
+      
+            if (signInResult?.error) {
+              if (scriptedRef.current) {
+                setStatus({ success: false });
+                setErrors({ submit: signInResult.error || 'Login failed' });
+                setSubmitting(false);
+              }
+            } else 
+              if (scriptedRef.current) {
+                setStatus({ success: true });
+                setSubmitting(false);
+                preload('api/menu/dashboard', fetcher); // Preload dashboard menu on login success
+                window.location.href = '/dashboard/default'; // Manually redirect to the desired page
+              }
+            
+          } else {
+            if (scriptedRef.current) {
+              setStatus({ success: false });
+              setErrors({ submit: response.data.message || 'Login failed' });
+              setSubmitting(false);
+              throw new Error(response.data.message || 'Login failed');
+            }
+            throw new Error(response.data.message || 'Login failed');
+
           }
         } catch (error) {
-          setStatus({ success: false });
-          setErrors({ submit: 'An error occurred during login' });
-          setSubmitting(false);
-          //@ts-ignore
-          setPopupMessage(error.message || 'An unknown error occurred');
-          setShowPopup(true);
-        }
-      }}
+            setStatus({ success: false });
+            setAuthorization(''); // Clear authorization on error
+        
+            if (axios.isAxiosError(error) && error.response) {
+              const apiErrors = error.response.data;
+        
+              if (apiErrors.status === 'treatmentFailure') {
+                // Set the specific error message from the API response
+                setPopupMessage(apiErrors.data.primaryData.msg || 'An error occurred');
+              } else {
+                setPopupMessage('An error occurred during login');
+              }
+            } else if (error instanceof Error) {
+              setPopupMessage(error.message);
+            } else {
+              setPopupMessage('An unknown error occurred');
+            }
+        
+            setShowPopup(true);
+            setSubmitting(false);
+          }
+        }}
+      
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Popup open={showPopup} onClose={() => setShowPopup(false)} message={popupMessage} authorization={authorization} />
+          <Popup open={showPopup} onClose={() => setShowPopup(false)} message={popupMessage} authorization={authorization} />
             <Grid item xs={12}>
               <Stack spacing={1}>
                 <InputLabel htmlFor="email-login">Email Address</InputLabel>
@@ -328,16 +409,16 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
             )}
             <Grid item xs={12}>
               <AnimateButton>
-
                 <Button
                   disableElevation
+                  disabled={isSubmitting}
                   fullWidth
                   size="large"
                   type="submit"
                   variant="contained"
                   color="primary"
                 >
-                  Log in
+                  Login
                 </Button>
               </AnimateButton>
             </Grid>
@@ -349,3 +430,4 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
 };
 
 export default AuthLogin;
+
