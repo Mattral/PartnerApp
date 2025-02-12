@@ -7,6 +7,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 //import ListTime from 'views/apps/ListTime';
+import Divider from '@mui/material/Divider';
 
 import axios from 'axios';
 
@@ -34,6 +35,8 @@ const WorkScheduleForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [authData, setAuthData] = useState<any | null>(null);
+  const [otName, setOtName] = useState('');
+
 
   // State to trigger re-render of ListTime
   const [refreshList, setRefreshList] = useState<boolean>(false);
@@ -76,8 +79,11 @@ const WorkScheduleForm = () => {
       return;
     }
 
+    const savedUiCode = sessionStorage.getItem('uiCode');
+
     const payload = {
-      ui_code: 'ui-manually-added-one-testingpurpose',
+      ot_name: otName,
+      ui_code: savedUiCode,
       ot_dayOfWeek: selectedDay, // Single day selected
       ot_startTime: formattedStartTime, // Format start time to H:i
       ot_endTime: formattedEndTime, // Format end time to H:i
@@ -93,10 +99,10 @@ const WorkScheduleForm = () => {
     };
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
 
       const response = await axios.post(
-        `${baseUrl}/api/back-office/partner/office-times/create`,
+        `${baseUrl}/api/back-office/partner/advisor-office-times/create/${savedUiCode}`,
         payload,
         { headers }
       );
@@ -144,6 +150,24 @@ const WorkScheduleForm = () => {
         <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2, fontSize: { xs: '1.5rem', sm: '2rem' }, textAlign: 'center' }}>
           Set Your Work Schedule
         </Typography>
+
+        <Grid item xs={12} sm={6}>
+          <Typography sx={{ marginBottom: 2, fontSize: { xs: '1rem', sm: '1.5rem' }, textAlign: 'center' }}>
+            Please name your schedule to remember better?
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Please name your schedule to remember better? *"
+            fullWidth
+            value={otName}
+            onChange={(e) => setOtName(e.target.value)}
+            required
+          />
+        </Grid>
+
+        <Divider />
 
         <Grid container spacing={3}>
           {/* Select Working Day */}

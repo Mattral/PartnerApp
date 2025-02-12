@@ -6,12 +6,14 @@ type Dossier = {
   vd_code: string;
   vd_status: string;
   ed_code: string;
+  ui_code:string;
+  ed_name:string;
 };
 
 type DossierData = {
   count: number;
   dossiers: Dossier[];
-  dossierList: Array<{ vd_code: string, vd_status: string, ed_code:string}>; // Add the new array structure
+  dossierList: Array<{ vd_code: string, vd_status: string, ed_code:string,ui_code:string ,ed_name:string}>; // Add the new array structure
 };
 
 const DossierCountAdv = ({ setDossierData }: { setDossierData: (data: DossierData) => void }) => {
@@ -66,11 +68,15 @@ const DossierCountAdv = ({ setDossierData }: { setDossierData: (data: DossierDat
                 vd_code: dossier.vd_code,
                 ed_code: dossier.ed_code,
                 vd_status: dossier.vd_status,
+                ui_code: dossier.ui_code,
+                ed_name: dossier.ed_name,
               })),
               dossierList: retrievedDossiers.map((dossier: any) => ({
                 vd_code: dossier.vd_code,
                 ed_code: dossier.ed_code,
                 vd_status: dossier.vd_status,
+                ui_code: dossier.ui_code,
+                ed_name: dossier.ed_name,
               })),
             };
             setDossierData(dossierData);

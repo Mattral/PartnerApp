@@ -51,15 +51,15 @@ const MenuFromAPI: NavItemType = {
         },
         {
           id: 'rt-empty',
-          title: <FormattedMessage id="empty" />,
+          title: <FormattedMessage id="Configure Advisor Profile" />,
           type: 'item',
-          url: '/tables/react-table/empty'
+          url: '/apps/profiles/Advisor'
         },
         {
           id: 'rt-empty',
-          title: <FormattedMessage id="list the docs" />,
+          title: <FormattedMessage id="Advisor Working Time" />,
           type: 'item',
-          url: '/forms/VOI/list-client-doc'
+          url: '/apps/profiles/AdvisorTime'
         }
       ]
     }

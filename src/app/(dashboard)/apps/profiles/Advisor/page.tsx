@@ -1,4 +1,22 @@
+
 "use client";
+
+import React, { useState } from 'react';
+import TabPersonal from 'views/apps/AdvisorProfile';  // Adjust the path to where your TabPersonal component is located
+
+const ProfilePage = () => {
+
+  return (
+    <div>
+      {/* Only show ListTime component */}
+      <TabPersonal />
+    </div>
+  );
+};
+
+export default ProfilePage;
+
+/*"use client";
 
 import React, { useState } from 'react';
 import TabPersonal from 'views/apps/AdvisorProfile';  // Adjust the path to where your TabPersonal component is located
@@ -15,7 +33,6 @@ const ProfilePage = () => {
 
   return (
     <div>
-      {/* Tab Navigation */}
       <div className="flex flex-wrap sm:flex-nowrap space-x-4 sm:space-x-6 border-b-2 border-gray-300 mb-6">
         <button
           onClick={() => handleTabClick("personal")}
@@ -31,7 +48,6 @@ const ProfilePage = () => {
         </button>
       </div>
 
-      {/* Tab Content */}
       {activeTab === "personal" && <TabPersonal />}
       {activeTab === "schedule" && <ListTime refresh={refreshList}/>}
     </div>
@@ -39,3 +55,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+*/

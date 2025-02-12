@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, Grid, TextField, Checkbox, FormControlLabel, IconButton } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, Grid, TextField, Checkbox, FormControlLabel, IconButton, Divider } from '@mui/material';
 import { CheckCircle, ErrorOutline } from '@mui/icons-material';
 import axios from 'axios';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -8,9 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 // API URL
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
-
-const API_URL = `${baseUrl}/api/back-office/partner/office-times/update`;
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
 
 // Function to convert date to the required API time format (H:i)
 const convertToApiTimeFormat = (inputDate: Date | null): string => {
@@ -41,6 +39,9 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [authData, setAuthData] = useState<any | null>(null);
+  const [otName, setOtName] = useState('');
+
+  const savedUiCode = sessionStorage.getItem('uiCode');
 
   // Fetch the authentication token from localStorage on mount
   useEffect(() => {
@@ -63,25 +64,25 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
       setErrorMessage("Please fill in all fields correctly.");
       return;
     }
-  
+
     const formattedStartTime = convertToApiTimeFormat(otStartTime);
     const formattedEndTime = convertToApiTimeFormat(otEndTime);
-  
+
     const token = authData ? authData?.data?.primaryData?.authorization : '';
     if (!token) {
       setErrorMessage("Authorization token not found.");
       return;
     }
-  
+
     const payload = {
-      ot_code: otCode,
+      ot_name: otName,
       ot_dayOfWeek: otDayOfWeek,
       ot_startTime: formattedStartTime,
       ot_endTime: formattedEndTime,
       ot_allowProbonoMeeting: allowProbono ? '1' : '0',
       ot_allowPaidMeeting: allowPaid ? '1' : '0',
     };
-  
+
     const headers = {
       'Authorization': `Bearer ${token}`,
       //ToDo
@@ -89,10 +90,13 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
       'FRONTEND-KEY': 'XXX',
       'X-Requested-With': 'XMLHttpRequest',
     };
-  
+
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
+      const savedUiCode = sessionStorage.getItem('uiCode');
+      const API_URL = `${baseUrl}/api/back-office/partner/advisor-office-times/update/${savedUiCode}/${otCode}`;
       const response = await axios.post(API_URL, payload, { headers });
-  
+
       // Handle specific API error response for validation errors
       if (response.data.status === "validationError") {
         const errorMsg = response.data.data?.primaryData?.errors?.ot_code?.[0] || response.data.data?.primaryData?.msg || "An error occurred.";
@@ -121,7 +125,7 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
       console.error(error); // Log the error for debugging
     }
   };
-  
+
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -142,41 +146,63 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
           </Typography>
         )}
 
+        <Divider sx={{ marginBottom: 2 }} />
+
+
+        <Grid item xs={12} sm={6}>
+          <Typography sx={{ marginBottom: 2, fontSize: { xs: '1rem', sm: '1.5rem' }, textAlign: 'center' }}>
+            Please name your schedule to remember better?
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Please name your schedule to remember better? *"
+            fullWidth
+            value={otName}
+            onChange={(e) => setOtName(e.target.value)}
+            required
+          />
+        </Grid>
+
+        <Divider sx={{ marginBottom: 2 }} />
+
+
         <Grid container spacing={3}>
           {/* Day of Week */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label={
-                <Typography
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    textAlign: 'center', // Centers the text inside the label
-                  }}
-                >
-                  .                        ,Day of Week
-                </Typography>
-              }
-              
-              value={otDayOfWeek || ''}
-              onChange={(e) => setOtDayOfWeek(e.target.value)}
-              select
-              SelectProps={{
-                native: true,
-              }}
-            >
-              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
-                <option key={day} value={day}>
-                  {day.charAt(0).toUpperCase() + day.slice(1)}
-                </option>
-              ))}
-            </TextField>
+          <Grid item xs={12} container spacing={2} alignItems="center">
+            {/* Left side for the label */}
+            <Grid item xs={6} container justifyContent="center" alignItems="center">
+              <Typography variant="body1" fontWeight="bold">
+                Select Working Day
+              </Typography>
+            </Grid>
+
+
+            {/* Right side for the dropdown */}
+            <Grid item xs={6} container justifyContent="center" alignItems="center">
+              <TextField
+                sx={{ maxWidth: '350px' }}  // Set your desired max width here
+                value={otDayOfWeek || ''}
+                onChange={(e) => setOtDayOfWeek(e.target.value)}
+                select
+                SelectProps={{
+                  native: true,
+                }}
+                label={''} // Empty label since we moved it to the left side
+              >
+                {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                  <option key={day} value={day}>
+                    {day.charAt(0).toUpperCase() + day.slice(1)}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
           </Grid>
 
+
           {/* Start Time */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <TimePicker
                 label="Start Time"
@@ -189,7 +215,7 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
           </Grid>
 
           {/* End Time */}
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <TimePicker
                 label="End Time"
@@ -217,7 +243,7 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
             />
           </Grid>
         </Grid>
-        
+
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubmit} color="primary" variant="contained">

@@ -1,13 +1,16 @@
 // pages/ListTime.tsx
 import React, { useState, useEffect } from 'react';
-import { TextField, Grid, Card, CardContent, Typography, Box, Button, Chip, InputAdornment } from '@mui/material';
+import { TextField, Grid, Card, CardContent, Typography, Box, Button, Chip, InputAdornment, Divider } from '@mui/material';
 import { AccessTime, EventAvailable, CheckCircleOutline, Search, Add, Close } from '@mui/icons-material'; // Imported icons
 import axios from 'axios';
 import UpdateTime from './UpdateTime'; // Import the UpdateTime component
 import WorkScheduleForm from './AdvisorProfileTime';
+import DossierCountAdv from './DossierCountAdv';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
 interface OfficeTime {
     ot_code: string;
+    ot_name:string;
     ot_dayOfWeek: string;
     ot_startTime: string;
     ot_endTime: string;
@@ -30,6 +33,38 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
     const [selectedOtCode, setSelectedOtCode] = useState<string>(''); // Stores selected ot_code
     const [showWorkScheduleForm, setShowWorkScheduleForm] = useState<boolean>(false); // Controls visibility of WorkScheduleForm
 
+    // ui code start
+
+    const [uiCode, setUiCode] = useState<string | null>(''); // Initially set to null
+    const [dossierData, setDossierData] = useState<any>(null); // Holds the dossiers and dossierList data
+    const [openPopup, setOpenPopup] = useState<boolean>(false); // Controls popup visibility
+
+    // This effect will trigger the popup when uiCode is null
+    useEffect(() => {
+        if (uiCode === null || uiCode === '') {
+            setOpenPopup(true); // Show the popup if no ui_code is set
+        }
+    }, [uiCode]);
+
+    const handleClosePopup = () => {
+        setOpenPopup(false); // Close the popup
+    };
+
+    const handleSelectProfession = (ed_name: string, ui_code: string) => {
+        setUiCode(ui_code); // Set the ui_code to the selected profession's ui_code
+        sessionStorage.setItem('uiCode', ui_code); // Store the selected ui_code in sessionStorage
+        setOpenPopup(false); // Close the popup
+    };
+
+    const handleButtonClick = () => {
+        setOpenPopup(true); // This triggers the popup to open
+      };
+
+    // ui code end
+
+
+
+
     // Fetch office times from the API
     const fetchOfficeTimes = async (searchKey: string) => {
         setLoading(true);
@@ -48,10 +83,10 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
         }
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL  ;  // `${baseUrl}/`
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;  // `${baseUrl}/`
 
             const response = await axios.get(
-                `${baseUrl}/api/back-office/partner/office-times/ui-manually-added-one-testingpurpose`,
+                `${baseUrl}/api/back-office/partner/advisor-office-times/${uiCode}`,
                 {
                     params: {
                         searchKey,
@@ -74,9 +109,12 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
         }
     };
 
+    // UseEffect for fetching office times only if uiCode is set (not null or empty)
     useEffect(() => {
-        fetchOfficeTimes(searchKey); // Fetch data on component mount
-    }, [refresh, searchKey]);
+        if (uiCode) { // Only trigger the fetch when uiCode is not null or empty
+            fetchOfficeTimes(searchKey); // Fetch office times data
+        }
+    }, [refresh, searchKey, uiCode]); // Re-run when refresh, searchKey, or uiCode changes
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchKey(event.target.value);
@@ -101,6 +139,46 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
             <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2, fontSize: { xs: '1.5rem', sm: '2rem' }, textAlign: 'center' }}>
                 Advisor Office Times
             </Typography>
+
+
+            {/* Import DossierCountAdv to fetch dossier data */}
+            <DossierCountAdv setDossierData={setDossierData} />
+
+            {/* Popup for selecting profession */}
+            <Dialog open={openPopup} onClose={handleClosePopup}>
+                <DialogTitle>Please choose your Profession</DialogTitle>
+                <DialogContent>
+                    {dossierData && dossierData.dossierList && (
+                        <FormControl fullWidth>
+                            <InputLabel>Profession</InputLabel>
+                            <Select
+                                value=""
+                                onChange={(e) => {
+                                    const selectedProfession = e.target.value as string;
+                                    const selectedDossier = dossierData.dossierList.find((dossier: any) => dossier.ed_name === selectedProfession);
+                                    if (selectedDossier) {
+                                        handleSelectProfession(selectedDossier.ed_name, selectedDossier.ui_code);
+                                    }
+                                }}
+                            >
+                                {dossierData.dossierList.map((dossier: any) => (
+                                    <MenuItem key={dossier.vd_code} value={dossier.ed_name}>
+                                        {dossier.ed_name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePopup} color="primary">Cancel</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* TODO: remove*/}
+            {uiCode && <div>Selected UI Code: {uiCode} <br /> Test purpose will remove later</div>}
+
+
 
 
             {/* Centered Search Bar with Icon */}
@@ -131,7 +209,7 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                     startIcon={showWorkScheduleForm ? <Close /> : <Add />}  // Toggle icon between Add and Close
                     onClick={handleAddTimeClick}
                 >
-                    {showWorkScheduleForm ? 'Close' : 'Add Time'}  
+                    {showWorkScheduleForm ? 'Close' : 'Add Time'}
                 </Button>
             </Box>
 
@@ -158,6 +236,9 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                                     },
                                 }}>
                                     <CardContent>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2D2D2D' }}>
+                                            {officeTime.ot_name}
+                                        </Typography>
                                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2D2D2D' }}>
                                             {officeTime.ot_dayOfWeek.charAt(0).toUpperCase() + officeTime.ot_dayOfWeek.slice(1)}
                                         </Typography>
@@ -225,7 +306,17 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                             </Grid>
                         ))
                     ) : (
-                        <Typography>No office times found for the selected day.</Typography>
+                        <Grid container justifyContent="center" alignItems="center" style={{ height: '20vh' }}>
+                        <Grid item>
+                          <Divider />
+                          <Typography variant="h5">No office times found for the selected Expertise.</Typography>
+                        </Grid>
+                        <Box position="absolute" bottom={20} left="50%" >
+                            <Button variant="contained" color="primary" onClick={handleButtonClick}>
+                            Select Domain
+                            </Button>
+                        </Box>
+                      </Grid>
                     )}
                 </Grid>
             )}

@@ -25,6 +25,8 @@ type AuthData = {
 
 const DossierPage: React.FC = () => {
   const [dossierData, setDossierData] = useState<{ count: number; dossiers: Dossier[] } | null>(null);
+  const [dossierDataA, setDossierDataA] = useState<{ count: number; dossiers: Dossier[] } | null>(null);
+
   const [bottomCards, setBottomCards] = useState<number[]>([]);
   const [authData, setAuthData] = useState<AuthData | null>(null); // Added typing for authData
   const [openPopup, setOpenPopup] = useState(false); // Track if popup is open
@@ -347,10 +349,10 @@ const DossierPage: React.FC = () => {
 
           {/* Card Container */}
           <div style={styles.cardContainer}>
-            <DossierCountAdv setDossierData={setDossierData} />
-            {dossierData ? (
+            <DossierCountAdv setDossierData={setDossierDataA} />
+            {dossierDataA ? (
               <div style={{ display: 'flex', overflowX: 'auto', gap: '20px' }}>
-                {dossierData.dossiers.map((dossier) => (
+                {dossierDataA.dossiers.map((dossier) => (
                   <DossierCard
                     key={dossier.vd_code}
                     title={`Application`}
