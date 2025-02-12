@@ -155,8 +155,9 @@ const UpdateTime: React.FC<UpdateTimeProps> = ({ open, otCode, onClose }) => {
           </Typography>
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
           <TextField
+            sx={{ maxWidth: '550px' }}
             label="Please name your schedule to remember better? *"
             fullWidth
             value={otName}
