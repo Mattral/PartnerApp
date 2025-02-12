@@ -7,7 +7,7 @@ let users = [
     id: 1,
     name: 'Mattral',
     email: 'minmattral@gmail.com',
-    password: 'aAertyuiop@1' 
+    password: 'Insider007@' 
   },
   {
     id: 2,
@@ -20,6 +20,12 @@ let users = [
     name: 'Min Htet Myet',
     email: 'minhtetmyet2630@gmail.com',
     password: 'aAertyuiop@1'
+  },
+  {
+    id: 3,
+    name: 'Min Htet Myet',
+    email: 'insiderzzz0005@gmail.com',
+    password: 'Insider007@'
   }
 ];
 
