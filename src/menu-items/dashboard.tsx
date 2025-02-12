@@ -24,32 +24,18 @@ const MenuFromAPI: NavItemType = {
       id: 'dashboard',
       title: <FormattedMessage id="dashboard" />,
       type: 'item',
-      url: '/dashboard/default',
+      url: '/dashboard/analytics',
       icon: icons.dashboard,
     },
 
     {
-      id: 'profile',
-      title: <FormattedMessage id="profile" />,
-      type: 'collapse',
+      id: 'Profile',
+      title: <FormattedMessage id="Complete Profile" />,
+      type: 'item',
+      url: '/apps/profiles/account/personal',
       icon: icons.profile,
-      children: [
-        {
-          id: 'user-profile',
-          title: <FormattedMessage id="user-profile" />,
-          type: 'item',
-          url: '/apps/profiles/user/personal',
-          breadcrumbs: false
-        },
-        {
-          id: 'account-profile',
-          title: <FormattedMessage id="account-profile" />,
-          type: 'item',
-          url: '/apps/profiles/account/basic',
-          breadcrumbs: false
-        }
-      ]
     },
+
 
     {
       id: 'customer',

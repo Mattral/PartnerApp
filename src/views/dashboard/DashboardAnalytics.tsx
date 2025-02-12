@@ -1,73 +1,86 @@
-"use client";
+// MATERIAL - UI
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 
-//import Hero from 'sections/landing/Header';
-//import Apps from 'sections/landing/Apps';
-// import ContactUs from 'sections/landing/ContactUs';<ContactUs />
-import SimpleLayout from 'layout/SimpleLayout';
-import CreateWS from 'sections/landing/CreateWebServer';
-import Pricing1Page from 'views/price/Pricing1';
-//import CreateNewApp from 'sections/landing/CreateNewApp';
-//import DashboardDomain from 'sections/landing/AppCards';
+// PROJECT IMPORTS
 
-import DashboardDomain from 'sections/landing/AppCards';
-import DashboardDomain2 from 'sections/landing/demo';
-import DashboardDomain3 from 'sections/landing/Demo2';
-const Landing = () => {
+import NewOrders from 'sections/widget/chart/NewOrders';
+import NewUsers from 'sections/widget/chart/NewUsers';
+import Visitors from 'sections/widget/chart/Visitors';
+
+import DropboxStorage from 'sections/widget/statistics/DropboxStorage';
+import SwitchBalanace from 'sections/widget/statistics/SwitchBalanace';
+
+import ProjectAnalytics from 'sections/widget/chart/ProjectAnalytics';
+
+import EcommerceIncome from 'sections/widget/chart/EcommerceIncome';
+import LanguagesSupport from 'sections/widget/chart/LanguagesSupport';
+
+import ProductOverview from 'sections/widget/chart/ProductOverview';
+
+import PaymentHistory from 'sections/widget/data/PaymentHistory';
+import EcommerceRadial from 'sections/widget/chart/EcommerceRadial';
+
+// ==============================|| DASHBOARD - ANALYTICS ||============================== //
+
+const DashboardAnalytics = () => {
   return (
-    <SimpleLayout>
-      <div style={{ marginBottom: '20px' }}>
-        <DashboardDomain />
-        <DashboardDomain2/>
-        <DashboardDomain3/>
-      </div>
-      <div style={{ marginBottom: '20px' }}>
-        <CreateWS />
-      </div>
-      <div style={{ marginBottom: '20px' }}>
-        <Pricing1Page />
-        
-      </div>
-    </SimpleLayout>
+    <Grid container rowSpacing={4.5} columnSpacing={3}>
+      {/* row 1 */}
+      <Grid item xs={12} md={4} lg={3}>
+        <NewOrders />
+      </Grid>
+      <Grid item xs={12} md={4} lg={3}>
+        <NewUsers />
+      </Grid>
+      <Grid item xs={12} md={4} lg={3}>
+        <Visitors />
+      </Grid>
+      <Grid item xs={12} md={4} lg={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <DropboxStorage />
+          </Grid>
+          <Grid item xs={12}>
+            <SwitchBalanace />
+          </Grid>
+        </Grid>
+      </Grid>
+
+      {/* row 2 */}
+      <Grid item xs={12}>
+        <ProjectAnalytics />
+      </Grid>
+
+      {/* row 3 */}
+      <Grid item xs={12} lg={3}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6} lg={12}>
+            <EcommerceIncome />
+          </Grid>
+          <Grid item xs={12} md={6} lg={12}>
+            <LanguagesSupport />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <ProductOverview />
+      </Grid>
+      <Grid item xs={12} lg={3}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6} lg={12}>
+            <PaymentHistory />
+          </Grid>
+          <Grid item xs={12} md={6} lg={12}>
+            <Stack spacing={3}>
+              <EcommerceRadial color="primary.main" />
+              <EcommerceRadial color="error.dark" />
+            </Stack>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 
-export default Landing;
-
-/*
-"use client"
-// PROJECT IMPORTS
-import Hero from 'sections/landing/Header';
-import Technologies from 'sections/landing/Technologies';
-import Combo from 'sections/landing/Combo';
-import Apps from 'sections/landing/Apps';
-//import Testimonial from 'sections/landing/Testimonial';<Testimonial />
-import Partner from 'sections/landing/Partner';
-//import ContactUs from 'sections/landing/ContactUs';<ContactUs />
-import SimpleLayout from 'layout/SimpleLayout';
-import Pricing1Page from 'views/price/Pricing1'
-import About from 'sections/landing/About';
-import FooterBlock from 'sections/landing/FB';
-
-
-// ==============================|| LANDING PAGE ||============================== //
-
-const Landing = () => (
-  <SimpleLayout>
-    <Hero />
-    <Apps />
-    <Technologies />
-    <Combo />
-    
-    
-    <Pricing1Page />
-    <About/>
-    
-    <Partner />
-    
-    <FooterBlock/>
-  </SimpleLayout>
-);
-
-export default Landing;
-
-*/
+export default DashboardAnalytics;

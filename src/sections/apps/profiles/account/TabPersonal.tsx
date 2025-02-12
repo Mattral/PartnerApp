@@ -26,6 +26,7 @@ const TabPersonal = () => {
   const [country, setCountry] = useState('nsw'); // defaulting to 'nsw' for now
   const [authData, setAuthData] = useState<any | null>(null);
   const [authorizationToken, setAuthorizationToken] = useState<string | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string | null>(null); // State to store error messages
 
   useEffect(() => {
     // Fetch the auth data from localStorage
@@ -50,51 +51,27 @@ const TabPersonal = () => {
     }
   }, []);
 
-  useEffect(() => {
-    // If we have the auth token, we can fetch the user data
-    if (authorizationToken) {
-      const fetchUserData = async () => {
-        try {
-          const response = await fetch('https://lawonearth.co.nz/api/auth/partner/profile', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${authorizationToken}`,
-              'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
-              'FRONTEND-KEY': 'XXX',
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-
-          const data = await response.json();
-          console.log('User data fetched:', data);
-          // You can update user data here if needed
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      };
-
-      fetchUserData();
-    }
-  }, [authorizationToken]);
-
   const handleSubmit = async () => {
+    setErrorMessages(null); // Reset error messages when submitting
     if (!authorizationToken) {
       console.error('Authorization token is missing');
       return;
     }
 
-    const payload = {
-      pers_fName: firstName,
-      pers_mName: '', // Optional middle name
-      pers_lName: lastName,
-      s_code: country, // Example state or country code
-      pers_phone1: phoneNumber,
-      pers_whatsappLine: whatsapp, // Optional
-      pers_birthdate: birthDate, // In YYYY-MM-DD format
-    };
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append('pers_fName', firstName);
+    formData.append('pers_mName', ''); // Optional middle name
+    formData.append('pers_lName', lastName);
+    formData.append('s_code', country); // Example state or country code
+    formData.append('pers_phone1', phoneNumber);
+    formData.append('pers_whatsappLine', whatsapp); // Optional
+    formData.append('pers_birthdate', birthDate); // In YYYY-MM-DD format
+
+    // If there's an image to upload, append that as well
+    if (selectedImage) {
+      formData.append('avatar', selectedImage);
+    }
 
     try {
       const response = await fetch('https://lawonearth.co.nz/api/back-office/partner/profile/complete', {
@@ -104,17 +81,28 @@ const TabPersonal = () => {
           'COMPANY-CODE': process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV",
           'FRONTEND-KEY': 'XXX',
         },
-        body: JSON.stringify(payload),
+        body: formData, // Using FormData here
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
-
       const data = await response.json();
-      console.log('Profile updated successfully:', data);
+
+      if (!response.ok) {
+        if (data.status === 'treatmentFailure') {
+          setErrorMessages(data.data.primaryData.msg); // Show treatment failure message
+        } else if (data.status === 'validationError') {
+          const validationErrors = data.data.primaryData.errors;
+          const errorMessage = Object.values(validationErrors).flat().join(', ');
+          setErrorMessages(errorMessage); // Show validation errors
+        } else {
+          throw new Error('Unknown error occurred.');
+        }
+      } else {
+        console.log('Profile updated successfully:', data);
+        // Handle successful response
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
+      setErrorMessages('An error occurred while updating the profile.'); // General error message
     }
   };
 
@@ -129,7 +117,7 @@ const TabPersonal = () => {
 
       // Upload the image to the server
       try {
-        const response = await fetch('https://lawonearth.co.nz/api/auth/partner/update-photo', {
+        const response = await fetch('https://lawonearth.co.uk/api/auth/core/update-photo', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${authorizationToken}`,
@@ -157,12 +145,20 @@ const TabPersonal = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6}>
-        <MainCard title="Personal Information">
+        <MainCard title="Upload Avatar">
+          {/* Error message display */}
+          {errorMessages && (
+            <Box sx={{ mb: 2 }}>
+              <Typography color="error" variant="body2">
+                {errorMessages}
+              </Typography>
+            </Box>
+          )}
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Stack spacing={2.5} alignItems="center" sx={{ m: 3 }}>
                 <FormLabel
-                  htmlFor="change-avtar"
+                  htmlFor="change-avatar"
                   sx={{
                     position: 'relative',
                     borderRadius: '50%',
@@ -171,7 +167,7 @@ const TabPersonal = () => {
                     cursor: 'pointer',
                   }}
                 >
-                  <Avatar alt="Avatar 1" src={avatar} sx={{ width: 76, height: 76 }} />
+                  <Avatar alt="Avatar" src={avatar} sx={{ width: 76, height: 76 }} />
                   <Box
                     sx={{
                       position: 'absolute',
@@ -196,13 +192,29 @@ const TabPersonal = () => {
                 </FormLabel>
                 <TextField
                   type="file"
-                  id="change-avtar"
+                  id="change-avatar"
                   variant="outlined"
                   sx={{ display: 'none' }}
                   onChange={handleImageChange}
                 />
               </Stack>
             </Grid>
+          </Grid>
+        </MainCard>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+      <MainCard title="Personal Information">
+        {/* Error message display */}
+        {errorMessages && (
+          <Box sx={{ mb: 2 }}>
+            <Typography color="error" variant="body2">
+              {errorMessages}
+            </Typography>
+          </Box>
+        )}
+
+          <Grid container spacing={3}>
+            
             <Grid item xs={12} sm={6}>
               <Stack spacing={1.25}>
                 <InputLabel htmlFor="personal-first-name">First Name</InputLabel>
@@ -279,6 +291,7 @@ const TabPersonal = () => {
 };
 
 export default TabPersonal;
+
 
 
 
