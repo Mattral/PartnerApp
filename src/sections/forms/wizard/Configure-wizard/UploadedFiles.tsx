@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import FormData from 'form-data'; // If you are using Node.js
 import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
+import PdfModal from 'components/PdfModal';
 
 // Type definitions for the API response
 interface File {
@@ -60,6 +61,18 @@ const UploadedFiles = () => {
     const companyCode = process.env.NEXT_PUBLIC_COMPANY_CODE || "error no company code from ENV"; // Replace with actual company code
     const frontendKey = 'XXX'; // Replace with your frontend key
 
+    const [openp, setOpenp] = useState(false);
+    const [pdfUrl, setPdfUrl] = useState('');
+
+    const handleOpen = (url: string) => {
+        setPdfUrl(url);
+        setOpenp(true);
+      };
+    
+      const handleClosePDF = () => {
+        setOpenp(false);
+        setPdfUrl('');
+      };
 
   // Fetch files from the API
   const fetchFiles = async () => {
@@ -231,6 +244,10 @@ const UploadedFiles = () => {
                                     </a>
                                 </Typography>
 
+                                <Button variant="contained" onClick={() => handleOpen(file.f_path)}>
+                                {file.f_name}
+                                </Button>
+
                                 <Tooltip title={`VF Code: ${file.vf_code}`} arrow>
                                     <Typography variant="body2" color="textSecondary" className="mt-2">
                                         VF Code
@@ -260,6 +277,9 @@ const UploadedFiles = () => {
                     ))}
                 </div>
             </div>
+
+            <PdfModal open={openp} onClose={handleClosePDF} pdfUrl={pdfUrl} />
+
 
             {/* Refresh button fixed at the bottom */}
             <div className="fixed bottom-8 right-8 z-10">
