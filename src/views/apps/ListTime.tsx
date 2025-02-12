@@ -10,7 +10,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Select, MenuItem, Fo
 
 interface OfficeTime {
     ot_code: string;
-    ot_name:string;
+    ot_name: string;
     ot_dayOfWeek: string;
     ot_startTime: string;
     ot_endTime: string;
@@ -58,7 +58,7 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
 
     const handleButtonClick = () => {
         setOpenPopup(true); // This triggers the popup to open
-      };
+    };
 
     // ui code end
 
@@ -307,16 +307,16 @@ const ListTime: React.FC<ListTimeProps> = ({ refresh }) => {
                         ))
                     ) : (
                         <Grid container justifyContent="center" alignItems="center" style={{ height: '20vh' }}>
-                        <Grid item>
-                          <Divider />
-                          <Typography variant="h5">No office times found for the selected Expertise.</Typography>
+                            <Grid item>
+                                <Divider />
+                                <Typography variant="h5">No office times found for the selected Expertise.</Typography>
+                            </Grid>
+                            <Box position="absolute" bottom={20} left="50%" >
+                                <Button variant="contained" color="primary" onClick={handleButtonClick}>
+                                    Select Domain
+                                </Button>
+                            </Box>
                         </Grid>
-                        <Box position="absolute" bottom={20} left="50%" >
-                            <Button variant="contained" color="primary" onClick={handleButtonClick}>
-                            Select Domain
-                            </Button>
-                        </Box>
-                      </Grid>
                     )}
                 </Grid>
             )}

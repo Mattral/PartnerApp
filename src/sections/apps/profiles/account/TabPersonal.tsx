@@ -17,7 +17,7 @@ const avatarImage = '/assets/images/users';
 const TabPersonal = () => {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined);
-  const [avatar, setAvatar] = useState<string | undefined>(`${avatarImage}/default.png`);
+  const [avatar, setAvatar] = useState<string | undefined>(`${avatarImage}`);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -117,7 +117,7 @@ const TabPersonal = () => {
 
       // Upload the image to the server
       try {
-        const response = await fetch('https://lawonearth.co.uk/api/auth/core/update-photo', {
+        const response = await fetch('https://lawonearth.co.uk/api/auth/partner/update-photo', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${authorizationToken}`,
@@ -154,6 +154,7 @@ const TabPersonal = () => {
               </Typography>
             </Box>
           )}
+
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Stack spacing={2.5} alignItems="center" sx={{ m: 3 }}>
@@ -201,6 +202,9 @@ const TabPersonal = () => {
             </Grid>
           </Grid>
         </MainCard>
+
+
+
       </Grid>
       <Grid item xs={12} sm={6}>
       <MainCard title="Personal Information">
