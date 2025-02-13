@@ -258,7 +258,6 @@ const AuthLogin = ({ providers, csrfToken }: any) => {
             setAuthData(response);
             localStorage.setItem('authData', JSON.stringify(response));
             sessionStorage.setItem('authData', JSON.stringify(response));
-            alert(response);
 
             setPopupMessage('Login succeeded!');
             setAuthorization(authToken);

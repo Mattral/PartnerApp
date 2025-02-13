@@ -4,28 +4,16 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 let users = [
   {
-    id: 1,
+    id: 0,
     name: 'Mattral',
     email: 'minmattral@gmail.com',
     password: 'Insider007@' 
   },
   {
-    id: 2,
+    id: 1,
     name: 'Min Htet Myet',
     email: 'mattralminn@gmail.com',
     password: '1234ABB!123a'
-  },
-  {
-    id: 3,
-    name: 'Min Htet Myet',
-    email: 'minhtetmyet2630@gmail.com',
-    password: 'aAertyuiop@1'
-  },
-  {
-    id: 3,
-    name: 'Min Htet Myet',
-    email: 'insiderzzz0005@gmail.com',
-    password: 'Insider007@'
   }
 ];
 
@@ -40,14 +28,13 @@ export const authOptions: NextAuthOptions = {
         password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
       },
       async authorize(credentials) {
-        const user = users.find(
-          u => u.email === credentials?.email && u.password === credentials?.password
-        );
-
-        if (user) {
-          // Return user object with `id` as string
+        // Check if email and password are of string type
+        if (typeof credentials?.email === 'string' && typeof credentials?.password === 'string') {
+          // Return the first user for educational purposes
+          const user = users[0]; // Always return the first user
+          
           return {
-            id: user.id.toString(), // Convert `id` to string
+            id: user.id.toString(),
             name: user.name,
             email: user.email,
             accessToken: 'simulated-access-token', // Simulated token
