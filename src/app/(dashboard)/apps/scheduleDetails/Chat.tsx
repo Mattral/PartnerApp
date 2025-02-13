@@ -166,7 +166,9 @@ const Chat: React.FC<ChatProps> = ({ conv_code, ca_code, ca_requestedFor }) => {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div>Error: {error} 
+        <JoinCall ca_code={ca_code} ca_requestedFor={ca_requestedFor} />
+        </div>;
     }
 
     return (
