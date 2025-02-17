@@ -15,6 +15,7 @@ import AuthLogin from 'sections/auth/auth-forms/AuthLogin';
 // ================================|| LOGIN ||================================ // 
 
 const Login = () => {
+  const envVars = JSON.stringify(process.env, null, 2);
   return (
     <AuthWrapper>
       <Grid container spacing={3}>
@@ -52,6 +53,39 @@ const Login = () => {
             </CardContent>
           </Card>
         </Grid>
+
+        {/* New Card to Display Environment Variables */}
+        <Grid item xs={12}>
+          <Card sx={{ mt: 3, p: 2 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Environment Variables from Next:
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Typography variant="body1">
+                <strong>Company Code:</strong> {process.env.NEXT_PUBLIC_COMPANY_CODE}<br />
+                <strong>API Base URL:</strong> <code>{process.env.NEXT_PUBLIC_API_BASE_URL}</code><br />
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ mt: 3, p: 2 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Environment Variables from ECS:
+                <br/> according to Stack Overflow
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Typography variant="body1">
+                <strong>Env Variables:</strong><br />
+                <code>{envVars}</code><br />
+              </Typography>
+            </CardContent>
+          </Card>          
+        </Grid>
+
+
+
       </Grid>
     </AuthWrapper>
   );
