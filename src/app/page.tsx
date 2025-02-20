@@ -28,7 +28,7 @@ const Landing = () => {
       <div ref={servicesRef} id="services">
         <Technologies />
       </div>
-      <Combo />
+    
       <div ref={pricingRef} id="pricing" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
         <div style={{ width: '80%' }}>
           <Pricing1Page />
