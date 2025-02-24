@@ -31,7 +31,31 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json({ error: response.data.message || 'Login failed' }, { status: 400 });
     }
+  } catch (error: any) {
+    // Check if error has a response object (error from the API)
+    if (error.response) {
+      return NextResponse.json({ error: error.response.data.message || 'An error occurred during login' }, { status: error.response.status || 500 });
+    }
+
+    // If the error is something else (e.g., network error)
+    return NextResponse.json({ error: error.message || 'An unexpected error occurred during login' }, { status: 500 });
+  }
+}
+
+
+/*
+
+    // Make the API call to the login endpoint
+    const response = await axios(config);
+
+    if (response.status === 200 && response.data.status === 'treatmentSuccess') {
+      return NextResponse.json(response.data, { status: 200 });
+    } else {
+      return NextResponse.json({ error: response.data.message || 'Login failed' }, { status: 400 });
+    }
   } catch (error) {
     return NextResponse.json({ error: 'An unexpected error occurred during login' }, { status: 500 });
   }
 }
+
+*/
