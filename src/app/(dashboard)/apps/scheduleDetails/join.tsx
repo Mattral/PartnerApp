@@ -99,6 +99,9 @@ const JoinCall: React.FC<JoinCallProps> = ({ ca_code, ca_requestedFor }) => {
         const rai_jwt = data.data.primaryData._roomAccessIdentity.rai_jwt;
         const cr_sessionKey = data.data.primaryData._roomAccessIdentity.cr_sessionKey;
 
+        console.log('SLUG:', cr_sessionKey);
+        console.log('JWT:', rai_jwt);
+
         console.log(rai_jwt,cr_sessionKey ,ca_code)
         // Ensure all data is available and valid
         if (!rai_jwt || !cr_sessionKey || !ca_code) {
@@ -106,6 +109,9 @@ const JoinCall: React.FC<JoinCallProps> = ({ ca_code, ca_requestedFor }) => {
           setLoading(false);
           return;
         }
+        // Store rai_code and rai_jwt in sessionStorage
+        sessionStorage.setItem('SLUG', cr_sessionKey);
+        sessionStorage.setItem('JWT', rai_jwt);
 
         // Store rai_jwt, cr_sessionKey, and ca_code in localStorage
         localStorage.setItem('callData', JSON.stringify({

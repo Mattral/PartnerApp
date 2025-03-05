@@ -37,6 +37,11 @@ const ChatButton = styled(Button)(({ theme }) => ({
 const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
   const session = slug;
   const jwt = JWT;
+
+  // Log the passed values to the console
+  console.log('Passed slug:', session);
+  console.log('Passed JWT:', jwt);
+
   const client = useRef<typeof VideoClient>(ZoomVideo.createClient());
 
   const [inCall, setinCall] = useState(false);

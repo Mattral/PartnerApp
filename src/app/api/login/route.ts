@@ -29,12 +29,15 @@ export async function POST(req: Request) {
     if (response.status === 200 && response.data.status === 'treatmentSuccess') {
       return NextResponse.json(response.data, { status: 200 });
     } else {
-      return NextResponse.json({ error: response.data.message || 'Login failed' }, { status: 400 });
+      // Extract the message from the API response in case of failure
+      const errorMessage = response.data?.data?.primaryData?.msg || 'Login failed';
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
   } catch (error: any) {
     // Check if error has a response object (error from the API)
     if (error.response) {
-      return NextResponse.json({ error: error.response.data.message || 'An error occurred during login' }, { status: error.response.status || 500 });
+      const errorMessage = error.response.data?.data?.primaryData?.msg || 'An error occurred during login';
+      return NextResponse.json({ error: errorMessage }, { status: error.response.status || 500 });
     }
 
     // If the error is something else (e.g., network error)
