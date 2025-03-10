@@ -114,6 +114,7 @@ const handleOtpSubmit = async (e: React.FormEvent) => {
         const validationMessage =
           apiError.data.primaryData.errors?.verificationOTP?.[0] || 
           apiError.data.primaryData.errors?.email?.[0] ||
+          apiError.data.primaryData.msg || 
           'An error occurred. Please try again later.';
         setMessage(validationMessage);
       } else {
@@ -129,105 +130,102 @@ const handleOtpSubmit = async (e: React.FormEvent) => {
 };
 
 
-  return (
-    <AuthWrapper>
-      <Grid container spacing={3}>
-        {/* Upper Section: Email Form and API Response */}
-        <Grid item xs={12}>
-          <Box sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Enter Your Email</Typography>
-            <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
-              Please provide your email to receive a verification OTP.
-            </Typography>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12}>
-          <form onSubmit={handleEmailSubmit}>
-            <TextField
-              fullWidth
-              label="Email Address"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <AnimateButton>
-              <Button
-                disableElevation
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                disabled={loading}
-              >
-                {loading ? 'Sending...' : 'Send OTP'}
-              </Button>
-            </AnimateButton>
-          </form>
-        </Grid>
-
-        {/* Display API response message */}
-        {apiResponse && (
-          <Grid item xs={12}>
-            <Typography variant="body2" color="success.main">
-              {apiResponse}
-            </Typography>
-          </Grid>
-        )}
-
-        {/* Lower Section: OTP Form */}
-        {step === 2 && (
-          <>
-            <Grid item xs={12}>
-              <Typography variant="h3">Please Enter your OTP</Typography>
-              <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
-                Please enter the OTP sent to your email.
-              </Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <form onSubmit={handleOtpSubmit}>
-                <TextField
-                  fullWidth
-                  label="OTP"
-                  variant="outlined"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                />
-                <AnimateButton>
-                  <Button
-                    disableElevation
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
-                    disabled={loading}
-                  >
-                    {loading ? 'Verifying...' : 'Submit OTP'}
-                  </Button>
-                </AnimateButton>
-              </form>
-            </Grid>
-          </>
-        )}
-
-        {/* Error message if any */}
-        {message && (
-          <Grid item xs={12}>
-            <Typography variant="body2" color="error">
-              {message}
-            </Typography>
-          </Grid>
-        )}
+return (
+  <AuthWrapper>
+    <Grid container spacing={3}>
+      {/* Upper Section: Email Form and API Response */}
+      <Grid item xs={12}>
+        <Box sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
+          <Typography variant="h3">Enter Your Email</Typography>
+          <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
+            Please confirm your email <br/>
+            Click on "Send OTP" if you have not yet received a verification OTP.
+          </Typography>
+        </Box>
       </Grid>
-    </AuthWrapper>
-  );
+
+      <Grid item xs={12}>
+        <form onSubmit={handleEmailSubmit}>
+          <TextField
+            fullWidth
+            label="Email Address"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <AnimateButton>
+            <Button
+              disableElevation
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              disabled={loading}
+            >
+              {loading ? 'Sending...' : 'Send OTP'}
+            </Button>
+          </AnimateButton>
+        </form>
+      </Grid>
+
+      {/* Display API response message */}
+      {apiResponse && (
+        <Grid item xs={12}>
+          <Typography variant="body2" color="success.main">
+            {apiResponse}
+          </Typography>
+        </Grid>
+      )}
+
+      {/* OTP Form section (this section will show up immediately) */}
+      <Grid item xs={12}>
+        <Typography variant="h3">Please Enter your OTP</Typography>
+        <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
+          Please enter the OTP sent to your email.
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <form onSubmit={handleOtpSubmit}>
+          <TextField
+            fullWidth
+            label="OTP"
+            variant="outlined"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            required
+          />
+          <AnimateButton>
+            <Button
+              disableElevation
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              disabled={loading}
+            >
+              {loading ? 'Verifying...' : 'Submit OTP'}
+            </Button>
+          </AnimateButton>
+        </form>
+      </Grid>
+
+      {/* Error message if any */}
+      {message && (
+        <Grid item xs={12}>
+          <Typography variant="body2" color="error">
+            {message}
+          </Typography>
+        </Grid>
+      )}
+    </Grid>
+  </AuthWrapper>
+);
 };
 
 export default CheckMail;
