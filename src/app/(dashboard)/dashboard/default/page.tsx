@@ -1,8 +1,16 @@
 "use client"
 // PROJECT IMPORTS
-import DashboardAnalytics from 'views/dashboard/DashboardAnalytics';
-import Welcome from 'views/apps/Welcome';
+//import DashboardAnalytics from 'views/dashboard/DashboardAnalytics';
+//import Welcome from 'views/apps/Welcome';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const DashboardAnalytics = dynamic(() => import('views/dashboard/DashboardAnalytics'), {
+  ssr: false, // Disable SSR for this component
+});
+const Welcome = dynamic(() => import('views/apps/Welcome'), {
+  ssr: false, // Disable SSR for this component
+});
 
 const Analytics = () => {
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
