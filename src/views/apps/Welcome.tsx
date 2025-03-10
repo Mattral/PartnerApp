@@ -3,6 +3,7 @@
 import { DialogActions } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useRouter } from 'next/navigation'; // Import next/navigation for redirects
 
 // Keyframes for twinkling and falling stars
 const twinkle = keyframes`
@@ -115,6 +116,7 @@ const generateStars = (numStars) => {
 const Welcome: React.FC = () => {
   const [data, setData] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter(); // Initialize the router
 
   useEffect(() => {
     const storedData = localStorage.getItem('authData');
@@ -135,33 +137,69 @@ const Welcome: React.FC = () => {
         setIsOpen(true);
       } catch (error) {
         console.error("Failed to parse stored data:", error);
+        setIsOpen(true);
       }
     }
   }, []);
 
-  if (!isOpen || !data) return null;
+  if (!isOpen) return null;
 
   const handleClose = () => {
     setIsOpen(false);
   };
 
+  const handleRedirect = (path: string) => {
+    router.push(path); // Use the router to redirect the user
+  };
+
   const stars = generateStars(100); // Generate 100 stars for the shower
 
   return (
-    <Overlay>
-      <Modal>
-        <TitleBox>Welcome, {data.userName}!</TitleBox>
-        <p><strong>Email:</strong> {data.email}</p>
-        <p><strong>Authorization Token:</strong> {data.authorization}</p>
-        <p><strong>Company Name:</strong> {data.companyName}</p>
-        <p><strong>Account Type:</strong> {data.accountType}</p>
+    <Overlay className="flex justify-center items-center">
+      <Modal className="bg-gradient-to-br from-yellow-200 via-yellow-100 to-yellow-300 p-6 max-w-lg w-full rounded-lg shadow-lg">
+        <TitleBox className="text-2xl font-bold text-yellow-600 mb-4">
+          Welcome, New User
+        </TitleBox>
+  
+        <p className="text-xl font-semibold text-yellow-700 mb-4">
+          <strong>Company Name:</strong> Example
+        </p>
+        <p className="text-xl font-semibold text-yellow-700 mb-6">
+          <strong>Account Type:</strong> Normal User
+        </p>
+  
+        <div className="text-lg mb-6">
+          <h3 className="font-bold text-yellow-600 mb-2"> Please click on the Checklist:</h3>
+          <ul className="space-y-4">
+            {/* List items with better spacing and larger font size */}
+            <li 
+              onClick={() => handleRedirect("/apps/profiles/account/personal")} 
+              className="cursor-pointer text-yellow-500 font-semibold hover:text-yellow-600 hover:scale-105 transition-all duration-300">
+              Complete your profile
+            </li>
+            <li 
+              onClick={() => handleRedirect("/apps/Dossier")} 
+              className="cursor-pointer text-yellow-500 font-semibold hover:text-yellow-600 hover:scale-105 transition-all duration-300">
+              Verify as Normal User
+            </li>
+            <li 
+              onClick={() => handleRedirect("/apps/Dossier")} 
+              className="cursor-pointer text-yellow-500 font-semibold hover:text-yellow-600 hover:scale-105 transition-all duration-300">
+              Verify as Advisor
+            </li>
+          </ul>
+        </div>
+  
         <DialogActions sx={{ justifyContent: 'center', paddingBottom: 3 }}>
-          <CloseButton onClick={handleClose}>Close</CloseButton>
+          <CloseButton onClick={handleClose} className="px-8 py-3 text-lg">
+            Close
+          </CloseButton>
         </DialogActions>
       </Modal>
       {stars}
     </Overlay>
-  );
+  );  
+  
 };
 
 export default Welcome;

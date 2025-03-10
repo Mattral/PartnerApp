@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 
 // PROJECT IMPORTS
-
 import NewOrders from 'sections/widget/chart/NewOrders';
 import NewUsers from 'sections/widget/chart/NewUsers';
 import Visitors from 'sections/widget/chart/Visitors';
@@ -30,6 +29,7 @@ const DashboardAnalytics = () => {
       <Grid item xs={12} md={4} lg={3}>
         <NewOrders />
       </Grid>
+      
       <Grid item xs={12} md={4} lg={3}>
         <NewUsers />
       </Grid>
@@ -79,6 +79,7 @@ const DashboardAnalytics = () => {
           </Grid>
         </Grid>
       </Grid>
+      
     </Grid>
   );
 };

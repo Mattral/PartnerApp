@@ -30,7 +30,6 @@ const Landing = () => {
       <div ref={servicesRef}>
         <Technologies />
       </div>
-      <Combo />
       <div ref={pricingRef}>
         <Pricing1Page />
       </div>
@@ -38,6 +37,7 @@ const Landing = () => {
         <About />
       </div>
       <Partner />
+      <Welcome/>
       <FooterBlock />
     </SimpleLayout>
   );
