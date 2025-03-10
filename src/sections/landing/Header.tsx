@@ -138,22 +138,7 @@ const HeaderPage = () => {
                           </Button>
                         )}
                       </Typography>
-                      {hoverIndex === 0 && !isEditing && (
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          onClick={() => handleEditClick(0)}
-                          sx={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            transform: 'translateY(-100%)',
-                            marginBottom: '8px',
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      )}
+
                     </Box>
                   )}
                 </motion.div>
@@ -285,6 +270,25 @@ const HeaderPage = () => {
 
 export default HeaderPage 
 
+
+/*line 141
+                      {hoverIndex === 0 && !isEditing && (
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => handleEditClick(0)}
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            transform: 'translateY(-100%)',
+                            marginBottom: '8px',
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
+*?
 /*
 'use client';
 

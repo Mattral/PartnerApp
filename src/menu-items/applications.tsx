@@ -29,14 +29,7 @@ const applications: NavItemType = {
   type: 'group',
   children: [
     
-    {
-      id: 'chat',
-      title: <FormattedMessage id="chat" />,
-      type: 'item',
-      url: '/apps/chat',
-      icon: icons.chat,
-      breadcrumbs: false
-    },
+
     {
       id: 'calendar',
       title: <FormattedMessage id="calendar" />,
@@ -51,6 +44,15 @@ const applications: NavItemType = {
       type: 'item',
       icon: icons.kanban,
       url: '/apps/kanban/board',
+      breadcrumbs: false
+    },
+
+    {
+      id: 'chat',
+      title: <FormattedMessage id="chat" />,
+      type: 'item',
+      url: '/apps/chat',
+      icon: icons.chat,
       breadcrumbs: false
     },
 
