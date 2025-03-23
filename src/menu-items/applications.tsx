@@ -17,7 +17,8 @@ const icons = {
   invoice: Bill,
   statistics: Story,
   profile: UserSquare,
-  video: VideoCallIcon
+  video: VideoCallIcon,
+  kanban: ShoppingBag
 };
 
 // ==============================|| MENU ITEMS - APPLICATIONS ||============================== //
@@ -63,6 +64,14 @@ const applications: NavItemType = {
       type: 'item',
       url: '/apps/Documents',
       icon: icons.statistics
+    },
+
+    {
+      id: 'Document Templates',
+      title: <FormattedMessage id="Generate Legal Document" />,
+      type: 'item',
+      url: '/apps/Documents',
+      icon: icons.kanban,
     },
     
     
