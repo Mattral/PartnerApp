@@ -10,6 +10,7 @@ const Question = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const searchParams = useSearchParams();
   const dt_code = searchParams.get("dt_code");
+  const dtv_code = searchParams.get("dtv_code");
 
   // Fetch data from the API
   const fetchData = async () => {

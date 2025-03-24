@@ -24,6 +24,8 @@ import {
   Send as SendIcon,
   QuestionMark as QuestionMarkIcon
 } from '@mui/icons-material';
+import { useSearchParams } from "next/navigation";
+import axios from 'axios';
 
 type Option = {
   label: string;
@@ -44,25 +46,92 @@ interface DynamicFormProps {
 
 const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const searchParams = useSearchParams();
+  const dt_code = searchParams.get("dt_code");
+  const dtv_code = searchParams.get("dtv_code");
 
   const handleInputChange = (dtvp_code: string, value: any) => {
+    if (Array.isArray(value)) {
+      // For checkbox, join the array into a comma-separated string
+      value = value.join(', ');
+    }
     setFormData(prev => ({
       ...prev,
       [dtvp_code]: value
     }));
   };
 
+
   const handleClear = () => {
     setFormData({});
   };
 
   // Handle individual question submission
-  const handleQuestionSubmit = (dtvp_code: string) => {
+  const handleQuestionSubmit = async (dtvp_code: string) => {
+    // Retrieve the savedContent from localStorage
+    const savedContent = localStorage.getItem('extractedHtml');
+    if (!savedContent) {
+      console.error('No content found in localStorage for "extractedHtml".');
+      return;
+    }
+  
+    // Retrieve the answer for the current question
     const answer = formData[dtvp_code];
+    if (!answer) {
+      console.error('No answer found for the given dtvp_code.');
+      return;
+    }
+  
     console.log('Question Submitted:', {
       dtvp_code,
-      answer
+      answer,
     });
+  
+    if (!dt_code || !dtv_code) {
+      console.error('Missing dt_code or dtv_code from the URL.');
+      return;
+    }
+  
+    // Construct the API URL dynamically
+    const url = `https://lawonearth.co.nz/api/partner/placeholder-answers/submit/${dtv_code}/${dtvp_code}`;
+  
+    // Prepare the payload for the API request
+    const payload = {
+      dpa_value: answer,          // Use the form data value for the answer
+      document: savedContent,     // Use the content saved in localStorage
+      document_1: '',             // Always an empty value
+      strict_mode: 0,             // Always set to 0
+    };
+  
+    // Set the request headers
+    const headers = {
+      'COMPANY-CODE': 'MC-9E234746-3738-4E49-A7FA-27E3998A68E9',
+      'FRONTEND-KEY': 'XXX',      // Replace with the actual frontend key
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json',  // Set content type to JSON for the request
+    };
+  
+    try {
+      // Send the POST request using axios
+      const response = await axios.post(url, payload, { headers });
+  
+      // Check if the response was successful
+      if (response.status === 200 && response.data) {
+        const updatedDocument = response.data.data.primaryData.updatedDocument;
+  
+        // Update the localStorage with the updatedDocument
+        if (updatedDocument) {
+          localStorage.setItem('extractedHtml', updatedDocument);
+          console.log('Local storage updated with the new extractedHtml.');
+        } else {
+          console.error('No updated document found in API response.');
+        }
+      } else {
+        console.error('Failed to submit data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error while submitting data:', error);
+    }
   };
 
   // Handle form-wide submission (kept for backward compatibility)
@@ -117,8 +186,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
         {questions.map((question, index) => {
           const { dtvp_code, question: questionText, type, options, guideText } = question;
           const answer = formData[dtvp_code];
-          
-          const isAnswered = answer !== undefined && 
+
+          const isAnswered = answer !== undefined &&
             (type !== 'checkbox' ? answer !== '' : answer.length > 0);
 
           return (
@@ -197,14 +266,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   <InputLabel>{questionText}</InputLabel>
                   <Select
                     multiple
-                    value={answer || []}
-                    onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
-                    renderValue={(selected) => selected.join(', ')}
+                    value={Array.isArray(answer) ? answer : (answer ? answer.split(', ') : [])} // Ensure the value is an array
+                    onChange={(e) => handleInputChange(dtvp_code, e.target.value)} // Update formData with selected values
+                    renderValue={(selected) => {
+                      // Ensure 'selected' is an array before joining
+                      const selectedArray = Array.isArray(selected) ? selected : selected.split(', ');
+                      return selectedArray.join(', '); // Display selected options as a comma-separated string
+                    }}
                     label={questionText}
                   >
                     {options.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
-                        <Checkbox checked={answer?.includes(option.value)} />
+                        <Checkbox checked={answer?.split(', ').includes(option.value)} />
                         <ListItemText primary={option.label} />
                       </MenuItem>
                     ))}
@@ -258,260 +331,3 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 };
 
 export default DynamicForm;
-
-/*
-"use client";
-import React, { useState } from 'react';
-import {
-  TextField,
-  MenuItem,
-  Select,
-  Checkbox,
-  ListItemText,
-  FormControl,
-  InputLabel,
-  Divider,
-  Button,
-  Stack,
-  Typography,
-  LinearProgress,
-  InputAdornment
-} from '@mui/material';
-import {
-  Edit as EditIcon,
-  CheckCircle as CheckCircleIcon,
-  RadioButtonUnchecked as RadioButtonUncheckedIcon,
-  ClearAll as ClearAllIcon,
-  Send as SendIcon,
-  QuestionMark as QuestionMarkIcon
-} from '@mui/icons-material';
-
-// Types for the form data
-type Option = {
-  label: string;
-  value: string;
-};
-
-type Question = {
-  dtvp_code: string;
-  question: string;
-  type: 'text' | 'number' | 'select' | 'checkbox';
-  options?: Option[]; // Options for select/checkbox
-  guideText?: string; // Human guide/explanation for the question
-};
-
-interface DynamicFormProps {
-  questions: Question[];
-}
-
-const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
-  const [formData, setFormData] = useState<any>({});
-
-  const handleInputChange = (name: string, value: any) => {
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleClear = () => {
-    setFormData({});
-  };
-
-  const handleSubmit = () => {
-    // Handle form submission (e.g., send data to an API)
-    console.log('Form Submitted:', formData);
-  };
-
-  // Calculate the completion percentage based on user input
-  const calculateCompletionPercentage = () => {
-    const totalQuestions = questions.length;
-    const completedQuestions = questions.filter((question, index) => {
-      const fieldName = `question-${index}`;
-      const answer = formData[fieldName];
-      if (question.type === 'checkbox') {
-        // Check if any checkbox is selected
-        return answer && answer.length > 0;
-      }
-      return answer && answer !== ''; // Ensure text or number input is not empty
-    }).length;
-    return (completedQuestions / totalQuestions) * 100;
-  };
-
-  const completionPercentage = calculateCompletionPercentage();
-  const completedQuestions = questions.filter((question, index) => {
-    const fieldName = `question-${index}`;
-    const answer = formData[fieldName];
-    if (question.type === 'checkbox') {
-      // Check if any checkbox is selected
-      return answer && answer.length > 0;
-    }
-    return answer && answer !== ''; // Ensure text or number input is not empty
-  }).length;
-
-  return (
-    <div style={{ width: '100%', padding: '20px' }}>
-      {/* Progress Bar Container /}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 1,
-        backgroundColor: 'white',
-        padding: '10px 0',
-        borderBottom: '1px solid #ccc',
-      }}>
-        <LinearProgress
-          variant="determinate"
-          value={completionPercentage}
-          sx={{ marginBottom: '10px' }}
-        />
-        <Typography variant="body2" align="center">
-          {completedQuestions} out of {questions.length} completed
-        </Typography>
-      </div>
-
-      {/* Form Container with Scrollable Content /}
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        {questions.map((question, index) => {
-          const { question: questionText, type, options, guideText, dtvp_code} = question;
-          const fieldName = `question-${index}`;
-
-          const isAnswered = formData[fieldName] && formData[fieldName] !== '' &&
-            (question.type !== 'checkbox' || formData[fieldName].length > 0);
-
-          return (
-            <div key={index} style={{ marginBottom: '20px' }}>
-              {/* Display the question as a header with done/undone icon /}
-              <Typography variant="h6" gutterBottom>
-                <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                  {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
-                </span>
-                {questionText}
-              </Typography>
-
-              {/* Display the human guide text (explanation) /}
-              {guideText && (
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {guideText}
-                </Typography>
-              )}
-
-              {/* Display the human guide text (explanation) /}
-              {dtvp_code && (
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {dtvp_code}
-                </Typography>
-              )}
-
-              {/* Render the input fields based on the type /}
-              {type === 'text' && (
-                <TextField
-                  fullWidth
-                  label="Enter Text"
-                  value={formData[fieldName] || ''}
-                  onChange={(e) => handleInputChange(fieldName, e.target.value)}
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EditIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-
-              {type === 'number' && (
-                <TextField
-                  fullWidth
-                  label="Enter Number"
-                  type="number"
-                  value={formData[fieldName] || ''}
-                  onChange={(e) => handleInputChange(fieldName, e.target.value)}
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EditIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-
-              {type === 'select' && options && (
-                <FormControl fullWidth variant="outlined" size="small" margin="normal">
-                  <InputLabel>{questionText}</InputLabel>
-                  <Select
-                    value={formData[fieldName] || ''}
-                    onChange={(e) => handleInputChange(fieldName, e.target.value)}
-                    label={questionText}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-
-              {type === 'checkbox' && options && (
-                <FormControl fullWidth variant="outlined" size="small" margin="normal">
-                  <InputLabel>{questionText}</InputLabel>
-                  <Select
-                    multiple
-                    value={formData[fieldName] || []}
-                    onChange={(e) => handleInputChange(fieldName, e.target.value)}
-                    renderValue={(selected) => selected.join(', ')}
-                    label={questionText}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        <Checkbox checked={formData[fieldName]?.includes(option.value)} />
-                        <ListItemText primary={option.label} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-
-              {/* Clear and Submit buttons above each divider /}
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent="center"
-                marginTop={2}
-                style={{ width: '100%' }}
-              >
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleClear}
-                  startIcon={<ClearAllIcon />}
-                >
-                  Clear
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  startIcon={<SendIcon />}
-                >
-                  Submit
-                </Button>
-              </Stack>
-
-              {/* Divider between questions /}
-              <Divider style={{ marginTop: '20px', marginBottom: '20px' }} />
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-export default DynamicForm;
-*/
