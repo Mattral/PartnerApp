@@ -29,7 +29,7 @@ const Page = () => {
             position: 'sticky',  // Make it sticky only on large screens
             top: 0,  // Stick to the top of the viewport
             height: '100%', // For larger screens, make it take full height
-            width: '40%', // For large screens, 30% width
+            width: '35%', // For large screens, 30% width
             padding: '20px',
           },
         }}
@@ -46,7 +46,7 @@ const Page = () => {
           overflowY: 'auto',  // Make editor scrollable vertically if needed
           '@media (min-width: 768px)': {
             height: '100%', // For large screens, make it take full height
-            width: '60%', // For large screens, 70% width
+            width: '65%', // For large screens, 70% width
             padding: '20px',
           },
         }}

@@ -68,9 +68,9 @@ const applications: NavItemType = {
 
     {
       id: 'Document Templates',
-      title: <FormattedMessage id="Generate Legal Document" />,
+      title: <FormattedMessage id="Document Templates" />,
       type: 'item',
-      url: '/apps/Documents',
+      url: '/apps/DocTemplate',
       icon: icons.kanban,
     },
     

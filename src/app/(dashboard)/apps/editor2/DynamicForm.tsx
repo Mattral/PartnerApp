@@ -31,7 +31,6 @@ type Option = {
 };
 
 type Question = {
-  dtvp_code: string;
   question: string;
   type: 'text' | 'number' | 'select' | 'checkbox';
   options?: Option[]; // Options for select/checkbox
@@ -108,7 +107,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       {/* Form Container with Scrollable Content */}
       <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
         {questions.map((question, index) => {
-          const { question: questionText, type, options, guideText, dtvp_code} = question;
+          const { question: questionText, type, options, guideText } = question;
           const fieldName = `question-${index}`;
 
           const isAnswered = formData[fieldName] && formData[fieldName] !== '' &&
@@ -128,13 +127,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
               {guideText && (
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                   {guideText}
-                </Typography>
-              )}
-
-              {/* Display the human guide text (explanation) */}
-              {dtvp_code && (
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {dtvp_code}
                 </Typography>
               )}
 

@@ -93,8 +93,9 @@ const Page: React.FC = () => {
     setFilteredTemplates(filtered);
   };
 
-  const handleEditClick = (dtv_code: string) => {
-    router.push(`/apps/editor?dtv_code=${dtv_code}`);
+  // Handle Edit Click with dt_code and dtv_code as query parameters
+  const handleEditClick = (dt_code: string, dtv_code: string) => {
+    router.push(`/apps/editor?dt_code=${dt_code}&dtv_code=${dtv_code}`);
   };
 
   const handlePreviewClick = (dtv_code: string) => {
@@ -177,7 +178,7 @@ const Page: React.FC = () => {
                     color="primary"
                     fullWidth
                     sx={{ mb: 1 }}
-                    onClick={() => handleEditClick(template.dtv_code)}
+                    onClick={() => handleEditClick(template.dt_code, template.dtv_code)}
                   >
                     Edit
                   </Button>
