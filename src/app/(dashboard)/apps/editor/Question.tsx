@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import DynamicForm from "./DynamicForm";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { Box, Button, Typography } from "@mui/material";
+import { CircularProgress, Box, Button, Typography } from "@mui/material";
 
 const Question = () => {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -50,6 +50,7 @@ const Question = () => {
 
           return {
             dtvp_code: placeholder.dtvp_code, 
+            dtvp_name: placeholder.dtvp_name,
             dtvp_answerIsRequired: placeholder.dtvp_answerIsRequired, // true = Mandatory, flase = optional
             question: placeholder.dtvp_inputLabel,
             type: typeMapping[placeholder.dtvp_inputType] || "text", // Default to "text" if type is unknown
@@ -99,10 +100,18 @@ const Question = () => {
 
     {/* Display DynamicForm */}
     {isLoading ? (
-      <Typography>Loading...</Typography>
-    ) : (
-      <DynamicForm questions={questions} />
-    )}
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <CircularProgress size={60} /> {/* Circular spinner with size 60px */}
+  </Box>
+) : (
+  <DynamicForm questions={questions} />
+)}
   </div>
   );
 };

@@ -40,6 +40,7 @@ type Option = {
 
 type Question = {
   dtvp_code: string;
+  dtvp_name: string;
   dtvp_answerIsRequired: any;
   question: string;
   type: 'text' | 'number' | 'select' | 'checkbox';
@@ -56,6 +57,76 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
   const searchParams = useSearchParams();
   const dt_code = searchParams.get("dt_code");
   const dtv_code = searchParams.get("dtv_code");
+  const [dtvp_name] = useState("Username");  // Example dtvp_name, this can be dynamic
+
+  const handleSearchText = (variableName: string) => {
+    // Remove any existing $ or {} from the variable name if accidentally included
+    const cleanVariableName = variableName.replace(/^\$|\{|\}/g, '');
+    // Create the exact search pattern for ${VariableName}
+    const searchText = `\\$\\{${cleanVariableName}\\}`;
+    
+    removeHighlight();
+    
+    const sunEditors = document.querySelectorAll('.sun-editor-editable');
+    let found = false;
+  
+    sunEditors.forEach((editor) => {
+      if (searchExactPatternInSunEditor(editor as HTMLElement, searchText)) {
+        found = true;
+      }
+    });
+  
+    if (found) {
+      console.log("not found");
+      //alert(`Found: \${${cleanVariableName}}`);
+    } else {
+      console.log("not found");
+    }
+  };
+  const searchExactPatternInSunEditor = (editor: HTMLElement, exactPattern: string): boolean => {
+    const editorContent = editor.textContent || ''; // Use textContent to ignore HTML tags
+    const regex = new RegExp(exactPattern);
+    
+    if (regex.test(editorContent)) {
+      highlightExactMatchInSunEditor(editor, exactPattern);
+      return true;
+    }
+    return false;
+  };
+
+  const highlightExactMatchInSunEditor = (editor: HTMLElement, exactPattern: string) => {
+    const range = document.createRange();
+    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+    const regex = new RegExp(exactPattern);
+    
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      const text = node.nodeValue || '';
+      const match = regex.exec(text);
+      
+      if (match) {
+        range.setStart(node, match.index);
+        range.setEnd(node, match.index + match[0].length);
+        
+        const span = document.createElement('span');
+        span.style.backgroundColor = 'yellow';
+        span.style.border = '1px solid orange';
+        range.surroundContents(span);
+        break; // Only highlight first occurrence
+      }
+    }
+  };
+  const removeHighlight = () => {
+    document.querySelectorAll('.sun-editor-editable > span[style*="background-color: yellow"]').forEach(el => {
+      const parent = el.parentNode;
+      if (parent) {
+        parent.replaceChild(document.createTextNode(el.textContent || ''), el);
+      }
+    });
+  };
+
+  
+
 
   const handleInputChange = (dtvp_code: string, value: any) => {
     if (Array.isArray(value)) {
@@ -191,7 +262,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       {/* Form Container with Scrollable Content */}
       <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
         {questions.map((question, index) => {
-          const { dtvp_answerIsRequired, dtvp_code, question: questionText, type, options, guideText } = question;
+          const { dtvp_answerIsRequired, dtvp_name, dtvp_code, question: questionText, type, options, guideText } = question;
           const answer = formData[dtvp_code];
 
           const isAnswered = answer !== undefined &&
@@ -207,9 +278,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
               >
                 {/* Question text and answer icon in one line */}
                 <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                    {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
-                  </span>
                   <span style={{ flexGrow: 1, marginRight: '8px' }}>
                     {questionText}
                   </span>
@@ -233,7 +301,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                         style={{
                           color: isAnswered ? 'green' : 'red',
                           alignItems: 'center',
-                          marginLeft:'1px',
+                          marginLeft: '1px',
                           marginRight: '4px'
                         }}
                       >
@@ -242,6 +310,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                       <span style={{ color: isAnswered ? 'green' : 'red' }}>
                         Required
                       </span>
+                      <span
+                        style={{ cursor: 'pointer', color: 'blue' }}
+                        onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
+                      >
+                        . | {`$\{${dtvp_name}\}`}
+                      </span>
                     </>
                   ) : (
                     <>
@@ -249,7 +323,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                         style={{
                           color: 'gray',
                           alignItems: 'center',
-                          marginLeft:'1px',
+                          marginLeft: '1px',
                           marginRight: '4px'
                         }}
                       >
@@ -258,23 +332,29 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                       <span style={{ color: isAnswered ? 'green' : 'gray' }}>
                         Optional
                       </span>
+                      <span
+                        style={{ cursor: 'pointer', color: 'blue' }}
+                        onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
+                      >
+                        . | {`$\{${dtvp_name}\}`}
+                      </span>
                     </>
                   )}
                 </span>
               </Typography>
 
 
-{/* Guide Text */}
-{guideText && (
-  <Typography 
-    variant="body1" // A slightly larger variant
-    color="textSecondary" 
-    gutterBottom
-    style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
-  >
-    {guideText}
-  </Typography>
-)}
+              {/* Guide Text */}
+              {guideText && (
+                <Typography
+                  variant="body1" // A slightly larger variant
+                  color="textSecondary"
+                  gutterBottom
+                  style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
+                >
+                  {guideText}
+                </Typography>
+              )}
 
 
               {/* DTVP Code */}
