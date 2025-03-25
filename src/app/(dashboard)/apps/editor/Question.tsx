@@ -49,7 +49,8 @@ const Question = () => {
           }));
 
           return {
-            dtvp_code: placeholder.dtvp_code, // Append the dtvp_code for each placeholder
+            dtvp_code: placeholder.dtvp_code, 
+            dtvp_answerIsRequired: placeholder.dtvp_answerIsRequired, // true = Mandatory, flase = optional
             question: placeholder.dtvp_inputLabel,
             type: typeMapping[placeholder.dtvp_inputType] || "text", // Default to "text" if type is unknown
             guideText: placeholder.dtvp_inputHelpText,

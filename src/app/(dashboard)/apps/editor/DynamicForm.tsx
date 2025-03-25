@@ -24,6 +24,12 @@ import {
   Send as SendIcon,
   QuestionMark as QuestionMarkIcon
 } from '@mui/icons-material';
+import {
+  ErrorOutline as ErrorOutlineIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon
+} from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
+
 import { useSearchParams } from "next/navigation";
 import axios from 'axios';
 
@@ -34,6 +40,7 @@ type Option = {
 
 type Question = {
   dtvp_code: string;
+  dtvp_answerIsRequired: any;
   question: string;
   type: 'text' | 'number' | 'select' | 'checkbox';
   options?: Option[];
@@ -74,27 +81,27 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       console.error('No content found in localStorage for "extractedHtml".');
       return;
     }
-  
+
     // Retrieve the answer for the current question
     const answer = formData[dtvp_code];
     if (!answer) {
       console.error('No answer found for the given dtvp_code.');
       return;
     }
-  
+
     console.log('Question Submitted:', {
       dtvp_code,
       answer,
     });
-  
+
     if (!dt_code || !dtv_code) {
       console.error('Missing dt_code or dtv_code from the URL.');
       return;
     }
-  
+
     // Construct the API URL dynamically
     const url = `https://lawonearth.co.nz/api/partner/placeholder-answers/submit/${dtv_code}/${dtvp_code}`;
-  
+
     // Prepare the payload for the API request
     const payload = {
       dpa_value: answer,          // Use the form data value for the answer
@@ -102,7 +109,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       document_1: '',             // Always an empty value
       strict_mode: 0,             // Always set to 0
     };
-  
+
     // Set the request headers
     const headers = {
       'COMPANY-CODE': 'MC-9E234746-3738-4E49-A7FA-27E3998A68E9',
@@ -110,15 +117,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json',  // Set content type to JSON for the request
     };
-  
+
     try {
       // Send the POST request using axios
       const response = await axios.post(url, payload, { headers });
-  
+
       // Check if the response was successful
       if (response.status === 200 && response.data) {
         const updatedDocument = response.data.data.primaryData.updatedDocument;
-  
+
         // Update the localStorage with the updatedDocument
         if (updatedDocument) {
           localStorage.setItem('extractedHtml', updatedDocument);
@@ -184,7 +191,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       {/* Form Container with Scrollable Content */}
       <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
         {questions.map((question, index) => {
-          const { dtvp_code, question: questionText, type, options, guideText } = question;
+          const { dtvp_answerIsRequired, dtvp_code, question: questionText, type, options, guideText } = question;
           const answer = formData[dtvp_code];
 
           const isAnswered = answer !== undefined &&
@@ -193,19 +200,82 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
           return (
             <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px' }}>
               {/* Question Header */}
-              <Typography variant="h6" gutterBottom>
-                <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                  {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
+              <Typography
+                variant="h5"
+                gutterBottom
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }} // Column layout for the two lines
+              >
+                {/* Question text and answer icon in one line */}
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                    {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
+                  </span>
+                  <span style={{ flexGrow: 1, marginRight: '8px' }}>
+                    {questionText}
+                  </span>
+                </div>
+
+                {/* Display required/optional status with icons on a new line */}
+                <span
+                  style={{
+                    fontSize: '14px',
+                    verticalAlign: 'middle',
+                    marginTop: '4px',
+                    display: 'inline-flex', // Change to inline-flex to allow alignment
+                    justifyContent: 'center', // Center the content horizontally
+                    alignItems: 'center', // Center the content vertically
+                  }}
+                >
+                  {dtvp_answerIsRequired ? (
+                    <>
+                      {/* Red color when answered, green when not */}
+                      <span
+                        style={{
+                          color: isAnswered ? 'green' : 'red',
+                          alignItems: 'center',
+                          marginLeft:'1px',
+                          marginRight: '4px'
+                        }}
+                      >
+                        {isAnswered ? <CheckCircleOutlineIcon fontSize="small" /> : <ErrorOutlineIcon fontSize="small" />}
+                      </span>
+                      <span style={{ color: isAnswered ? 'green' : 'red' }}>
+                        Required
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span
+                        style={{
+                          color: 'gray',
+                          alignItems: 'center',
+                          marginLeft:'1px',
+                          marginRight: '4px'
+                        }}
+                      >
+                        <InfoIcon fontSize="small" />
+                      </span>
+                      <span style={{ color: isAnswered ? 'green' : 'gray' }}>
+                        Optional
+                      </span>
+                    </>
+                  )}
                 </span>
-                {questionText}
               </Typography>
 
-              {/* Guide Text */}
-              {guideText && (
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {guideText}
-                </Typography>
-              )}
+
+{/* Guide Text */}
+{guideText && (
+  <Typography 
+    variant="body1" // A slightly larger variant
+    color="textSecondary" 
+    gutterBottom
+    style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
+  >
+    {guideText}
+  </Typography>
+)}
+
 
               {/* DTVP Code */}
               <Typography variant="body2" color="textSecondary" gutterBottom>
