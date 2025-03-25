@@ -14,7 +14,8 @@ import {
   Typography,
   LinearProgress,
   InputAdornment,
-  Box
+  Box,
+  Card
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -270,14 +271,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 
           return (
             <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px' }}>
+              <Card sx={{ p: 2, boxShadow: 2, borderRadius: 2, transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.01)' } }}>
               {/* Question Header */}
               <Typography
                 variant="h5"
                 gutterBottom
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }} // Column layout for the two lines
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '5px' }} // Column layout for the two lines
               >
                 {/* Question text and answer icon in one line */}
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '5px' }}>
+                <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                  {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
+                </span>
                   <span style={{ flexGrow: 1, marginRight: '8px' }}>
                     {questionText}
                   </span>
@@ -355,12 +360,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   {guideText}
                 </Typography>
               )}
-
-
-              {/* DTVP Code */}
-              <Typography variant="body2" color="textSecondary" gutterBottom>
-                {dtvp_code}
-              </Typography>
 
               {/* Input Fields */}
               {type === 'text' && (
@@ -455,6 +454,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   Submit This Question
                 </Button>
               </Stack>
+              </Card>
 
               {/* Form-wide submit button at the bottom */}
               {index === questions.length - 1 && (
@@ -481,3 +481,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 };
 
 export default DynamicForm;
+
+
+ /*
+              <Typography variant="body2" color="textSecondary" gutterBottom>
+                {dtvp_code}
+              </Typography>
+              */
