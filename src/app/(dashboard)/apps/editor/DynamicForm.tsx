@@ -319,7 +319,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                         style={{ cursor: 'pointer', color: 'blue' }}
                         onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
                       >
-                        . | {`$\{${dtvp_name}\}`}
+                         | {`$\{${dtvp_name}\}`}
                       </span>
                     </>
                   ) : (
@@ -357,7 +357,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   gutterBottom
                   style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
                 >
-                  {guideText}
+                  hint: {guideText}
                 </Typography>
               )}
 
@@ -436,14 +436,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 
               {/* Action Buttons */}
               <Stack direction="row" spacing={2} justifyContent="center" marginTop={2}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleClear}
-                  startIcon={<ClearAllIcon />}
-                >
-                  Clear All
-                </Button>
+
                 <Button
                   variant="contained"
                   color="primary"
@@ -451,7 +444,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   startIcon={<SendIcon />}
                   disabled={!isAnswered}
                 >
-                  Submit This Question
+                  Submit 
                 </Button>
               </Stack>
               </Card>
