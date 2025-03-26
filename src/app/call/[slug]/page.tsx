@@ -1,4 +1,4 @@
-"use client"
+/*"use client"
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Script from "next/script";
@@ -38,10 +38,10 @@ export default function Page() {
     </div>
   );
 }
+*/
 
 
 
-/*
 import { getData } from "data/getToken";
 import dynamic from "next/dynamic";
 import Script from "next/script";
@@ -60,4 +60,3 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </div>
   );
 }
-*/
