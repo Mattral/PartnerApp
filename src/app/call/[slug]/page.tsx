@@ -1,4 +1,4 @@
-/*"use client"
+"use client"
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Script from "next/script";
@@ -38,8 +38,8 @@ export default function Page() {
     </div>
   );
 }
-*/
 
+/*
 "use client"
 
 import { getData } from "data/getToken";
@@ -60,3 +60,4 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </main>
   );
 }
+*/
