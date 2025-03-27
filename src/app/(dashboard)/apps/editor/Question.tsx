@@ -51,13 +51,14 @@ const Question = () => {
           return {
             dtvp_code: placeholder.dtvp_code, 
             dtvp_name: placeholder.dtvp_name,
+            dtvp_index: Number(placeholder.dtvp_index), // example "dtvp_index": 300, this value return only numbers
             dtvp_answerIsRequired: placeholder.dtvp_answerIsRequired, // true = Mandatory, flase = optional
             question: placeholder.dtvp_inputLabel,
-            type: typeMapping[placeholder.dtvp_inputType] || "text", // Default to "text" if type is unknown
+            type: typeMapping[placeholder.dtvp_inputType] || "text", 
             guideText: placeholder.dtvp_inputHelpText,
-            options: placeholder.options.length > 0 ? options : undefined, // Only include options if they exist
+            options: placeholder.options.length > 0 ? options : undefined, 
           };
-        });
+        }).sort((a, b) => a.dtvp_index - b.dtvp_index);
 
         setQuestions(formattedQuestions);
       }

@@ -30,6 +30,7 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon
 } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from '@mui/material/Tooltip';
 
 import { useSearchParams } from "next/navigation";
 import axios from 'axios';
@@ -42,6 +43,7 @@ type Option = {
 type Question = {
   dtvp_code: string;
   dtvp_name: string;
+  dtvp_index: number; // will be number like 100, 200, 300 etc...
   dtvp_answerIsRequired: any;
   question: string;
   type: 'text' | 'number' | 'select' | 'checkbox';
@@ -65,18 +67,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
     const cleanVariableName = variableName.replace(/^\$|\{|\}/g, '');
     // Create the exact search pattern for ${VariableName}
     const searchText = `\\$\\{${cleanVariableName}\\}`;
-    
+
     removeHighlight();
-    
+
     const sunEditors = document.querySelectorAll('.sun-editor-editable');
     let found = false;
-  
+
     sunEditors.forEach((editor) => {
       if (searchExactPatternInSunEditor(editor as HTMLElement, searchText)) {
         found = true;
       }
     });
-  
+
     if (found) {
       console.log("not found");
       //alert(`Found: \${${cleanVariableName}}`);
@@ -87,7 +89,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
   const searchExactPatternInSunEditor = (editor: HTMLElement, exactPattern: string): boolean => {
     const editorContent = editor.textContent || ''; // Use textContent to ignore HTML tags
     const regex = new RegExp(exactPattern);
-    
+
     if (regex.test(editorContent)) {
       highlightExactMatchInSunEditor(editor, exactPattern);
       return true;
@@ -99,16 +101,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
     const range = document.createRange();
     const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
     const regex = new RegExp(exactPattern);
-    
+
     while (walker.nextNode()) {
       const node = walker.currentNode;
       const text = node.nodeValue || '';
       const match = regex.exec(text);
-      
+
       if (match) {
         range.setStart(node, match.index);
         range.setEnd(node, match.index + match[0].length);
-        
+
         const span = document.createElement('span');
         span.style.backgroundColor = 'yellow';
         span.style.border = '1px solid orange';
@@ -126,9 +128,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
     });
   };
 
-  
-
-
   const handleInputChange = (dtvp_code: string, value: any) => {
     if (Array.isArray(value)) {
       // For checkbox, join the array into a comma-separated string
@@ -138,11 +137,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       ...prev,
       [dtvp_code]: value
     }));
-  };
-
-
-  const handleClear = () => {
-    setFormData({});
   };
 
   // Handle individual question submission
@@ -262,212 +256,238 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 
       {/* Form Container with Scrollable Content */}
       <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        {questions.map((question, index) => {
-          const { dtvp_answerIsRequired, dtvp_name, dtvp_code, question: questionText, type, options, guideText } = question;
-          const answer = formData[dtvp_code];
+        {questions
+          .sort((a, b) => Number(a.dtvp_index) - Number(b.dtvp_index)) // Convert to numbers before sorting
+          .map((question, index) => {
+            const { dtvp_answerIsRequired, dtvp_name, dtvp_code, dtvp_index, question: questionText, type, options, guideText } = question;
+            const answer = formData[dtvp_code];
 
-          const isAnswered = answer !== undefined &&
-            (type !== 'checkbox' ? answer !== '' : answer.length > 0);
+            const isAnswered = answer !== undefined &&
+              (type !== 'checkbox' ? answer !== '' : answer.length > 0);
 
-          return (
-            <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px' }}>
-              <Card sx={{ p: 2, boxShadow: 2, borderRadius: 2, transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.01)' } }}>
-              {/* Question Header */}
-              <Typography
-                variant="h5"
-                gutterBottom
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '5px' }} // Column layout for the two lines
-              >
-                {/* Question text and answer icon in one line */}
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '5px' }}>
-                <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                  {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
-                </span>
-                  <span style={{ flexGrow: 1, marginRight: '8px' }}>
-                    {questionText}
-                  </span>
-                </div>
+            return (
+              <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px' }}>
+                <Card sx={{ p: 2, boxShadow: 2, borderRadius: 2, transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.01)' } }}>
+                  {/* Question Header */}
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '5px' }} // Column layout for the two lines
+                  >
+                    {/* Question text and answer icon in one line */}
+                    <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '5px' }}>
+                      <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                        {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
+                      </span>
+                      <span style={{ flexGrow: 1, marginRight: '8px' }}>
+                        {questionText}
+                      </span>
+                    </div>
 
-                {/* Display required/optional status with icons on a new line */}
-                <span
-                  style={{
-                    fontSize: '14px',
-                    verticalAlign: 'middle',
-                    marginTop: '4px',
-                    display: 'inline-flex', // Change to inline-flex to allow alignment
-                    justifyContent: 'center', // Center the content horizontally
-                    alignItems: 'center', // Center the content vertically
-                  }}
-                >
-                  {dtvp_answerIsRequired ? (
-                    <>
-                      {/* Red color when answered, green when not */}
-                      <span
-                        style={{
-                          color: isAnswered ? 'green' : 'red',
-                          alignItems: 'center',
-                          marginLeft: '1px',
-                          marginRight: '4px'
-                        }}
-                      >
-                        {isAnswered ? <CheckCircleOutlineIcon fontSize="small" /> : <ErrorOutlineIcon fontSize="small" />}
-                      </span>
-                      <span style={{ color: isAnswered ? 'green' : 'red' }}>
-                        Required
-                      </span>
-                      <span
-                        style={{ cursor: 'pointer', color: 'blue' }}
-                        onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
-                      >
-                         | {`$\{${dtvp_name}\}`}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span
-                        style={{
-                          color: 'gray',
-                          alignItems: 'center',
-                          marginLeft: '1px',
-                          marginRight: '4px'
-                        }}
-                      >
-                        <InfoIcon fontSize="small" />
-                      </span>
-                      <span style={{ color: isAnswered ? 'green' : 'gray' }}>
-                        Optional
-                      </span>
-                      <span
-                        style={{ cursor: 'pointer', color: 'blue' }}
-                        onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
-                      >
-                         {'\u00A0\u00A0\u00A0| '} {`$\{${dtvp_name}\}`}
-                      </span>
-                    </>
+                    {/* Display required/optional status with icons on a new line */}
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        verticalAlign: 'middle',
+                        marginTop: '4px',
+                        display: 'inline-flex', // Change to inline-flex to allow alignment
+                        justifyContent: 'center', // Center the content horizontally
+                        alignItems: 'center', // Center the content vertically
+                      }}
+                    >
+                      {dtvp_answerIsRequired ? (
+                        <>
+                          {/* Red color when answered, green when not */}
+                          <Tooltip
+                            title="This field is required"
+                            placement="top"
+                            arrow
+                            sx={{
+                              '& .MuiTooltip-tooltip': {
+                                backgroundColor: isAnswered ? 'green' : 'red',
+                                color: '#fff',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                padding: '8px',
+                              },
+                            }}
+                          >
+                            <span
+                              style={{
+                                color: isAnswered ? 'green' : 'red',
+                                alignItems: 'center',
+                                marginLeft: '1px',
+                                marginRight: '4px',
+                              }}
+                            >
+                              {isAnswered ? <CheckCircleOutlineIcon fontSize="small" /> : <ErrorOutlineIcon fontSize="small" />}
+                            </span>
+                          </Tooltip>
+                          <span
+                            style={{ cursor: 'pointer', color: 'blue' }}
+                            onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
+                          >
+                            | {`$\{${dtvp_name}\}`}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Tooltip
+                            title="This field is optional"
+                            placement="top"
+                            arrow
+                            sx={{
+                              '& .MuiTooltip-tooltip': {
+                                backgroundColor: '#00796b', // Dark teal for optional
+                                color: '#fff',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                padding: '8px',
+                              },
+                            }}
+                          >
+                            <span
+                              style={{
+                                color: 'gray',
+                                alignItems: 'center',
+                                marginLeft: '1px',
+                                marginRight: '4px',
+                              }}
+                            >
+                              <InfoIcon fontSize="small" />
+                            </span>
+                          </Tooltip>
+                          <span
+                            style={{ cursor: 'pointer', color: 'blue' }}
+                            onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
+                          >
+                            {'\u00A0\u00A0\u00A0| '} {`$\{${dtvp_name}\}`}
+                          </span>
+                        </>
+                      )}
+                    </span>
+                  </Typography>
+
+
+                  {/* Guide Text */}
+                  {guideText && (
+                    <Typography
+                      variant="body1" // A slightly larger variant
+                      color="textSecondary"
+                      gutterBottom
+                      style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
+                    >
+                      hint: {guideText}
+                    </Typography>
                   )}
-                </span>
-              </Typography>
 
+                  {/* Input Fields */}
+                  {type === 'text' && (
+                    <TextField
+                      fullWidth
+                      label="Enter Text"
+                      value={answer || ''}
+                      onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
+                      variant="outlined"
+                      size="small"
+                      margin="normal"
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start"><EditIcon /></InputAdornment>,
+                      }}
+                    />
+                  )}
 
-              {/* Guide Text */}
-              {guideText && (
-                <Typography
-                  variant="body1" // A slightly larger variant
-                  color="textSecondary"
-                  gutterBottom
-                  style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
-                >
-                  hint: {guideText}
-                </Typography>
-              )}
+                  {type === 'number' && (
+                    <TextField
+                      fullWidth
+                      label="Enter Number"
+                      type="number"
+                      value={answer || ''}
+                      onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
+                      variant="outlined"
+                      size="small"
+                      margin="normal"
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start"><EditIcon /></InputAdornment>,
+                      }}
+                    />
+                  )}
 
-              {/* Input Fields */}
-              {type === 'text' && (
-                <TextField
-                  fullWidth
-                  label="Enter Text"
-                  value={answer || ''}
-                  onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start"><EditIcon /></InputAdornment>,
-                  }}
-                />
-              )}
+                  {type === 'select' && options && (
+                    <FormControl fullWidth variant="outlined" size="small" margin="normal">
+                      <InputLabel>{questionText}</InputLabel>
+                      <Select
+                        value={answer || ''}
+                        onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
+                        label={questionText}
+                      >
+                        {options.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
 
-              {type === 'number' && (
-                <TextField
-                  fullWidth
-                  label="Enter Number"
-                  type="number"
-                  value={answer || ''}
-                  onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start"><EditIcon /></InputAdornment>,
-                  }}
-                />
-              )}
+                  {type === 'checkbox' && options && (
+                    <FormControl fullWidth variant="outlined" size="small" margin="normal">
+                      <InputLabel>{questionText}</InputLabel>
+                      <Select
+                        multiple
+                        value={Array.isArray(answer) ? answer : (answer ? answer.split(', ') : [])} // Ensure the value is an array
+                        onChange={(e) => handleInputChange(dtvp_code, e.target.value)} // Update formData with selected values
+                        renderValue={(selected) => {
+                          // Ensure 'selected' is an array before joining
+                          const selectedArray = Array.isArray(selected) ? selected : selected.split(', ');
+                          return selectedArray.join(', '); // Display selected options as a comma-separated string
+                        }}
+                        label={questionText}
+                      >
+                        {options.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            <Checkbox checked={answer?.split(', ').includes(option.value)} />
+                            <ListItemText primary={option.label} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
 
-              {type === 'select' && options && (
-                <FormControl fullWidth variant="outlined" size="small" margin="normal">
-                  <InputLabel>{questionText}</InputLabel>
-                  <Select
-                    value={answer || ''}
-                    onChange={(e) => handleInputChange(dtvp_code, e.target.value)}
-                    label={questionText}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+                  {/* Action Buttons */}
+                  <Stack direction="row" spacing={2} justifyContent="center" marginTop={2}>
 
-              {type === 'checkbox' && options && (
-                <FormControl fullWidth variant="outlined" size="small" margin="normal">
-                  <InputLabel>{questionText}</InputLabel>
-                  <Select
-                    multiple
-                    value={Array.isArray(answer) ? answer : (answer ? answer.split(', ') : [])} // Ensure the value is an array
-                    onChange={(e) => handleInputChange(dtvp_code, e.target.value)} // Update formData with selected values
-                    renderValue={(selected) => {
-                      // Ensure 'selected' is an array before joining
-                      const selectedArray = Array.isArray(selected) ? selected : selected.split(', ');
-                      return selectedArray.join(', '); // Display selected options as a comma-separated string
-                    }}
-                    label={questionText}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        <Checkbox checked={answer?.split(', ').includes(option.value)} />
-                        <ListItemText primary={option.label} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleQuestionSubmit(dtvp_code)}
+                      startIcon={<SendIcon />}
+                      disabled={!isAnswered}
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
+                </Card>
 
-              {/* Action Buttons */}
-              <Stack direction="row" spacing={2} justifyContent="center" marginTop={2}>
+                {/* Form-wide submit button at the bottom */}
+                {index === questions.length - 1 && (
+                  <Box mt={4} display="flex" justifyContent="center">
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                      onClick={handleFormSubmit}
+                      startIcon={<SendIcon />}
+                    >
+                      Submit All Answers
+                    </Button>
+                  </Box>
+                )}
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleQuestionSubmit(dtvp_code)}
-                  startIcon={<SendIcon />}
-                  disabled={!isAnswered}
-                >
-                  Submit 
-                </Button>
-              </Stack>
-              </Card>
-
-              {/* Form-wide submit button at the bottom */}
-              {index === questions.length - 1 && (
-                <Box mt={4} display="flex" justifyContent="center">
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="large"
-                    onClick={handleFormSubmit}
-                    startIcon={<SendIcon />}
-                  >
-                    Submit All Answers
-                  </Button>
-                </Box>
-              )}
-
-              <Divider style={{ marginTop: '20px', marginBottom: '20px' }} />
-            </div>
-          );
-        })}
+                <Divider style={{ marginTop: '20px', marginBottom: '20px' }} />
+              </div>
+            );
+          })}
       </div>
     </div>
   );
@@ -476,8 +496,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
 export default DynamicForm;
 
 
- /*
-              <Typography variant="body2" color="textSecondary" gutterBottom>
-                {dtvp_code}
-              </Typography>
-              */
+/*
+             <Typography variant="body2" color="textSecondary" gutterBottom>
+               {dtvp_code}
+             </Typography>
+             */
