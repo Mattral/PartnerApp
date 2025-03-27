@@ -341,7 +341,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                         style={{ cursor: 'pointer', color: 'blue' }}
                         onClick={() => handleSearchText(`$${dtvp_name}`)} // Trigger search when clicked
                       >
-                        . | {`$\{${dtvp_name}\}`}
+                         {'\u00A0\u00A0\u00A0| '} {`$\{${dtvp_name}\}`}
                       </span>
                     </>
                   )}

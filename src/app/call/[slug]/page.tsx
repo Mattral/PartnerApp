@@ -45,7 +45,6 @@ export default function Page() {
 import { getData } from "data/getToken";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import { useEffect, useState } from "react";
 
 const Videocall = dynamic<{ slug: string; JWT: string }>(
   () => import("../../../components/Videocall"),
@@ -53,29 +52,11 @@ const Videocall = dynamic<{ slug: string; JWT: string }>(
 );
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  const [slug, setSlug] = useState<string | null>(null);
-
-  useEffect(() => {
-    const storedSlug = sessionStorage.getItem('SLUG');
-    const storedJwt = sessionStorage.getItem('JWT');
-    
-    if (storedSlug && storedJwt) {
-      setSlug(storedSlug);
-      
-    } else {
-      console.log('SLUG or JWT not found in sessionStorage! API fetch error');
-    }
-  }, []);
-
   const jwt = await getData(params.slug);
-  if (!slug ) {
-    return <div>Loading... Session Code not found......</div>;
-  }
   return (
-    <div>
-      
-      <Videocall slug={slug} JWT={jwt} />
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Videocall slug={params.slug} JWT={jwt} />
       <Script src="/coi-serviceworker.js" strategy="beforeInteractive" />
-    </div>
+    </main>
   );
 }
