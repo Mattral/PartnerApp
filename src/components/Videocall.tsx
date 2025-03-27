@@ -44,7 +44,7 @@ const Videocall = ({ slug, JWT }: { slug: string; JWT: string }) => {
 
   const client = useRef<typeof VideoClient>(ZoomVideo.createClient());
 
-  const [inCall, setinCall] = useState(false);
+  const [inCall, setinCall] = useState(true);
 
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
