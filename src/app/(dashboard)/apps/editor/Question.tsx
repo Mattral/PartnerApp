@@ -5,7 +5,13 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { CircularProgress, Box, Button, Typography } from "@mui/material";
 
-const Question = () => {
+
+interface AiDocProcessorProps {
+  isFullView: boolean;
+  handleViewToggle: () => void;
+}
+
+export default function Question({ isFullView, handleViewToggle }: AiDocProcessorProps) {
   const [questions, setQuestions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const searchParams = useSearchParams();
@@ -49,14 +55,14 @@ const Question = () => {
           }));
 
           return {
-            dtvp_code: placeholder.dtvp_code, 
+            dtvp_code: placeholder.dtvp_code,
             dtvp_name: placeholder.dtvp_name,
             dtvp_index: Number(placeholder.dtvp_index), // example "dtvp_index": 300, this value return only numbers
             dtvp_answerIsRequired: placeholder.dtvp_answerIsRequired, // true = Mandatory, flase = optional
             question: placeholder.dtvp_inputLabel,
-            type: typeMapping[placeholder.dtvp_inputType] || "text", 
+            type: typeMapping[placeholder.dtvp_inputType] || "text",
             guideText: placeholder.dtvp_inputHelpText,
-            options: placeholder.options.length > 0 ? options : undefined, 
+            options: placeholder.options.length > 0 ? options : undefined,
           };
         }).sort((a, b) => a.dtvp_index - b.dtvp_index);
 
@@ -82,39 +88,52 @@ const Question = () => {
 
   return (
     <div>
-    {/* Using Box to align Typography and Button in a row */}
-    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-      <Typography variant="h4" sx={{ marginRight: 2 }}>
-        Please fill in the Form
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 3 }}>
+        {/* Left aligned - Text */}
+        <Typography variant="h4" sx={{ flexGrow: 0, marginRight: 2 }}>
+          Please fill in the Form
+        </Typography>
 
-      {/* Refresh Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleRefresh}
-        disabled={isLoading}
-      >
-        {isLoading ? "Refreshing..." : "Refresh"}
-      </Button>
-    </Box>
+        {/* Center aligned - Empty Box (For centering purposes) */}
+        <Box sx={{ flexGrow: 1 }}></Box>
 
-    {/* Display DynamicForm */}
-    {isLoading ? (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <CircularProgress size={60} /> {/* Circular spinner with size 60px */}
-  </Box>
-) : (
-  <DynamicForm questions={questions} />
-)}
-  </div>
+        {/* Right aligned - Buttons */}
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRefresh}
+            disabled={isLoading}
+          >
+            {isLoading ? "Refreshing..." : "Refresh"}
+          </Button>
+
+          <Button
+            variant="contained"
+            color={isFullView ? 'secondary' : 'primary'}
+            onClick={handleViewToggle}
+          >
+            {isFullView ? 'Half View' : 'Full View'}
+          </Button>
+        </Box>
+      </Box>
+
+
+      {/* Display DynamicForm */}
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={60} /> {/* Circular spinner with size 60px */}
+        </Box>
+      ) : (
+        <DynamicForm questions={questions} />
+      )}
+    </div>
   );
 };
 
-export default Question;

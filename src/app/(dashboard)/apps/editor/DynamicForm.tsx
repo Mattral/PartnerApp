@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   TextField,
   MenuItem,
@@ -61,6 +61,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
   const dt_code = searchParams.get("dt_code");
   const dtv_code = searchParams.get("dtv_code");
   const [dtvp_name] = useState("Username");  // Example dtvp_name, this can be dynamic
+  const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSearchText = (variableName: string) => {
     // Remove any existing $ or {} from the variable name if accidentally included
@@ -196,6 +197,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
         if (updatedDocument) {
           localStorage.setItem('extractedHtml', updatedDocument);
           console.log('Local storage updated with the new extractedHtml.');
+          if (scrollableContainerRef.current) {
+            // Get the height of a single card (approximate)
+            const cardHeight = 300; // Adjust based on your actual card height
+            
+            // Scroll the container by one card height
+            scrollableContainerRef.current.scrollBy({
+              top: cardHeight,
+              behavior: 'smooth',
+            });
+          }
         } else {
           console.error('No updated document found in API response.');
         }
@@ -255,7 +266,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
       </div>
 
       {/* Form Container with Scrollable Content */}
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <div ref={scrollableContainerRef}  style={{ maxHeight: '500px', overflowY: 'auto',scrollBehavior: 'smooth' }}>
         {questions
           .sort((a, b) => Number(a.dtvp_index) - Number(b.dtvp_index)) // Convert to numbers before sorting
           .map((question, index) => {
@@ -266,20 +277,20 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
               (type !== 'checkbox' ? answer !== '' : answer.length > 0);
 
             return (
-              <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px' }}>
-                <Card sx={{ p: 2, boxShadow: 2, borderRadius: 2, transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.01)' } }}>
+              <div key={`${dtvp_code}-${index}`} style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                <Card sx={{ p: 2, boxShadow: 2, borderRadius: 2, transition: 'transform 0.3s ease', '&:hover': { transform: 'scale(1.01)' },width: '100%', }}>
                   {/* Question Header */}
                   <Typography
                     variant="h5"
                     gutterBottom
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '5px' }} // Column layout for the two lines
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '5px' }} // Column layout for the two lines
                   >
                     {/* Question text and answer icon in one line */}
-                    <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '5px' }}>
-                      <span style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '5px', justifyContent: 'center'  }}>
+                      <span style={{ marginRight: '8px', verticalAlign: 'middle', alignItems: 'center', justifyContent: 'center'  }}>
                         {isAnswered ? <CheckCircleIcon color="primary" /> : <RadioButtonUncheckedIcon />}
                       </span>
-                      <span style={{ flexGrow: 1, marginRight: '8px' }}>
+                      <span style={{ flexGrow: 1, marginRight: '8px', textAlign: 'center' }}>
                         {questionText}
                       </span>
                     </div>
@@ -293,6 +304,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                         display: 'inline-flex', // Change to inline-flex to allow alignment
                         justifyContent: 'center', // Center the content horizontally
                         alignItems: 'center', // Center the content vertically
+                        width: '100%', // Make sure it takes full width for alignment
+                        textAlign: 'center', // Ensure content inside is centered   
                       }}
                     >
                       {dtvp_answerIsRequired ? (
@@ -375,7 +388,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                       variant="body1" // A slightly larger variant
                       color="textSecondary"
                       gutterBottom
-                      style={{ fontSize: '1rem', fontWeight: '400' }} // Custom font size and weight
+                      style={{ fontSize: '1rem', fontWeight: '400', textAlign: 'center' }} // Custom font size and weight
                     >
                       hint: {guideText}
                     </Typography>
