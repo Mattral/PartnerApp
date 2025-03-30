@@ -482,21 +482,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                   </Stack>
                 </Card>
 
-                {/* Form-wide submit button at the bottom */}
-                {index === questions.length - 1 && (
-                  <Box mt={4} display="flex" justifyContent="center">
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="large"
-                      onClick={handleFormSubmit}
-                      startIcon={<SendIcon />}
-                    >
-                      Submit All Answers
-                    </Button>
-                  </Box>
-                )}
-
                 <Divider style={{ marginTop: '20px', marginBottom: '20px' }} />
               </div>
             );

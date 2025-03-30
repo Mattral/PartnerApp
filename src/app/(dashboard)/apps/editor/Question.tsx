@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import DynamicForm from "./DynamicForm";
+import DynamicForm2 from "./DynamicForm2"; // Import the step mode version
+
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { CircularProgress, Box, Button, Typography } from "@mui/material";
@@ -17,6 +19,8 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
   const searchParams = useSearchParams();
   const dt_code = searchParams.get("dt_code");
   const dtv_code = searchParams.get("dtv_code");
+  const [isStepMode, setIsStepMode] = useState<boolean>(false); // New state for mode toggle
+
 
   // Fetch data from the API
   const fetchData = async () => {
@@ -86,12 +90,17 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
     fetchData();
   };
 
+    // Toggle between scroll and step modes
+    const handleModeToggle = () => {
+      setIsStepMode(!isStepMode);
+    };
+
   return (
     <div>
       <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 3 }}>
         {/* Left aligned - Text */}
         <Typography variant="h4" sx={{ flexGrow: 0, marginRight: 2 }}>
-          Please fill in the Form
+          Menu
         </Typography>
 
         {/* Center aligned - Empty Box (For centering purposes) */}
@@ -106,6 +115,14 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
             disabled={isLoading}
           >
             {isLoading ? "Refreshing..." : "Refresh"}
+          </Button>
+
+          <Button
+            variant="contained"
+            color={isStepMode ? 'secondary' : 'primary'}
+            onClick={handleModeToggle}
+          >
+            {isStepMode ? 'Scroll Mode' : 'Step Mode'}
           </Button>
 
           <Button
@@ -130,6 +147,8 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
         >
           <CircularProgress size={60} /> {/* Circular spinner with size 60px */}
         </Box>
+      ) : isStepMode ? (
+        <DynamicForm2 questions={questions} />
       ) : (
         <DynamicForm questions={questions} />
       )}
