@@ -34,6 +34,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import { useSearchParams } from "next/navigation";
 import axios from 'axios';
+import { CheckCondition } from "./CheckCondition";
 
 type Option = {
   label: string;
@@ -197,6 +198,11 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
         if (updatedDocument) {
           localStorage.setItem('extractedHtml', updatedDocument);
           console.log('Local storage updated with the new extractedHtml.');
+          // REMOVE ID
+          // Call CheckCondition with the required props
+          CheckCondition(dtvp_code, answer);
+          console.log('Triggered');
+
           if (scrollableContainerRef.current) {
             // Get the height of a single card (approximate)
             const cardHeight = 300; // Adjust based on your actual card height
@@ -479,6 +485,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ questions }) => {
                     >
                       Submit
                     </Button>
+                    
                   </Stack>
                 </Card>
 

@@ -34,6 +34,7 @@ import {
 } from "@mui/icons-material";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { CheckCondition } from "./CheckCondition";
 
 type Option = {
   label: string;
@@ -199,6 +200,11 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
         if (updatedDocument) {
           localStorage.setItem("extractedHtml", updatedDocument);
           console.log("Local storage updated with the new extractedHtml.");
+          // REMOVE ID
+          // Call CheckCondition with the required props
+          CheckCondition(dtvp_code, answer);
+          console.log('Triggered');
+
           // Move to next question after successful submission
           if (currentStep < sortedQuestions.length - 1) {
             setCurrentStep(currentStep + 1);
@@ -478,23 +484,15 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
               Previous
             </Button>
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleQuestionSubmit(currentQuestion.dtvp_code)}
-              disabled={currentQuestion.dtvp_answerIsRequired && !isAnswered}
-              endIcon={<SendIcon />}
-            >
-              {currentStep === sortedQuestions.length - 1 ? "Submit All" : "Submit & Next"}
-            </Button>
+
 
             <Button
               variant="outlined"
-              onClick={handleNext}
-              disabled={currentStep === sortedQuestions.length - 1}
+              onClick={() => handleQuestionSubmit(currentQuestion.dtvp_code)}
+              disabled={currentQuestion.dtvp_answerIsRequired && !isAnswered} 
               endIcon={<ArrowForwardIcon />}
             >
-              Next
+              {currentStep === sortedQuestions.length - 1 ? "Submit" : "Submit & Next"}
             </Button>
           </Stack>
         </Card>
@@ -505,3 +503,17 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
 };
 
 export default DynamicForm2;
+
+
+/*
+line 486 between previous and next
+            <Button
+              variant="contained"
+              color="primary"
+              onClick= {handleNext}
+              disabled={currentStep === sortedQuestions.length - 1}
+              endIcon={<SendIcon />}
+            >
+              {currentStep === sortedQuestions.length - 1 ? "Submit All" : "Submit & Next"}
+            </Button>
+*/

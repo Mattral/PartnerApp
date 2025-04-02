@@ -39,6 +39,9 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
       if (response.status === 200) {
         const data = response.data;
 
+        localStorage.setItem("apiResponse", JSON.stringify(data));
+        console.log("saved full response")
+
         // Save dtvf_htmlTranscript to localStorage
         const htmlTranscript = data.data.primaryData._template.dtvf_htmlTranscript;
         localStorage.setItem("extractedHtml", htmlTranscript);
@@ -122,7 +125,7 @@ export default function Question({ isFullView, handleViewToggle }: AiDocProcesso
             color={isStepMode ? 'secondary' : 'primary'}
             onClick={handleModeToggle}
           >
-            {isStepMode ? 'Scroll Mode' : 'Step Mode'}
+            {isStepMode ? 'Scroll Form' : 'Step Form'}
           </Button>
 
           <Button
