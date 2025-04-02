@@ -90,7 +90,7 @@ const Editor = () => {
         <Button
           onClick={handleGenerate}
           variant="contained"
-          color="secondary"
+          color="primary"
           sx={{ mx: 'auto', margin: '0 8px' }}
         >
           Generate Document
@@ -111,13 +111,7 @@ const Editor = () => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        <Button
-          onClick={handleSave}
-          variant="contained"
-          color="primary"
-        >
-          Load / Reload
-        </Button>
+
       </Box>
 
       <GeneratePopup
