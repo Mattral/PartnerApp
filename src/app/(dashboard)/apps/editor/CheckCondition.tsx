@@ -41,7 +41,11 @@ export const CheckCondition = (dtvp_code: string, answer: string) => {
 
               switch (condition.dc_operator) {
                 case "equal":
-                  isMet = answerValue === requiredValue;
+                  // Check for exact match OR if requiredValue is contained within answerValue
+                  isMet = answerValue === requiredValue || 
+                          (typeof answerValue === 'string' && 
+                           typeof requiredValue === 'string' &&
+                           answerValue.includes(requiredValue));
                   break;
                 case "inferior":
                   isMet = answerValue < requiredValue;

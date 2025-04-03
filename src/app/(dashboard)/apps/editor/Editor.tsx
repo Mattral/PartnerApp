@@ -9,7 +9,7 @@ const Editor = () => {
   const [content, setContent] = useState<string>("");
   const [notification, setNotification] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [mode, setMode] = useState<"editor" | "preview">("editor");
+  const [mode, setMode] = useState<"editor" | "preview">("preview");
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Load content from localStorage when the component mounts
@@ -89,7 +89,7 @@ const Editor = () => {
 
         <Button
           onClick={handleGenerate}
-          variant="contained"
+          variant="text"
           color="primary"
           sx={{ mx: 'auto', margin: '0 8px' }}
         >
