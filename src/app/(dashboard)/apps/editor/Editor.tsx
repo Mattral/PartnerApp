@@ -89,7 +89,7 @@ const Editor = () => {
 
         <Button
           onClick={handleGenerate}
-          variant="text"
+          variant="outlined"
           color="primary"
           sx={{ mx: 'auto', margin: '0 8px' }}
         >
