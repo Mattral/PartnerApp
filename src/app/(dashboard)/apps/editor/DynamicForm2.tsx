@@ -17,7 +17,8 @@ import {
   Box,
   Card,
   Tooltip,
-  IconButton
+  IconButton,
+  CircularProgress
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -63,6 +64,7 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
   const searchParams = useSearchParams();
   const dt_code = searchParams.get("dt_code");
   const dtv_code = searchParams.get("dtv_code");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sort questions by dtvp_index
   const sortedQuestions = [...questions].sort((a, b) => a.dtvp_index - b.dtvp_index);
@@ -161,20 +163,24 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
   };
 
   const handleQuestionSubmit = async (dtvp_code: string) => {
+    setIsSubmitting(true); // Start loading
     const savedContent = localStorage.getItem("extractedHtml");
     if (!savedContent) {
       console.error('No content found in localStorage for "extractedHtml".');
+      setIsSubmitting(false);
       return;
     }
 
     const answer = formData[dtvp_code];
     if (!answer) {
       console.error("No answer found for the given dtvp_code.");
+      setIsSubmitting(false);
       return;
     }
 
     if (!dt_code || !dtv_code) {
       console.error("Missing dt_code or dtv_code from the URL.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -204,6 +210,7 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
           // Call CheckCondition with the required props
           CheckCondition(dtvp_code, answer);
           console.log('Triggered');
+          setIsSubmitting(false);
 
           // Move to next question after successful submission
           if (currentStep < sortedQuestions.length - 1) {
@@ -213,6 +220,7 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
       }
     } catch (error) {
       console.error("Error while submitting data:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -489,10 +497,14 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
             <Button
               variant="outlined"
               onClick={() => handleQuestionSubmit(currentQuestion.dtvp_code)}
-              disabled={currentQuestion.dtvp_answerIsRequired && !isAnswered} 
-              endIcon={<ArrowForwardIcon />}
+              disabled={currentQuestion.dtvp_answerIsRequired && !isAnswered || isSubmitting}
+              endIcon={isSubmitting ? <CircularProgress size={20} /> : <ArrowForwardIcon />}
             >
-              {currentStep === sortedQuestions.length - 1 ? "Submit" : "Submit & Next"}
+              {isSubmitting ? (
+                "Processing..."
+              ) : (
+                currentStep === sortedQuestions.length - 1 ? "Submit" : "Submit & Next"
+              )}
             </Button>
           </Stack>
         </Card>
