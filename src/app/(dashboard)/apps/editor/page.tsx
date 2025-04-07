@@ -37,7 +37,7 @@ const Page = () => {
             position: isFullView ? 'relative' : 'sticky', // Make it sticky only on large screens for half view
             top: 0, // Stick to the top of the viewport
             height: '100%', // For larger screens, make it take full height
-            width: isFullView ? '100%' : '47%', // Full width for full view, 45% for half view
+            width: isFullView ? '100%' : '40%', // Full width for full view, 45% for half view
             padding: '20px',
           },
         }}
@@ -58,7 +58,7 @@ const Page = () => {
           transition: 'height 0.3s ease, width 0.3s ease', // Smooth transition
           '@media (min-width: 768px)': {
             height: isFullView ? '0%' : '100%', // Hide height for full view, full height for half view on large screens
-            width: isFullView ? '0%' : '53%', // Hide width for full view, 55% for half view on large screens
+            width: isFullView ? '0%' : '60%', // Hide width for full view, 55% for half view on large screens
             padding: isFullView ? '0px' : '20px', // Remove padding when hidden
           },
         }}
