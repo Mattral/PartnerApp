@@ -173,8 +173,12 @@ const DynamicForm2: React.FC<DynamicForm2Props> = ({ questions }) => {
 
     const answer = formData[dtvp_code];
     if (!answer) {
-      console.error("No answer found for the given dtvp_code.");
+      console.log("No answer found for the given dtvp_code.");
       setIsSubmitting(false);
+          // Move to next question after successful submission
+          if (currentStep < sortedQuestions.length - 1) {
+            setCurrentStep(currentStep + 1);
+          }
       return;
     }
 
